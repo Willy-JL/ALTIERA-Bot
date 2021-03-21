@@ -1,16 +1,26 @@
 import io
+import time
 import json
 import atexit
 import requests
 from PIL import Image, ImageFont
 
 # Local imports
-import globals
+from modules import globals
 
 
 # Get config
 def get_config():
-    globals.config = json.loads(requests.get(f"https://write.as/{globals.WRITE_AS_POST_ID}.txt").text)
+    r = requests.post('https://write.as/api/auth/login',
+                      headers={
+                          'Content-Type': 'application/json'
+                      },
+                      data=json.dumps({
+                          "alias": globals.WRITE_AS_USER,
+                          "pass": globals.WRITE_AS_PASS
+                      }))
+    globals.WRITE_AS_TOKEN = json.loads(r.text)["data"]["access_token"]
+    globals.config = json.loads(requests.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt").text)
 
 
 # Save config
@@ -18,12 +28,16 @@ def get_config():
 def save_config():
     if globals.config is not None:
         print("Saving config...")
-        requests.post(f'https://write.as/api/posts/{globals.WRITE_AS_POST_ID}',
-                headers={'Content-Type': 'application/json'},
-                data=json.dumps({
-                        "token": globals.WRITE_AS_POST_TOKEN,
-                        "body": json.dumps(globals.config)
-                    }))
+        globals.config["time"] = time.time()
+        requests.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
+                      headers={
+                          'Authorization': f'Token {globals.WRITE_AS_TOKEN}',
+                          'Content-Type': 'application/json'
+                      },
+                      data=json.dumps({
+                          "body": json.dumps(globals.config),
+                          "font": "code"
+                      }))
         print("Done!")
 
 

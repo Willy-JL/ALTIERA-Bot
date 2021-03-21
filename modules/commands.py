@@ -5,8 +5,7 @@ from discord.ext import commands
 from PIL import Image, ImageDraw
 
 # Local imports
-import utils
-import globals
+from modules import utils, globals
 
 
 class Commands(commands.Cog):

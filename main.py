@@ -8,25 +8,28 @@ import discord
 from discord.ext import commands
 
 # Local imports
-import utils
-import globals
+from modules import utils, globals, xp
 
 # Setup globals
 globals.loop = asyncio.get_event_loop()
 
 globals.BOT_PREFIX = os.environ["BOT_PREFIX"] if os.environ.get("BOT_PREFIX") else "a/"
+globals.XP_COOLDOWN = os.environ["XP_COOLDOWN"] if os.environ.get("XP_COOLDOWN") else 60
 globals.TROPHY_ROLES = json.loads(os.environ["TROPHY_ROLES"]) if os.environ.get("TROPHY_ROLES") else []
 globals.STAFF_ROLE_ID = os.environ["STAFF_ROLE_ID"] if os.environ.get("STAFF_ROLE_ID") else 0
 globals.DISCORD_TOKEN = os.environ["DISCORD_TOKEN"] if os.environ.get("DISCORD_TOKEN") else ""
+globals.WRITE_AS_USER = os.environ["WRITE_AS_USER"] if os.environ.get("WRITE_AS_USER") else ""
+globals.WRITE_AS_PASS = os.environ["WRITE_AS_PASS"] if os.environ.get("WRITE_AS_PASS") else ""
 globals.WRITE_AS_POST_ID = os.environ["WRITE_AS_POST_ID"] if os.environ.get("WRITE_AS_POST_ID") else ""
-globals.WRITE_AS_POST_TOKEN = os.environ["WRITE_AS_POST_TOKEN"] if os.environ.get("WRITE_AS_POST_TOKEN") else ""
 # For testing purposes:
 # globals.BOT_PREFIX = "a/"
+# globals.XP_COOLDOWN = 60
 # globals.TROPHY_ROLES = [1234567890, 9876543210]
 # globals.STAFF_ROLE_ID = 1234567890
 # globals.DISCORD_TOKEN = "a1b2c3d4f5g6h7i8j9k0"
+# globals.WRITE_AS_USER = "a1b2c3d4f5g6"
+# globals.WRITE_AS_PASS = "a1b2c3d4f5g6h7i8j9k0"
 # globals.WRITE_AS_POST_ID = "a1b2c3d4f5g6"
-# globals.WRITE_AS_POST_TOKEN = "a1b2c3d4f5g6h7i8j9k0"
 
 
 # Only start bot if running as main and not import
@@ -41,7 +44,7 @@ if __name__ == '__main__':
     # Periodically save config
     async def config_loop():
         while True:
-            await asyncio.sleep(1800)
+            await asyncio.sleep(5)
             utils.save_config()
             if globals.bot.user:  # Check if logged in
                 admin = globals.bot.get_user(285519042163245056)
@@ -54,6 +57,7 @@ if __name__ == '__main__':
                     await admin.dm_channel.send(file=discord.File(binary, filename="backup.json"))
                 else:
                     print("Couldn't DM config backup!")
+            await asyncio.sleep(895)
     globals.loop.create_task(config_loop())
 
     # Enable intents
@@ -63,7 +67,7 @@ if __name__ == '__main__':
     # Create bot
     globals.bot = commands.Bot(globals.BOT_PREFIX, intents=intents)
     globals.bot.remove_command('help')
-    globals.bot.load_extension('commands')
+    globals.bot.load_extension('modules.commands')
 
     # On ready, fires when fully connected to Discord
     @globals.bot.event
@@ -76,6 +80,14 @@ if __name__ == '__main__':
         if isinstance(error, commands.errors.CommandNotFound):
             return
         raise error
+
+    # Message handler and callback dispatcher
+    @globals.bot.event
+    async def on_message(message):
+        if message.content and message.content.startswith(globals.bot.command_prefix):
+            await globals.bot.process_commands(message)
+        else:
+            xp.process_xp(message)
 
     # Actually run the bot
     while True:

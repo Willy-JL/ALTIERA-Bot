@@ -3,11 +3,14 @@ config = None
 loop = None
 
 BOT_PREFIX = None
+XP_COOLDOWN = None
 TROPHY_ROLES = None
 STAFF_ROLE_ID = None
 DISCORD_TOKEN = None
+WRITE_AS_USER = None
+WRITE_AS_PASS = None
+WRITE_AS_TOKEN = None
 WRITE_AS_POST_ID = None
-WRITE_AS_POST_TOKEN = None
 
 font47 = None
 font35 = None
