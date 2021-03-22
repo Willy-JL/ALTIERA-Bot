@@ -54,10 +54,10 @@ class Commands(commands.Cog):
             img.paste(globals.overlay,       (0, 0), globals.overlay      )
         # Draw username
         username = target.name.encode('ascii', 'replace').decode('ascii')  # Remove non-ascii glyphs
-        utils.draw_text(draw, globals.font35, username, "#FFFFFF", (268, 79), 298)
+        utils.draw_text(draw, globals.font35, username, "#FFFFFF", (268, 85), 298)
         # Draw main level and cred values
-        utils.draw_text(draw, globals.font47, f"LV:{level[0]}", "#009EDF", (277, 135), 999)
-        utils.draw_text(draw, globals.font47, f"SC:{cred[0]}",  "#F06B02", (434, 135), 999)
+        utils.draw_text(draw, globals.font47, f"LV:{level[0]}", "#009EDF", (277, 141), 999)
+        utils.draw_text(draw, globals.font47, f"SC:{cred[0]}",  "#F06B02", (434, 141), 999)
         # Draw trophy shards
         x = 267
         for i in range(utils.get_trophy_amount(target)):
@@ -67,28 +67,28 @@ class Commands(commands.Cog):
                 img.paste(globals.shard_orange, (x, 194), globals.shard_orange)
             x += 24
         # Draw single level values
-        utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (274, 422), 999)
-        utils.draw_text(draw, globals.font24, f"{level[0]}",  "#FFFFFF", (308, 420), 999)
-        utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (274, 515), 999)
-        utils.draw_text(draw, globals.font24, f"{cred[0]}",   "#FFFFFF", (308, 513), 999)
-        utils.draw_text(draw, globals.font16, f"LVL:",        "#F06B02", (274, 616), 999)
-        utils.draw_text(draw, globals.font24, f"{assist[0]}", "#F06B02", (308, 614), 999)
+        utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (275, 425), 999)
+        utils.draw_text(draw, globals.font24, f"{level[0]}",  "#FFFFFF", (308, 423), 999)
+        utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (275, 518), 999)
+        utils.draw_text(draw, globals.font24, f"{cred[0]}",   "#FFFFFF", (308, 516), 999)
+        utils.draw_text(draw, globals.font16, f"LVL:",        "#F06B02", (275, 619), 999)
+        utils.draw_text(draw, globals.font24, f"{assist[0]}", "#F06B02", (308, 617), 999)
         # Draw single percentage values
         if level_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           392), 999, "rt")
+            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           398), 999)
         else:
-            utils.draw_text(draw, globals.font30, f"{level_next}",  "#090D18", (565-globals.font30.getsize(f"{level_next}")[0],  392), 999, "rt")
-            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             401), 999      )
+            utils.draw_text(draw, globals.font30, f"{level_next}",  "#090D18", (565-globals.font30.getsize(f"{level_next}")[0],  398), 999)
+            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             407), 999)
         if cred_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           485), 999, "rt")
+            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           491), 999)
         else:
-            utils.draw_text(draw, globals.font30, f"{cred_next}",   "#090D18", (565-globals.font30.getsize(f"{cred_next}")[0],   485), 999, "rt")
-            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             494), 999      )
+            utils.draw_text(draw, globals.font30, f"{cred_next}",   "#090D18", (565-globals.font30.getsize(f"{cred_next}")[0],   491), 999)
+            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             500), 999)
         if assist_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           588), 999, "rt")
+            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           593), 999)
         else:
-            utils.draw_text(draw, globals.font30, f"{assist_next}", "#090D18", (565-globals.font30.getsize(f"{assist_next}")[0], 588), 999, "rt")
-            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             597), 999      )
+            utils.draw_text(draw, globals.font30, f"{assist_next}", "#090D18", (565-globals.font30.getsize(f"{assist_next}")[0], 593), 999)
+            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             602), 999)
         # Overlay percentage bars
         level_bar =  globals.bars[ "blue" ][utils.get_bar_index_from_lvl_percent(level_next )]
         cred_bar =   globals.bars["orange"][utils.get_bar_index_from_lvl_percent( cred_next )]
