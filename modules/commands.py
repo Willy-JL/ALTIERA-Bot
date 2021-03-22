@@ -38,7 +38,7 @@ class Commands(commands.Cog):
         cred =   xp.xp_to_lvl(globals.config[str(target.id)][1])
         assist = xp.xp_to_lvl(globals.config[str(target.id)][2])
         level_next =  math.floor((level[2]  - level[1] ) * 100 / level[2] )
-        cred_next =   math.floor((level[2]  - level[1] ) * 100 / level[2] )
+        cred_next =   math.floor((cred[2]   - cred[1]  ) * 100 / cred[2]  )
         assist_next = math.floor((assist[2] - assist[1]) * 100 / assist[2])
 
         # Setup image foundation
