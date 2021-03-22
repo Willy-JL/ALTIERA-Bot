@@ -120,6 +120,7 @@ class Commands(commands.Cog):
                 await ctx.author.create_dm()
             binary = utils.bytes_to_binary_object(json.dumps(globals.config).encode())
             await ctx.message.reply(file=discord.File(binary, filename="backup.json"))
+            binary.seek(0)
             await ctx.author.dm_channel.send(file=discord.File(binary, filename="backup.json"))
 
 
