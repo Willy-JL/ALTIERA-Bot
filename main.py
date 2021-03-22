@@ -25,31 +25,16 @@ globals.DISCORD_TOKEN = str(os.environ["DISCORD_TOKEN"]) if os.environ.get("DISC
 globals.WRITE_AS_USER = str(os.environ["WRITE_AS_USER"]) if os.environ.get("WRITE_AS_USER") else ""
 globals.WRITE_AS_PASS = str(os.environ["WRITE_AS_PASS"]) if os.environ.get("WRITE_AS_PASS") else ""
 globals.MODDER_ROLE_ID = int(os.environ["MODDER_ROLE_ID"]) if os.environ.get("MODDER_ROLE_ID") else 0
+globals.CONTRIB_AMOUNT = int(os.environ["CONTRIB_AMOUNT"]) if os.environ.get("CONTRIB_AMOUNT") else 1000
+globals.CONTRIB_COOLDOWN = int(os.environ["CONTRIB_COOLDOWN"]) if os.environ.get("CONTRIB_COOLDOWN") else 3600
 globals.WRITE_AS_POST_ID = str(os.environ["WRITE_AS_POST_ID"]) if os.environ.get("WRITE_AS_POST_ID") else ""
 globals.RULES_CHANNEL_ID = int(os.environ["RULES_CHANNEL_ID"]) if os.environ.get("RULES_CHANNEL_ID") else 0
 globals.JOIN_LOG_CHANNEL_ID = int(os.environ["JOIN_LOG_CHANNEL_ID"]) if os.environ.get("JOIN_LOG_CHANNEL_ID") else 0
 globals.MODDER_CATEGORY_IDS = json.loads(os.environ["MODDER_CATEGORY_IDS"]) if os.environ.get("MODDER_CATEGORY_IDS") else []
+globals.CONTRIB_CHANNELS_IDS = json.loads(os.environ["CONTRIB_CHANNELS_IDS"]) if os.environ.get("CONTRIB_CHANNELS_IDS") else []
 globals.ROLE_SELECT_CHANNEL_ID = int(os.environ["ROLE_SELECT_CHANNEL_ID"]) if os.environ.get("ROLE_SELECT_CHANNEL_ID") else 0
 globals.ASSISTANCE_CATEGORY_ID = int(os.environ["ASSISTANCE_CATEGORY_ID"]) if os.environ.get("ASSISTANCE_CATEGORY_ID") else 0
 globals.BLACKLISTED_CHANNELS_IDS = json.loads(os.environ["BLACKLISTED_CHANNELS_IDS"]) if os.environ.get("BLACKLISTED_CHANNELS_IDS") else []
-# For testing purposes:
-# globals.ADMIN_ID = 1234567890
-# globals.XP_AMOUNT = 50
-# globals.BOT_PREFIX = "a/"
-# globals.XP_COOLDOWN = 30
-# globals.TROPHY_ROLES = [1234567890, 9876543210]
-# globals.STAFF_ROLE_ID = 1234567890
-# globals.DISCORD_TOKEN = "a1b2c3d4f5g6h7i8j9k0"
-# globals.WRITE_AS_USER = "a1b2c3d4f5g6"
-# globals.WRITE_AS_PASS = "a1b2c3d4f5g6h7i8j9k0"
-# globals.MODDER_ROLE_ID = 1234567890
-# globals.WRITE_AS_POST_ID = "a1b2c3d4f5g6"
-# globals.RULES_CHANNEL_ID = 1234567890
-# globals.JOIN_LOG_CHANNEL_ID = 1234567890
-# globals.MODDER_CATEGORY_IDS = [1234567890, 9876543210]
-# globals.ROLE_SELECT_CHANNEL_ID = 1234567890
-# globals.ASSISTANCE_CATEGORY_ID = 1234567890
-# globals.BLACKLISTED_CHANNELS_IDS = [1234567890, 9876543210]
 
 
 # Only start bot if running as main and not import
@@ -123,7 +108,7 @@ if __name__ == '__main__':
         if message.content and message.content.startswith(globals.bot.command_prefix):
             await globals.bot.process_commands(message)
         else:
-            xp.process_xp(message)
+            await xp.process_xp(message)
 
     @tasks.loop(seconds=15)
     async def update_presence_loop():
