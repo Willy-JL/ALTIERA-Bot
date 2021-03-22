@@ -16,12 +16,14 @@ class Commands(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def stats(self, ctx, target: Union[discord.Member, discord.User, int] = None):  
+    async def stats(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):  
         # Convert target input to discord.Member
         if not target:
             target = ctx.author
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
+        elif isinstance(target, str):
+            target = ctx.guild.get_member_named(target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):

@@ -16,7 +16,6 @@ Custom Discord bot for the Cyberpunk 2077 Modding Server
    - Manually save remote config
    - Restore backup config
  - Help command
- - Username search for stats command
 
 ## Credits:
 SilverEzredes#4826 for the amazing image assets
