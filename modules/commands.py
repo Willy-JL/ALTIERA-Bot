@@ -34,7 +34,6 @@ class Commands(commands.Cog):
         # Actual command
 
         xp.ensure_user_data(str(target.id))
-        print(globals.config)
         level =  xp.xp_to_lvl(globals.config[str(target.id)][0])
         cred =   xp.xp_to_lvl(globals.config[str(target.id)][1])
         assist = xp.xp_to_lvl(globals.config[str(target.id)][2])
