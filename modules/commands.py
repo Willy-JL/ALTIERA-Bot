@@ -24,7 +24,10 @@ class Commands(commands.Cog):
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
-            target = ctx.guild.get_member_named(process.extractOne(target, [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick], scorer=fuzz.ratio)[0])
+            name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
+            results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=10)]
+            results.sort(key=lambda x: globals.config[ctx.guild.get_member_named(x).id][0], reverse=True)
+            target = ctx.guild.get_member_named(results[0])
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):
