@@ -2,6 +2,7 @@ import io
 import math
 import json
 import discord
+import datetime
 from typing import Union
 from discord.ext import commands
 from PIL import Image, ImageDraw
@@ -108,6 +109,38 @@ class Commands(commands.Cog):
         img.save(binary, format="PNG")
         binary.seek(0)
         await ctx.message.reply(file=discord.File(binary, filename=username[:16] + ".png"))
+
+    @commands.group()
+    async def top(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.message.reply(embed=discord.Embed(title="Leaderboard Categories:",
+                                                        description=f"{globals.bot.command_prefix}top **level**\n"
+                                                                    f"{globals.bot.command_prefix}top **cred**\n"
+                                                                    f"{globals.bot.command_prefix}top **assist**",
+                                                        color=discord.Color(0xEDE400),
+                                                        timestamp=datetime.datetime.utcnow())
+                                                        .set_footer(text=ctx.guild.name,
+                                                                    icon_url=ctx.guild.icon_url))
+
+    @top.command()
+    async def level(self, ctx):
+        uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
+        uids.sort(key=lambda x: globals.config[x][0], reverse=True)
+        uids = uids[:10]
+        lines = []
+        for uid in uids:
+            user = globals.bot.get_user(int(uid))
+            if user:
+                name = str(user)
+            else:
+                name = uid  
+            lines.append(f"{globals.config[uid][0]}	{name}")
+        await ctx.message.reply(embed=discord.Embed(title="Leaderboard Categories:",
+                                                    description="\n".join(lines),
+                                                    color=discord.Color(0xEDE400),
+                                                    timestamp=datetime.datetime.utcnow())
+                                                    .set_footer(text=ctx.guild.name,
+                                                                icon_url=ctx.guild.icon_url))
 
     @commands.command()
     async def save(self, ctx):
