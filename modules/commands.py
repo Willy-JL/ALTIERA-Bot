@@ -114,9 +114,9 @@ class Commands(commands.Cog):
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.message.reply(embed=discord.Embed(title="Leaderboard Categories:",
-                                                        description=f"{globals.bot.command_prefix}top **level**\n"
-                                                                    f"{globals.bot.command_prefix}top **cred**\n"
-                                                                    f"{globals.bot.command_prefix}top **assist**",
+                                                        description=f"{globals.bot.command_prefix}top **level**: Top 10 members for Server Level\n"
+                                                                    f"{globals.bot.command_prefix}top **cred**: Top 10 members for Server Cred\n"
+                                                                    f"{globals.bot.command_prefix}top **assistance**: Top 10 member for Assistance",
                                                         color=discord.Color(0xEDE400),
                                                         timestamp=datetime.datetime.utcnow())
                                                         .set_footer(text=ctx.guild.name,
@@ -127,16 +127,68 @@ class Commands(commands.Cog):
         uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
         uids.sort(key=lambda x: globals.config[x][0], reverse=True)
         uids = uids[:10]
+        max_line_length = 40
         lines = []
+        lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Server Level XP:"))]) + "Server Level XP:")
         for uid in uids:
             user = globals.bot.get_user(int(uid))
             if user:
                 name = str(user)
             else:
-                name = uid  
-            lines.append(f"{globals.config[uid][0]}	{name}")
-        await ctx.message.reply(embed=discord.Embed(title="Leaderboard Categories:",
-                                                    description="\n".join(lines),
+                name = uid
+            xp = globals.config[uid][0]
+            # I know, I'm also ashamed by this one liner
+            lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
+        await ctx.message.reply(embed=discord.Embed(title="Server Level Leaderboard:",
+                                                    description="```\n" + "\n".join(lines) + "\n```",
+                                                    color=discord.Color(0xEDE400),
+                                                    timestamp=datetime.datetime.utcnow())
+                                                    .set_footer(text=ctx.guild.name,
+                                                                icon_url=ctx.guild.icon_url))
+
+    @top.command()
+    async def cred(self, ctx):
+        uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
+        uids.sort(key=lambda x: globals.config[x][1], reverse=True)
+        uids = uids[:10]
+        max_line_length = 40
+        lines = []
+        lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
+        for uid in uids:
+            user = globals.bot.get_user(int(uid))
+            if user:
+                name = str(user)
+            else:
+                name = uid
+            xp = globals.config[uid][1]
+            # I know, I'm also ashamed by this one liner
+            lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
+        await ctx.message.reply(embed=discord.Embed(title="Server Cred Leaderboard:",
+                                                    description="```\n" + "\n".join(lines) + "\n```",
+                                                    color=discord.Color(0xEDE400),
+                                                    timestamp=datetime.datetime.utcnow())
+                                                    .set_footer(text=ctx.guild.name,
+                                                                icon_url=ctx.guild.icon_url))
+
+    @top.command()
+    async def assistance(self, ctx):
+        uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
+        uids.sort(key=lambda x: globals.config[x][2], reverse=True)
+        uids = uids[:10]
+        max_line_length = 40
+        lines = []
+        lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Assistance XP:"))]) + "Assistance XP:")
+        for uid in uids:
+            user = globals.bot.get_user(int(uid))
+            if user:
+                name = str(user)
+            else:
+                name = uid
+            xp = globals.config[uid][2]
+            # I know, I'm also ashamed by this one liner
+            lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
+        await ctx.message.reply(embed=discord.Embed(title="Assistance Leaderboard:",
+                                                    description="```\n" + "\n".join(lines) + "\n```",
                                                     color=discord.Color(0xEDE400),
                                                     timestamp=datetime.datetime.utcnow())
                                                     .set_footer(text=ctx.guild.name,
