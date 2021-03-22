@@ -23,6 +23,7 @@ font30 = None
 font24 = None
 font20 = None
 font16 = None
+default_avatar = None
 overlay = None
 staff_overlay = None
 shard_orange = None

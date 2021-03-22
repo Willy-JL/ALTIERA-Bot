@@ -45,7 +45,10 @@ class Commands(commands.Cog):
         img = Image.open("assets/background.png")
         draw = ImageDraw.Draw(img)
         # Draw user avatar
-        avatar = utils.pil_img_from_link(str(target.avatar_url))
+        if str(target.avatar_url).startswith("https://cdn.discordapp.com/embed/avatars"):
+            avatar = globals.default_avatar
+        else:
+            avatar = utils.pil_img_from_link(str(target.avatar_url))
         try:
             img.paste(avatar, (24, 18), avatar)
         except ValueError:

@@ -50,6 +50,8 @@ def setup_persistent_components():
     globals.font24 = ImageFont.truetype("assets/square.ttf", 24)
     globals.font20 = ImageFont.truetype("assets/square.ttf", 20)
     globals.font16 = ImageFont.truetype("assets/square.ttf", 16)
+    
+    globals.default_avatar = Image.open('assets/default_avatar.png')
 
     globals.overlay = Image.open('assets/overlay.png')
     globals.staff_overlay = Image.open('assets/staff_overlay.png')
