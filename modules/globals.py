@@ -2,6 +2,7 @@ bot = None
 config = None
 loop = None
 
+XP_AMOUNT = None
 BOT_PREFIX = None
 XP_COOLDOWN = None
 TROPHY_ROLES = None
@@ -9,8 +10,12 @@ STAFF_ROLE_ID = None
 DISCORD_TOKEN = None
 WRITE_AS_USER = None
 WRITE_AS_PASS = None
+MODDER_ROLE_ID = None
 WRITE_AS_TOKEN = None
 WRITE_AS_POST_ID = None
+MODDER_CATEGORY_IDS = None
+ASSISTANCE_CATEGORY_ID = None
+BLACKLISTED_CHANNELS_IDS = None
 
 font47 = None
 font35 = None
