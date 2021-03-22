@@ -3,8 +3,8 @@ import math
 import json
 import discord
 import datetime
+import fuzzywuzzy
 from typing import Union
-from fuzzywuzzy import process
 from discord.ext import commands
 from PIL import Image, ImageDraw
 
@@ -24,7 +24,7 @@ class Commands(commands.Cog):
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
-            target = ctx.guild.get_member_named(process.extractOne(target, [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick])[0])
+            target = ctx.guild.get_member_named(fuzzywuzzy.process.extractOne(target, [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick], scorer=fuzzywuzzy.partial_ratio)[0])
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):

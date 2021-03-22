@@ -1,4 +1,4 @@
 Pillow
 requests
 discord.py
-fuzzywuzzy
+fuzzywuzzy[speedup]
