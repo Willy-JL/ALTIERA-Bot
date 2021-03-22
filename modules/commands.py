@@ -26,7 +26,7 @@ class Commands(commands.Cog):
         elif isinstance(target, str):
             name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
             results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=10)]
-            results.sort(key=lambda x: globals.config[str(ctx.guild.get_member_named(x).id)][0], reverse=True)
+            results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
             target = ctx.guild.get_member_named(results[0])
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
