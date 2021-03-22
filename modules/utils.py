@@ -21,24 +21,25 @@ def get_config():
                       }))
     globals.WRITE_AS_TOKEN = json.loads(r.text)["data"]["access_token"]
     globals.config = json.loads(requests.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt").text)
+    print("Fetched config!")
 
 
 # Save config
 @atexit.register
 def save_config():
     if globals.config is not None:
-        print("Saving config...")
         globals.config["time"] = time.time()
-        requests.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
-                      headers={
-                          'Authorization': f'Token {globals.WRITE_AS_TOKEN}',
-                          'Content-Type': 'application/json'
-                      },
-                      data=json.dumps({
-                          "body": json.dumps(globals.config),
-                          "font": "code"
-                      }))
-        print("Done!")
+        r = requests.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
+                          headers={
+                              'Authorization': f'Token {globals.WRITE_AS_TOKEN}',
+                              'Content-Type': 'application/json'
+                          },
+                          data=json.dumps({
+                              "body": json.dumps(globals.config),
+                              "font": "code"
+                          }))
+        if not r.ok:
+            print(f"Failed to save config! Code: {r.status_code}, Message: {r.text}")
 
 
 # Setup persistent image components
