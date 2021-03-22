@@ -19,7 +19,7 @@ def get_config():
                           "alias": globals.WRITE_AS_USER,
                           "pass": globals.WRITE_AS_PASS
                       }))
-    globals.WRITE_AS_TOKEN = json.loads(r.text)["data"]["access_token"]
+    globals.write_as_token = json.loads(r.text)["data"]["access_token"]
     globals.config = json.loads(requests.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt").text)
     print("Fetched config!")
 
@@ -31,7 +31,7 @@ def save_config():
         globals.config["time"] = time.time()
         r = requests.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
                           headers={
-                              'Authorization': f'Token {globals.WRITE_AS_TOKEN}',
+                              'Authorization': f'Token {globals.write_as_token}',
                               'Content-Type': 'application/json'
                           },
                           data=json.dumps({

@@ -1,9 +1,12 @@
+# System stuff
 bot = None
 config = None
 loop = None
 cur_presence = None
+write_as_token = None
 ticking_cooldowns = None
 
+# User configurable vars, Heroku's "Config Vars" are suggested
 ADMIN_ID = None
 ASSISTANCE_CATEGORY_ID = None
 BLACKLISTED_CHANNELS_IDS = None
@@ -21,11 +24,11 @@ STAFF_ROLE_ID = None
 TROPHY_ROLES = None
 WRITE_AS_PASS = None
 WRITE_AS_POST_ID = None
-WRITE_AS_TOKEN = None
 WRITE_AS_USER = None
 XP_AMOUNT = None
 XP_COOLDOWN = None
 
+# Image components
 font47 = None
 font35 = None
 font30 = None
