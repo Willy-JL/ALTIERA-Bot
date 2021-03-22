@@ -3,17 +3,17 @@ import os
 import time
 import json
 import asyncio
-from typing import BinaryIO
 import aiohttp
 import discord
 import datetime
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 # Local imports
 from modules import utils, globals, xp
 
 # Setup globals
 globals.loop = asyncio.get_event_loop()
+globals.cur_presence = 0
 
 globals.ADMIN_ID = int(os.environ["ADMIN_ID"]) if os.environ.get("ADMIN_ID") else 0
 globals.XP_AMOUNT = int(os.environ["XP_AMOUNT"]) if os.environ.get("XP_AMOUNT") else 50
@@ -91,6 +91,7 @@ if __name__ == '__main__':
     @globals.bot.event
     async def on_ready():
         print(f'Logged in as {globals.bot.user}!')
+        update_presence_loop.start()
     
     # Ignore command not found errors
     @globals.bot.event
@@ -123,6 +124,21 @@ if __name__ == '__main__':
             await globals.bot.process_commands(message)
         else:
             xp.process_xp(message)
+
+    @tasks.loop(seconds=15)
+    async def update_presence_loop():
+        if globals.cur_presence == 0:
+            await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name=f'Cyberspace'), status=discord.Status.dnd)
+            globals.cur_presence = 1
+        elif globals.cur_presence == 1:
+            count = 0
+            for guild in globals.bot.guilds:
+                count += guild.member_count
+            await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{count} users'), status=discord.Status.dnd)
+            globals.cur_presence = 2
+        elif globals.cur_presence == 2:
+            await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'the Blackwall'), status=discord.Status.dnd)
+            globals.cur_presence = 0
 
     # Actually run the bot
     while True:

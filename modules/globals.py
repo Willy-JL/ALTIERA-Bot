@@ -1,6 +1,7 @@
 bot = None
 config = None
 loop = None
+cur_presence = None
 
 ADMIN_ID = None
 XP_AMOUNT = None
