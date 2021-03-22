@@ -46,7 +46,10 @@ class Commands(commands.Cog):
         draw = ImageDraw.Draw(img)
         # Draw user avatar
         avatar = utils.pil_img_from_link(str(target.avatar_url))
-        img.paste(avatar, (24, 18), avatar)
+        try:
+            img.paste(avatar, (24, 18), avatar)
+        except ValueError:
+            img.paste(avatar, (24, 18))
         # Apply base overlay
         if globals.STAFF_ROLE_ID in [role.id for role in target.roles]:
             img.paste(globals.staff_overlay, (0, 0), globals.staff_overlay)
