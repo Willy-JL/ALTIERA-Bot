@@ -40,6 +40,8 @@ def save_config():
                           }))
         if not r.ok:
             print(f"Failed to save config! Code: {r.status_code}, Message: {r.text}")
+            return False
+        return True
 
 
 # Setup persistent image components

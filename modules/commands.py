@@ -1,5 +1,6 @@
 import io
 import math
+import json
 import discord
 from typing import Union
 from discord.ext import commands
@@ -107,6 +108,19 @@ class Commands(commands.Cog):
         img.save(binary, format="PNG")
         binary.seek(0)
         await ctx.message.reply(file=discord.File(binary, filename=username[:16] + ".png"))
+
+    @commands.command()
+    async def save(self, ctx):
+        if ctx.author.id == globals.ADMIN_ID:
+            if not utils.save_config():
+                await ctx.message.reply("Failed to save remote config!")
+            else:
+                await ctx.message.add_reaction('👌')
+            if not ctx.author.dm_channel:
+                await ctx.author.create_dm()
+            binary = utils.bytes_to_binary_object(json.dumps(globals.config).encode())
+            await ctx.message.reply(file=discord.File(binary, filename="backup.json"))
+            await ctx.author.dm_channel.send(file=discord.File(binary, filename="backup.json"))
 
 
 def setup(bot):
