@@ -103,7 +103,8 @@ if __name__ == '__main__':
     @globals.bot.event
     async def on_member_join(member):
         channel = member.guild.get_channel(globals.JOIN_LOG_CHANNEL_ID)
-        await channel.send(embed=discord.Embed(title="Welcome!",
+        await channel.send(content=f"<@!{member.id}>",
+                           embed=discord.Embed(title="Welcome!",
                                                description=f"Welcome <@!{member.id}> to Night City!\n"
                                                            f"\n"
                                                            f"Make sure you have a read through <#{globals.RULES_CHANNEL_ID}>!\n"
