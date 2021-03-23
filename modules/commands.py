@@ -141,7 +141,7 @@ class Commands(commands.Cog):
 
         # Actual command
         xp.ensure_user_data(str(target.id))
-        await ctx.reply(embed=discord.Embed(title=f"{target.name}'s XP':",
+        await ctx.reply(embed=discord.Embed(title=f"{target.name}'s XP:",
                                             color=discord.Color(0xEDE400),
                                             timestamp=datetime.datetime.utcnow())
                                             .add_field(name="Level",
@@ -153,6 +153,7 @@ class Commands(commands.Cog):
                                             .add_field(name="Assistance",
                                                        value=f"{globals.config[str(target.id)][2]}",
                                                        inline=True)
+                                            .set_thumbnail(url=target.avatar_url)
                                             .set_footer(text=ctx.guild.name,
                                                         icon_url=ctx.guild.icon_url))
 
@@ -185,7 +186,7 @@ class Commands(commands.Cog):
             xp = globals.config[uid][0]
             # I know, I'm also ashamed by this one liner
             line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
-            lines.append(("= " if i % 2 else "+ ") + line)
+            lines.append(("+ " if i % 2 else "= ") + line)
         await ctx.reply(embed=discord.Embed(title="Server Level Leaderboard:",
                                             description="```asciidoc\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
@@ -210,7 +211,7 @@ class Commands(commands.Cog):
             xp = globals.config[uid][1]
             # I know, I'm also ashamed by this one liner
             line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
-            lines.append(("= " if i % 2 else "+ ") + line)
+            lines.append(("+ " if i % 2 else "= ") + line)
         await ctx.reply(embed=discord.Embed(title="Server Cred Leaderboard:",
                                             description="```asciidoc\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
@@ -235,7 +236,7 @@ class Commands(commands.Cog):
             xp = globals.config[uid][2]
             # I know, I'm also ashamed by this one liner
             line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
-            lines.append(("= " if i % 2 else "+ ") + line)
+            lines.append(("+ " if i % 2 else "= ") + line)
         await ctx.reply(embed=discord.Embed(title="Assistance Leaderboard:",
                                             description="```asciidoc\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
