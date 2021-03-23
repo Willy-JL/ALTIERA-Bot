@@ -135,7 +135,7 @@ class Commands(commands.Cog):
         uids = uids[:10]
         max_line_length = 34
         lines = []
-        lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Server Level XP:"))]) + "Server Level XP:")
+        lines.append("- User:" + "".join([" " for _ in range(max_line_length-len("- User:")-len("Server Level XP:"))]) + "Server Level XP:")
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
@@ -147,7 +147,7 @@ class Commands(commands.Cog):
             line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
             lines.append(("= " if i % 2 else "+ ") + line)
         await ctx.reply(embed=discord.Embed(title="Server Level Leaderboard:",
-                                            description="```\n" + "\n".join(lines) + "\n```",
+                                            description="```asciidoc\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
                                             timestamp=datetime.datetime.utcnow())
                                             .set_footer(text=ctx.guild.name,
@@ -160,7 +160,7 @@ class Commands(commands.Cog):
         uids = uids[:10]
         max_line_length = 34
         lines = []
-        lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
+        lines.append("- User:" + "".join([" " for _ in range(max_line_length-len("- User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
@@ -185,7 +185,7 @@ class Commands(commands.Cog):
         uids = uids[:10]
         max_line_length = 34
         lines = []
-        lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Assistance XP:"))]) + "Assistance XP:")
+        lines.append("- User:" + "".join([" " for _ in range(max_line_length-len("- User:")-len("Assistance XP:"))]) + "Assistance XP:")
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
@@ -197,7 +197,7 @@ class Commands(commands.Cog):
             line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
             lines.append(("= " if i % 2 else "+ ") + line)
         await ctx.reply(embed=discord.Embed(title="Assistance Leaderboard:",
-                                            description="```\n" + "\n".join(lines) + "\n```",
+                                            description="```asciidoc\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
                                             timestamp=datetime.datetime.utcnow())
                                             .set_footer(text=ctx.guild.name,
