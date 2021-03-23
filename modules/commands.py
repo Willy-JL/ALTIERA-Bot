@@ -89,17 +89,17 @@ class Commands(commands.Cog):
         utils.draw_text(draw, globals.font24, f"{assist[0]}", "#F06B02", (308, 617), 999)
         # Draw single percentage values
         if level_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           398), 999)
+            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (574-globals.font30.getsize(f"MAX")[0],           398), 999)
         else:
             utils.draw_text(draw, globals.font30, f"{level_next}",  "#090D18", (565-globals.font30.getsize(f"{level_next}")[0],  398), 999)
             utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             407), 999)
         if cred_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           491), 999)
+            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (574-globals.font30.getsize(f"MAX")[0],           491), 999)
         else:
             utils.draw_text(draw, globals.font30, f"{cred_next}",   "#090D18", (565-globals.font30.getsize(f"{cred_next}")[0],   491), 999)
             utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             500), 999)
         if assist_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (569-globals.font30.getsize(f"MAX")[0],           593), 999)
+            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (574-globals.font30.getsize(f"MAX")[0],           593), 999)
         else:
             utils.draw_text(draw, globals.font30, f"{assist_next}", "#090D18", (565-globals.font30.getsize(f"{assist_next}")[0], 593), 999)
             utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             602), 999)
