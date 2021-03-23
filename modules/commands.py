@@ -33,10 +33,10 @@ class Commands(commands.Cog):
         elif isinstance(target, discord.Member):
             pass
         else:
-            await ctx.message.reply("That is not a valid user!")
+            await ctx.reply("That is not a valid user!")
             return
         if not target:
-            await ctx.message.reply("That is not a valid user!")
+            await ctx.reply("That is not a valid user!")
             return
 
         # Actual command
@@ -114,19 +114,19 @@ class Commands(commands.Cog):
         binary = io.BytesIO()
         img.save(binary, format="PNG")
         binary.seek(0)
-        await ctx.message.reply(file=discord.File(binary, filename=username[:16] + ".png"))
+        await ctx.reply(file=discord.File(binary, filename=username[:16] + ".png"))
 
     @commands.group()
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.message.reply(embed=discord.Embed(title="Leaderboard Categories:",
-                                                        description=f"{globals.bot.command_prefix}top **level**: Top 10 members for Server Level\n"
-                                                                    f"{globals.bot.command_prefix}top **cred**: Top 10 members for Server Cred\n"
-                                                                    f"{globals.bot.command_prefix}top **assistance**: Top 10 member for Assistance",
-                                                        color=discord.Color(0xEDE400),
-                                                        timestamp=datetime.datetime.utcnow())
-                                                        .set_footer(text=ctx.guild.name,
-                                                                    icon_url=ctx.guild.icon_url))
+            await ctx.reply(embed=discord.Embed(title="Leaderboard Categories:",
+                                                description=f"{globals.bot.command_prefix}top **level**: Top 10 members for Server Level\n"
+                                                            f"{globals.bot.command_prefix}top **cred**: Top 10 members for Server Cred\n"
+                                                            f"{globals.bot.command_prefix}top **assistance**: Top 10 member for Assistance",
+                                                color=discord.Color(0xEDE400),
+                                                timestamp=datetime.datetime.utcnow())
+                                                .set_footer(text=ctx.guild.name,
+                                                            icon_url=ctx.guild.icon_url))
 
     @top.command(name="level")
     async def top_level(self, ctx):
@@ -145,12 +145,12 @@ class Commands(commands.Cog):
             xp = globals.config[uid][0]
             # I know, I'm also ashamed by this one liner
             lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
-        await ctx.message.reply(embed=discord.Embed(title="Server Level Leaderboard:",
-                                                    description="```\n" + "\n".join(lines) + "\n```",
-                                                    color=discord.Color(0xEDE400),
-                                                    timestamp=datetime.datetime.utcnow())
-                                                    .set_footer(text=ctx.guild.name,
-                                                                icon_url=ctx.guild.icon_url))
+        await ctx.reply(embed=discord.Embed(title="Server Level Leaderboard:",
+                                            description="```\n" + "\n".join(lines) + "\n```",
+                                            color=discord.Color(0xEDE400),
+                                            timestamp=datetime.datetime.utcnow())
+                                            .set_footer(text=ctx.guild.name,
+                                                        icon_url=ctx.guild.icon_url))
 
     @top.command(name="cred")
     async def top_cred(self, ctx):
@@ -169,12 +169,12 @@ class Commands(commands.Cog):
             xp = globals.config[uid][1]
             # I know, I'm also ashamed by this one liner
             lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
-        await ctx.message.reply(embed=discord.Embed(title="Server Cred Leaderboard:",
-                                                    description="```\n" + "\n".join(lines) + "\n```",
-                                                    color=discord.Color(0xEDE400),
-                                                    timestamp=datetime.datetime.utcnow())
-                                                    .set_footer(text=ctx.guild.name,
-                                                                icon_url=ctx.guild.icon_url))
+        await ctx.reply(embed=discord.Embed(title="Server Cred Leaderboard:",
+                                            description="```\n" + "\n".join(lines) + "\n```",
+                                            color=discord.Color(0xEDE400),
+                                            timestamp=datetime.datetime.utcnow())
+                                            .set_footer(text=ctx.guild.name,
+                                                        icon_url=ctx.guild.icon_url))
 
     @top.command(name="assistance", aliases=["assist"])
     async def top_assistance(self, ctx):
@@ -193,22 +193,22 @@ class Commands(commands.Cog):
             xp = globals.config[uid][2]
             # I know, I'm also ashamed by this one liner
             lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
-        await ctx.message.reply(embed=discord.Embed(title="Assistance Leaderboard:",
-                                                    description="```\n" + "\n".join(lines) + "\n```",
-                                                    color=discord.Color(0xEDE400),
-                                                    timestamp=datetime.datetime.utcnow())
-                                                    .set_footer(text=ctx.guild.name,
-                                                                icon_url=ctx.guild.icon_url))
+        await ctx.reply(embed=discord.Embed(title="Assistance Leaderboard:",
+                                            description="```\n" + "\n".join(lines) + "\n```",
+                                            color=discord.Color(0xEDE400),
+                                            timestamp=datetime.datetime.utcnow())
+                                            .set_footer(text=ctx.guild.name,
+                                                        icon_url=ctx.guild.icon_url))
 
     @commands.command(aliases=["backup"])
     async def save(self, ctx):
         if utils.is_staff(ctx.author):
             if not utils.save_config():
-                await ctx.message.reply("Failed to save remote config!")
+                await ctx.reply("Failed to save remote config!")
             else:
                 await ctx.message.add_reaction('👌')
             binary = utils.bytes_to_binary_object(json.dumps(globals.config).encode())
-            await ctx.message.reply(file=discord.File(binary, filename="backup.json"))
+            await ctx.reply(file=discord.File(binary, filename="backup.json"))
             binary.seek(0)
             await ctx.author.send(file=discord.File(binary, filename="backup.json"))
 
@@ -222,7 +222,7 @@ class Commands(commands.Cog):
         if utils.is_staff(ctx.author):
             # Convert target input to discord.Member
             if not target:
-                await ctx.message.reply("Please provide a valid user!")
+                await ctx.reply("Please provide a valid user!")
                 return
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
@@ -236,22 +236,22 @@ class Commands(commands.Cog):
             elif isinstance(target, discord.Member):
                 pass
             else:
-                await ctx.message.reply("That is not a valid user!")
+                await ctx.reply("That is not a valid user!")
                 return
             if not target:
-                await ctx.message.reply("That is not a valid user!")
+                await ctx.reply("That is not a valid user!")
                 return
             # Actual command
             xp.ensure_user_data(str(target.id))
             globals.config[str(target.id)][0] += amount
-            await ctx.message.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!")
+            await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
     @gibxp.command(name="cred")
     async def gibxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if utils.is_staff(ctx.author):
             # Convert target input to discord.Member
             if not target:
-                await ctx.message.reply("Please provide a valid user!")
+                await ctx.reply("Please provide a valid user!")
                 return
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
@@ -265,22 +265,22 @@ class Commands(commands.Cog):
             elif isinstance(target, discord.Member):
                 pass
             else:
-                await ctx.message.reply("That is not a valid user!")
+                await ctx.reply("That is not a valid user!")
                 return
             if not target:
-                await ctx.message.reply("That is not a valid user!")
+                await ctx.reply("That is not a valid user!")
                 return
             # Actual command
             xp.ensure_user_data(str(target.id))
             globals.config[str(target.id)][1] += amount
-            await ctx.message.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!")
+            await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
     @gibxp.command(name="assistance", aliases=["assist"])
     async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if utils.is_staff(ctx.author):
             # Convert target input to discord.Member
             if not target:
-                await ctx.message.reply("Please provide a valid user!")
+                await ctx.reply("Please provide a valid user!")
                 return
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
@@ -294,15 +294,15 @@ class Commands(commands.Cog):
             elif isinstance(target, discord.Member):
                 pass
             else:
-                await ctx.message.reply("That is not a valid user!")
+                await ctx.reply("That is not a valid user!")
                 return
             if not target:
-                await ctx.message.reply("That is not a valid user!")
+                await ctx.reply("That is not a valid user!")
                 return
             # Actual command
             xp.ensure_user_data(str(target.id))
             globals.config[str(target.id)][2] += amount
-            await ctx.message.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!")
+            await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
 
 def setup(bot):
