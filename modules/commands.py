@@ -288,6 +288,8 @@ class Commands(commands.Cog):
             # Actual command
             xp.ensure_user_data(str(target.id))
             globals.config[str(target.id)][0] += amount
+            if globals.config[str(target.id)][0] < 0:
+                globals.config[str(target.id)][0] = 0
             await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
     @gibxp.command(name="cred")
@@ -317,6 +319,8 @@ class Commands(commands.Cog):
             # Actual command
             xp.ensure_user_data(str(target.id))
             globals.config[str(target.id)][1] += amount
+            if globals.config[str(target.id)][1] < 0:
+                globals.config[str(target.id)][1] = 0
             await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
     @gibxp.command(name="assistance", aliases=["assist"])
@@ -346,6 +350,8 @@ class Commands(commands.Cog):
             # Actual command
             xp.ensure_user_data(str(target.id))
             globals.config[str(target.id)][2] += amount
+            if globals.config[str(target.id)][2] < 0:
+                globals.config[str(target.id)][2] = 0
             await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
 
