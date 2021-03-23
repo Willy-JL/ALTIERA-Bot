@@ -62,7 +62,7 @@ class Commands(commands.Cog):
         except ValueError:
             img.paste(avatar, (24, 18))
         # Apply base overlay
-        if globals.STAFF_ROLE_ID in [role.id for role in target.roles]:
+        if utils.is_staff(target):
             img.paste(globals.staff_overlay, (0, 0), globals.staff_overlay)
         else:
             img.paste(globals.overlay,       (0, 0), globals.overlay      )
@@ -128,8 +128,8 @@ class Commands(commands.Cog):
                                                         .set_footer(text=ctx.guild.name,
                                                                     icon_url=ctx.guild.icon_url))
 
-    @top.command()
-    async def level(self, ctx):
+    @top.command(name="level")
+    async def top_level(self, ctx):
         uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
         uids.sort(key=lambda x: globals.config[x][0], reverse=True)
         uids = uids[:10]
@@ -152,8 +152,8 @@ class Commands(commands.Cog):
                                                     .set_footer(text=ctx.guild.name,
                                                                 icon_url=ctx.guild.icon_url))
 
-    @top.command()
-    async def cred(self, ctx):
+    @top.command(name="cred")
+    async def top_cred(self, ctx):
         uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
         uids.sort(key=lambda x: globals.config[x][1], reverse=True)
         uids = uids[:10]
@@ -176,8 +176,8 @@ class Commands(commands.Cog):
                                                     .set_footer(text=ctx.guild.name,
                                                                 icon_url=ctx.guild.icon_url))
 
-    @top.command(aliases=["assist"])
-    async def assistance(self, ctx):
+    @top.command(name="assistance", aliases=["assist"])
+    async def top_assistance(self, ctx):
         uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
         uids.sort(key=lambda x: globals.config[x][2], reverse=True)
         uids = uids[:10]
@@ -200,9 +200,9 @@ class Commands(commands.Cog):
                                                     .set_footer(text=ctx.guild.name,
                                                                 icon_url=ctx.guild.icon_url))
 
-    @commands.command()
+    @commands.command(aliases=["backup"])
     async def save(self, ctx):
-        if globals.STAFF_ROLE_ID in [role.id for role in ctx.author.roles]:
+        if utils.is_staff(ctx.author):
             if not utils.save_config():
                 await ctx.message.reply("Failed to save remote config!")
             else:
@@ -211,6 +211,98 @@ class Commands(commands.Cog):
             await ctx.message.reply(file=discord.File(binary, filename="backup.json"))
             binary.seek(0)
             await ctx.author.send(file=discord.File(binary, filename="backup.json"))
+
+    @commands.group()
+    async def gibxp(self, ctx):
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @gibxp.command(name="level")
+    async def gibxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
+        if utils.is_staff(ctx.author):
+            # Convert target input to discord.Member
+            if not target:
+                await ctx.message.reply("Please provide a valid user!")
+                return
+            if isinstance(target, int):
+                target = ctx.guild.get_member(target)
+            elif isinstance(target, str):
+                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
+                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
+                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
+                target = ctx.guild.get_member_named(results[0])
+            elif isinstance(target, discord.User):
+                target = ctx.guild.get_member(target.id)
+            elif isinstance(target, discord.Member):
+                pass
+            else:
+                await ctx.message.reply("That is not a valid user!")
+                return
+            if not target:
+                await ctx.message.reply("That is not a valid user!")
+                return
+            # Actual command
+            xp.ensure_user_data(str(target.id))
+            globals.config[str(target.id)][0] += amount
+            await ctx.message.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!")
+
+    @gibxp.command(name="cred")
+    async def gibxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
+        if utils.is_staff(ctx.author):
+            # Convert target input to discord.Member
+            if not target:
+                await ctx.message.reply("Please provide a valid user!")
+                return
+            if isinstance(target, int):
+                target = ctx.guild.get_member(target)
+            elif isinstance(target, str):
+                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
+                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
+                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
+                target = ctx.guild.get_member_named(results[0])
+            elif isinstance(target, discord.User):
+                target = ctx.guild.get_member(target.id)
+            elif isinstance(target, discord.Member):
+                pass
+            else:
+                await ctx.message.reply("That is not a valid user!")
+                return
+            if not target:
+                await ctx.message.reply("That is not a valid user!")
+                return
+            # Actual command
+            xp.ensure_user_data(str(target.id))
+            globals.config[str(target.id)][1] += amount
+            await ctx.message.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!")
+
+    @gibxp.command(name="assistance", aliases=["assist"])
+    async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
+        if utils.is_staff(ctx.author):
+            # Convert target input to discord.Member
+            if not target:
+                await ctx.message.reply("Please provide a valid user!")
+                return
+            if isinstance(target, int):
+                target = ctx.guild.get_member(target)
+            elif isinstance(target, str):
+                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
+                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
+                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
+                target = ctx.guild.get_member_named(results[0])
+            elif isinstance(target, discord.User):
+                target = ctx.guild.get_member(target.id)
+            elif isinstance(target, discord.Member):
+                pass
+            else:
+                await ctx.message.reply("That is not a valid user!")
+                return
+            if not target:
+                await ctx.message.reply("That is not a valid user!")
+                return
+            # Actual command
+            xp.ensure_user_data(str(target.id))
+            globals.config[str(target.id)][2] += amount
+            await ctx.message.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!")
 
 
 def setup(bot):

@@ -12,8 +12,6 @@ Custom Discord bot for the Cyberpunk 2077 Modding Server
  - Customizable stats card
  - Level up notification
  - Staff only commands:
-   - Add / remove xp
-   - Manually save remote config
    - Restore backup config
  - Help command
 

@@ -107,3 +107,8 @@ def get_trophy_amount(user):
 # Find what bar to use based on percentage to next level
 def get_bar_index_from_lvl_percent(percent):
     return int(str(percent // 10**2 % 10) + str(percent // 10**1 % 10))
+
+
+# Check for staff role
+def is_staff(user):
+    return globals.STAFF_ROLE_ID in [role.id for role in user.roles]
