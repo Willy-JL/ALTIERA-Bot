@@ -54,10 +54,8 @@ if __name__ == '__main__':
             if globals.bot.user:  # Check if logged in
                 admin = globals.bot.get_user(globals.ADMIN_ID)
                 if admin:
-                    if not admin.dm_channel:
-                        await admin.create_dm()
                     binary = utils.bytes_to_binary_object(json.dumps(globals.config).encode())
-                    await admin.dm_channel.send(file=discord.File(binary, filename="backup.json"))
+                    await admin.send(file=discord.File(binary, filename="backup.json"))
                 else:
                     print("Couldn't DM config backup!")
             await asyncio.sleep(895)

@@ -176,7 +176,7 @@ class Commands(commands.Cog):
                                                     .set_footer(text=ctx.guild.name,
                                                                 icon_url=ctx.guild.icon_url))
 
-    @top.command()
+    @top.command(aliases=["assist"])
     async def assistance(self, ctx):
         uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
         uids.sort(key=lambda x: globals.config[x][2], reverse=True)
@@ -202,17 +202,15 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def save(self, ctx):
-        if ctx.author.id == globals.ADMIN_ID:
+        if globals.STAFF_ROLE_ID in [role.id for role in ctx.author.roles]:
             if not utils.save_config():
                 await ctx.message.reply("Failed to save remote config!")
             else:
                 await ctx.message.add_reaction('👌')
-            if not ctx.author.dm_channel:
-                await ctx.author.create_dm()
             binary = utils.bytes_to_binary_object(json.dumps(globals.config).encode())
             await ctx.message.reply(file=discord.File(binary, filename="backup.json"))
             binary.seek(0)
-            await ctx.author.dm_channel.send(file=discord.File(binary, filename="backup.json"))
+            await ctx.author.send(file=discord.File(binary, filename="backup.json"))
 
 
 def setup(bot):
