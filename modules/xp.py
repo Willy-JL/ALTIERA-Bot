@@ -72,11 +72,11 @@ async def process_xp(message):
     new_cred =   xp_to_lvl(globals.config[str(message.author.id)][1])[0]
     new_assist = xp_to_lvl(globals.config[str(message.author.id)][2])[0]
     if new_level > level:
-        notify_level_up(message, "level",      level,  new_level )
+        await notify_level_up(message, "level",      level,  new_level )
     if new_cred > cred:
-        notify_level_up(message, "cred",       cred,   new_cred  )
+        await notify_level_up(message, "cred",       cred,   new_cred  )
     if new_assist > assist:
-        notify_level_up(message, "assistance", assist, new_assist)
+        await notify_level_up(message, "assistance", assist, new_assist)
     if added_contrib_boost:
         try:
             await globals.bot.wait_for('message_delete', check=lambda msg: message == msg, timeout=600)
