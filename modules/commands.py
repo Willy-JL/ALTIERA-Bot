@@ -116,6 +116,46 @@ class Commands(commands.Cog):
         binary.seek(0)
         await ctx.reply(file=discord.File(binary, filename=username[:16] + ".png"))
 
+    @commands.command()
+    async def xp(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):  
+        # Convert target input to discord.Member
+        if not target:
+            target = ctx.author
+        if isinstance(target, int):
+            target = ctx.guild.get_member(target)
+        elif isinstance(target, str):
+            name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
+            results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
+            results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
+            target = ctx.guild.get_member_named(results[0])
+        elif isinstance(target, discord.User):
+            target = ctx.guild.get_member(target.id)
+        elif isinstance(target, discord.Member):
+            pass
+        else:
+            await ctx.reply("That is not a valid user!")
+            return
+        if not target:
+            await ctx.reply("That is not a valid user!")
+            return
+
+        # Actual command
+        xp.ensure_user_data(str(target.id))
+        await ctx.reply(embed=discord.Embed(title=f"{target.name}'s XP':",
+                                            color=discord.Color(0xEDE400),
+                                            timestamp=datetime.datetime.utcnow())
+                                            .add_field(name="Level",
+                                                       value=f"{globals.config[str(target.id)][0]}",
+                                                       inline=True)
+                                            .add_field(name="Cred",
+                                                       value=f"{globals.config[str(target.id)][1]}",
+                                                       inline=True)
+                                            .add_field(name="Assistance",
+                                                       value=f"{globals.config[str(target.id)][2]}",
+                                                       inline=True)
+                                            .set_footer(text=ctx.guild.name,
+                                                        icon_url=ctx.guild.icon_url))
+
     @commands.group()
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -139,7 +179,7 @@ class Commands(commands.Cog):
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
-                name = str(user)
+                name = str(user.name)
             else:
                 name = uid
             xp = globals.config[uid][0]
@@ -164,7 +204,7 @@ class Commands(commands.Cog):
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
-                name = str(user)
+                name = str(user.name)
             else:
                 name = uid
             xp = globals.config[uid][1]
@@ -189,7 +229,7 @@ class Commands(commands.Cog):
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
-                name = str(user)
+                name = str(user.name)
             else:
                 name = uid
             xp = globals.config[uid][2]
