@@ -354,6 +354,101 @@ class Commands(commands.Cog):
                 globals.config[str(target.id)][2] = 0
             await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
+    @commands.group()
+    async def setxp(self, ctx):
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @setxp.command(name="level")
+    async def setxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
+        if utils.is_staff(ctx.author):
+            # Convert target input to discord.Member
+            if not target:
+                await ctx.reply("Please provide a valid user!")
+                return
+            if isinstance(target, int):
+                target = ctx.guild.get_member(target)
+            elif isinstance(target, str):
+                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
+                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
+                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
+                target = ctx.guild.get_member_named(results[0])
+            elif isinstance(target, discord.User):
+                target = ctx.guild.get_member(target.id)
+            elif isinstance(target, discord.Member):
+                pass
+            else:
+                await ctx.reply("That is not a valid user!")
+                return
+            if not target:
+                await ctx.reply("That is not a valid user!")
+                return
+            # Actual command
+            xp.ensure_user_data(str(target.id))
+            amount = abs(amount)
+            globals.config[str(target.id)][0] = amount
+            await ctx.reply(f"Set <@!{target.id}>'s level XP to {amount}!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
+
+    @setxp.command(name="cred")
+    async def setxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
+        if utils.is_staff(ctx.author):
+            # Convert target input to discord.Member
+            if not target:
+                await ctx.reply("Please provide a valid user!")
+                return
+            if isinstance(target, int):
+                target = ctx.guild.get_member(target)
+            elif isinstance(target, str):
+                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
+                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
+                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
+                target = ctx.guild.get_member_named(results[0])
+            elif isinstance(target, discord.User):
+                target = ctx.guild.get_member(target.id)
+            elif isinstance(target, discord.Member):
+                pass
+            else:
+                await ctx.reply("That is not a valid user!")
+                return
+            if not target:
+                await ctx.reply("That is not a valid user!")
+                return
+            # Actual command
+            xp.ensure_user_data(str(target.id))
+            amount = abs(amount)
+            globals.config[str(target.id)][1] = amount
+            await ctx.reply(f"Set <@!{target.id}>'s cred XP to {amount}!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
+
+    @setxp.command(name="assistance", aliases=["assist"])
+    async def setxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
+        if utils.is_staff(ctx.author):
+            # Convert target input to discord.Member
+            if not target:
+                await ctx.reply("Please provide a valid user!")
+                return
+            if isinstance(target, int):
+                target = ctx.guild.get_member(target)
+            elif isinstance(target, str):
+                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
+                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
+                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
+                target = ctx.guild.get_member_named(results[0])
+            elif isinstance(target, discord.User):
+                target = ctx.guild.get_member(target.id)
+            elif isinstance(target, discord.Member):
+                pass
+            else:
+                await ctx.reply("That is not a valid user!")
+                return
+            if not target:
+                await ctx.reply("That is not a valid user!")
+                return
+            # Actual command
+            xp.ensure_user_data(str(target.id))
+            amount = abs(amount)
+            globals.config[str(target.id)][2] = amount
+            await ctx.reply(f"Set <@!{target.id}>'s assistance XP to {amount}!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
+
 
 def setup(bot):
     bot.add_cog(Commands(bot))
