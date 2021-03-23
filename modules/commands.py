@@ -135,7 +135,7 @@ class Commands(commands.Cog):
         uids = uids[:10]
         max_line_length = 34
         lines = []
-        lines.append("- User:" + "".join([" " for _ in range(max_line_length-len("- User:")-len("Server Level XP:"))]) + "Server Level XP:")
+        lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Server Level XP:"))]) + "Server Level XP:")
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
@@ -160,7 +160,7 @@ class Commands(commands.Cog):
         uids = uids[:10]
         max_line_length = 34
         lines = []
-        lines.append("- User:" + "".join([" " for _ in range(max_line_length-len("- User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
+        lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
@@ -185,7 +185,7 @@ class Commands(commands.Cog):
         uids = uids[:10]
         max_line_length = 34
         lines = []
-        lines.append("- User:" + "".join([" " for _ in range(max_line_length-len("- User:")-len("Assistance XP:"))]) + "Assistance XP:")
+        lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Assistance XP:"))]) + "Assistance XP:")
         for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
