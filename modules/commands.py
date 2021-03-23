@@ -145,7 +145,7 @@ class Commands(commands.Cog):
             xp = globals.config[uid][0]
             # I know, I'm also ashamed by this one liner
             line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
-            lines.append("= " if i % 2 else "+ " + line)
+            lines.append(("= " if i % 2 else "+ ") + line)
         await ctx.reply(embed=discord.Embed(title="Server Level Leaderboard:",
                                             description="```\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
@@ -170,7 +170,7 @@ class Commands(commands.Cog):
             xp = globals.config[uid][1]
             # I know, I'm also ashamed by this one liner
             line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
-            lines.append("= " if i % 2 else "+ " + line)
+            lines.append(("= " if i % 2 else "+ ") + line)
         await ctx.reply(embed=discord.Embed(title="Server Cred Leaderboard:",
                                             description="```asciidoc\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
@@ -195,7 +195,7 @@ class Commands(commands.Cog):
             xp = globals.config[uid][2]
             # I know, I'm also ashamed by this one liner
             line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
-            lines.append("= " if i % 2 else "+ " + line)
+            lines.append(("= " if i % 2 else "+ ") + line)
         await ctx.reply(embed=discord.Embed(title="Assistance Leaderboard:",
                                             description="```\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
