@@ -133,10 +133,10 @@ class Commands(commands.Cog):
         uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
         uids.sort(key=lambda x: globals.config[x][0], reverse=True)
         uids = uids[:10]
-        max_line_length = 40
+        max_line_length = 34
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Server Level XP:"))]) + "Server Level XP:")
-        for uid in uids:
+        for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
                 name = str(user)
@@ -144,7 +144,8 @@ class Commands(commands.Cog):
                 name = uid
             xp = globals.config[uid][0]
             # I know, I'm also ashamed by this one liner
-            lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
+            line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
+            lines.append("= " if i % 2 else "+ " + line)
         await ctx.reply(embed=discord.Embed(title="Server Level Leaderboard:",
                                             description="```\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
@@ -157,10 +158,10 @@ class Commands(commands.Cog):
         uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
         uids.sort(key=lambda x: globals.config[x][1], reverse=True)
         uids = uids[:10]
-        max_line_length = 40
+        max_line_length = 34
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
-        for uid in uids:
+        for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
                 name = str(user)
@@ -168,9 +169,10 @@ class Commands(commands.Cog):
                 name = uid
             xp = globals.config[uid][1]
             # I know, I'm also ashamed by this one liner
-            lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
+            line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
+            lines.append("= " if i % 2 else "+ " + line)
         await ctx.reply(embed=discord.Embed(title="Server Cred Leaderboard:",
-                                            description="```\n" + "\n".join(lines) + "\n```",
+                                            description="```asciidoc\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
                                             timestamp=datetime.datetime.utcnow())
                                             .set_footer(text=ctx.guild.name,
@@ -181,10 +183,10 @@ class Commands(commands.Cog):
         uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
         uids.sort(key=lambda x: globals.config[x][2], reverse=True)
         uids = uids[:10]
-        max_line_length = 40
+        max_line_length = 34
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length-len("User:")-len("Assistance XP:"))]) + "Assistance XP:")
-        for uid in uids:
+        for i, uid in enumerate(uids):
             user = globals.bot.get_user(int(uid))
             if user:
                 name = str(user)
@@ -192,7 +194,8 @@ class Commands(commands.Cog):
                 name = uid
             xp = globals.config[uid][2]
             # I know, I'm also ashamed by this one liner
-            lines.append((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp))
+            line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
+            lines.append("= " if i % 2 else "+ " + line)
         await ctx.reply(embed=discord.Embed(title="Assistance Leaderboard:",
                                             description="```\n" + "\n".join(lines) + "\n```",
                                             color=discord.Color(0xEDE400),
