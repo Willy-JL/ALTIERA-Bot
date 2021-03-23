@@ -56,7 +56,7 @@ class Commands(commands.Cog):
         if str(target.avatar_url).startswith("https://cdn.discordapp.com/embed/avatars"):
             avatar = globals.default_avatar
         else:
-            avatar = utils.pil_img_from_link(str(target.avatar_url))
+            avatar = utils.pil_img_from_link(str(target.avatar_url)).resize((200, 200))
         try:
             img.paste(avatar, (24, 18), avatar)
         except ValueError:

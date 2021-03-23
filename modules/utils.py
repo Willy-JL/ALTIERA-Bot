@@ -67,6 +67,12 @@ def setup_persistent_components():
         for i in range(11):
             globals.bars[color].append(Image.open(f"assets/bars/{color}/{i}.png"))
 
+    globals.levelups = {}
+    for xp_type in ["level", "cred", "assistance"]:
+        globals.levelups[xp_type] = {}
+        globals.levelups[xp_type]["overlay"] = Image.open(f"assets/levelup/{xp_type}.png")
+        globals.levelups[xp_type]["color"] = "#FFFFFF" if xp_type == "level" else "#FFFFFF" if xp_type == "cred" else "#F06B02" if xp_type == "assistance" else ""
+
 
 # Save bytes array into a readable binary object
 def bytes_to_binary_object(bytes_arr):
@@ -81,7 +87,7 @@ def pil_img_from_link(link):
     link = link[:link.rfind(".")] + ".png?size=256"
     r = requests.get(link)
     img = Image.open(bytes_to_binary_object(r.content))
-    return img.resize((200, 200))
+    return img
 
 
 # Draw text at coords with max width
