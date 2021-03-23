@@ -106,8 +106,8 @@ async def notify_level_up(message, xp_type, old_lvl, new_lvl):
     # Apply base overlay
     img.paste(globals.levelups[xp_type]["overlay"], (0, 0), globals.levelups[xp_type]["overlay"])
     # Draw old and new level values
-    utils.draw_text(draw, globals.font47, f"{old_lvl}", globals.levelups[xp_type]["color"], (340, 56), 999)
-    utils.draw_text(draw, globals.font47, f"{new_lvl}", globals.levelups[xp_type]["color"], (526, 56), 999)
+    utils.draw_text(draw, globals.font47, f"{old_lvl}", globals.levelups[xp_type]["color"], (344, 56), 999)
+    utils.draw_text(draw, globals.font47, f"{new_lvl}", globals.levelups[xp_type]["color"], (530, 56), 999)
 
     binary = io.BytesIO()
     img.save(binary, format="PNG")
