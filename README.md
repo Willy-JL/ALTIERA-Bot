@@ -6,11 +6,11 @@ Custom Discord bot for the Cyberpunk 2077 Modding Server
    - Level
    - Cred
    - Assistance
+ - Level up notification
  - Join message
 
 ## To Do:
  - Customizable stats card
- - Level up notification
  - Staff only commands:
    - Restore backup config
  - Help command
