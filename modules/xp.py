@@ -85,7 +85,7 @@ async def process_xp(message):
             while globals.ticking_cooldowns:
                 await asyncio.sleep(0.25)
             del contrib_cooldowns[message.author.id]
-        except TimeoutError:
+        except asyncio.TimeoutError:
             # Message not deleted, leave boost
             pass
 
