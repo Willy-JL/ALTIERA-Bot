@@ -12,12 +12,12 @@ from fuzzywuzzy import process, fuzz
 from modules import utils, globals, xp
 
 
-class Commands(commands.Cog):
+class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def stats(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):  
+    async def stats(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
             target = ctx.author
@@ -117,7 +117,7 @@ class Commands(commands.Cog):
         await ctx.reply(file=discord.File(binary, filename=username[:16] + ".png"))
 
     @commands.command()
-    async def xp(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):  
+    async def xp(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
             target = ctx.author
@@ -451,4 +451,4 @@ class Commands(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Commands(bot))
+    bot.add_cog(Stats(bot))
