@@ -114,7 +114,7 @@ class Commands(commands.Cog):
             daily_cooldown_users.add(str(ctx.author.id))
             await utils.embed_reply(ctx,
                                     title=f"📅 Daily reward claimed!",
-                                    description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!"
+                                    description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!\n"
                                                 f"Come back in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}** for more!",
                                     thumbnail=ctx.author.avatar_url)
         else:
