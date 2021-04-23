@@ -32,22 +32,97 @@ class Help(commands.Cog):
                                                 f"{globals.bot.command_prefix}**daily**: Claim your daily reward (500 level XP)\n"
                                                 f"{globals.bot.command_prefix}**dice**: Roll some dice\n"
                                                 f"\n"
-                                                f"You can see more info on any of these by using `{globals.bot.command_prefix}help commandname` (the command name goes without `{globals.bot.command_prefix}`!)\n"
-                                                f"No, you can't add me to your server, this bot is exclusive to this community. [The code is open-source however!](https://github.com/Willy-JL/altiera-bot)")
+                                                f"Lookup a command with `{globals.bot.command_prefix}help command` (the command goes without `{globals.bot.command_prefix}`)\n"
+                                                f"You can't add me to your server, but [the code is open-source!](https://github.com/Willy-JL/altiera-bot)")
 
     @help.command(name="help")
     async def help_help(self, ctx):
         await utils.embed_reply(ctx,
-                                title=f"⁉️ {globals.bot.command_prefix}help",
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}help",
                                 description=f"Why are you like this?\n"
                                             f"Ugh, I guess I'll explain this too...\n"
                                             f"\n"
-                                            f"See a list of commands / Look up info as usage of a command"
+                                            f"See a list of commands / Look up info and usage of a command\n"
                                             f"\n"
-                                            f"**Usage**: `{globals.bot.command_prefix}help [command]`\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}help [ command ]`\n"
                                             f"command: the command to look up (optional)\n"
                                             f"\n"
-                                            f"Aliases: N/A\n")
+                                            f"Aliases: `N/A`")
+
+    @help.command(name="stats")
+    async def help_stats(self, ctx):
+        await utils.embed_reply(ctx,
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}stats",
+                                description=f"See your server stats (level, cred, assistance)\n"
+                                            f"You earn level from chatting anywhere (except in bot commands channels)\n"
+                                            f"Cred is only earned by users with modder role and only in modding channels\n"
+                                            f"Assistance XP is generated in the hospital channels, everyone earns, modders earn 2x\n"
+                                            f"There are cooldowns, spamming won't get you far\n"
+                                            f"\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}stats [ user ]`\n"
+                                            f"user: the user to check stats for (ping, name, id) (optional)\n"
+                                            f"\n"
+                                            f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["levels", "level", "cred", "assistance", "assist"]]))
+
+    @help.command(name="xp")
+    async def help_xp(self, ctx):
+        await utils.embed_reply(ctx,
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}xp",
+                                description=f"See your XP amounts (levels depend on XP amount)\n"
+                                            f"LVL1 = 1000XP, LVL2 = 2000XP, LVL3 = 3000XP, LVL4 = 4000XP and so on...\n"
+                                            f"\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}xp [ user ]`\n"
+                                            f"user: the user to check xp amounts for (ping, name, id) (optional)\n"
+                                            f"\n"
+                                            f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["xpamount", "levelxp", "credxp", "assistancexp", "assistxp"]]))
+
+    @help.command(name="top")
+    async def help_top(self, ctx):
+        await utils.embed_reply(ctx,
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}top",
+                                description=f"List top ten users per XP type\n"
+                                            f"And then cry yourself to sleep when you realize Halvkyrie will always be first\n"
+                                            f"\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}top [ type ]`\n"
+                                            f"type: either level, cred or assist (required)\n"
+                                            f"\n"
+                                            f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["top10", "leaderboard", "ranking"]]))
+
+    @help.command(name="rep")
+    async def help_rep(self, ctx):
+        await utils.embed_reply(ctx,
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}rep",
+                                description=f"Gift a cool person some reputation (500 cred XP)\n"
+                                            f"Only once every 24 hours (or sooner if bot restarts unexpectedly)\n"
+                                            f"\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}rep [ user ]`\n"
+                                            f"user: the user to give rep to (ping, name, id) (required)\n"
+                                            f"\n"
+                                            f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["reputation", "giverep", "givereputation"]]))
+
+    @help.command(name="daily")
+    async def help_daily(self, ctx):
+        await utils.embed_reply(ctx,
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}daily",
+                                description=f"Claim your daily reward (500 level XP)\n"
+                                            f"Only once every 24 hours (or sooner if bot restarts unexpectedly)\n"
+                                            f"\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}daily`\n"
+                                            f"\n"
+                                            f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"]]))
+
+    @help.command(name="dice")
+    async def help_dice(self, ctx):
+        await utils.embed_reply(ctx,
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}dice",
+                                description=f"Roll some dice\n"
+                                            f"\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}dice [ max ]`\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}dice [ throws ] [ max ]`\n"
+                                            f"throws: number of dice throws, default 1, max 10 (optional)\n"
+                                            f"max: number of faces (aka max per dice), default 6 max 100 (optional)\n"
+                                            f"\n"
+                                            f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["diceroll", "rolldice", "roll"]]))
 
 
 def setup(bot):

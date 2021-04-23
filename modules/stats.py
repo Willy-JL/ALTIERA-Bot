@@ -14,7 +14,7 @@ class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(aliases=["levels", "level", "cred", "assistance", "assist"])
     async def stats(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
@@ -113,7 +113,7 @@ class Stats(commands.Cog):
         binary.seek(0)
         await ctx.reply(file=discord.File(binary, filename=username[:16] + ".png"))
 
-    @commands.command()
+    @commands.command(aliases=["xpamount", "levelxp", "credxp", "assistancexp", "assistxp"])
     async def xp(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
@@ -146,7 +146,7 @@ class Stats(commands.Cog):
                                 ],
                                 thumbnail=target.avatar_url)
 
-    @commands.group()
+    @commands.group(aliases=["top10", "leaderboard", "ranking"])
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
             await utils.embed_reply(ctx,
