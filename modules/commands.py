@@ -50,9 +50,9 @@ class Commands(commands.Cog):
             result += roll
             rolls.append(roll)
         await ctx.reply(embed=discord.Embed(title=f"🎲 Dice roll!",
-                                            description=f"Throws: {throws}{' (capped)' if throws_capped else ''}\n"
-                                                        f"Max: {max}{' (capped)' if max_capped else ''}\n"
-                                                        f"\n__**Result**__: `{result}` ( {', '.join(rolls)} )",
+                                            description=f"Throws: {str(throws)}{' (capped)' if throws_capped else ''}\n"
+                                                        f"Max: {str(max)}{' (capped)' if max_capped else ''}\n"
+                                                        f"\n__**Result**__: `{str(result)}` ( {', '.join(rolls)} )",
                                             color=discord.Color(0xEDE400),
                                             timestamp=datetime.datetime.utcnow())
                                             .set_footer(text=ctx.guild.name,
