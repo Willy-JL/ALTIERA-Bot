@@ -1,12 +1,13 @@
-import io
-import time
-import json
-import atexit
-import requests
+from fuzzywuzzy import process, fuzz
 from PIL import Image, ImageFont
+import requests
+import atexit
+import json
+import time
+import io
 
 # Local imports
-from modules import globals
+from modules import globals, xp
 
 
 # Get config
@@ -118,3 +119,22 @@ def get_bar_index_from_lvl_percent(percent):
 # Check for staff role
 def is_staff(user):
     return globals.STAFF_ROLE_ID in [role.id for role in user.roles]
+
+
+# Find member, ensure xp and return value
+def xp_from_name(ctx, name, index):
+    member_id_str = str(ctx.guild.get_member_named(name).id)
+    xp.ensure_user_data(member_id_str)
+    globals.config[member_id_str][index]
+
+
+# Fuzzy string match for usernames
+def get_best_member_match(ctx, target):
+    name_list = []
+    for user in ctx.guild.members:
+        name_list.append(user.name)
+        if user.nick:
+            name_list.append(user.nick)
+    results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
+    results.sort(key=lambda name: xp_from_name(ctx, name, 0), reverse=True)
+    return ctx.guild.get_member_named(results[0])

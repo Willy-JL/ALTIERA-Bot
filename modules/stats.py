@@ -1,15 +1,14 @@
-import io
-import math
-import json
-import discord
-import datetime
-from typing import Union
-from discord.ext import commands
 from PIL import Image, ImageDraw
-from fuzzywuzzy import process, fuzz
+from discord.ext import commands
+from typing import Union
+import datetime
+import discord
+import json
+import math
+import io
 
 # Local imports
-from modules import utils, globals, xp
+from modules import globals, utils, xp
 
 
 class Stats(commands.Cog):
@@ -24,10 +23,7 @@ class Stats(commands.Cog):
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
-            name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
-            results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-            results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
-            target = ctx.guild.get_member_named(results[0])
+            target = utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):
@@ -124,10 +120,7 @@ class Stats(commands.Cog):
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
-            name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
-            results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-            results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
-            target = ctx.guild.get_member_named(results[0])
+            target = utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):
@@ -271,10 +264,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
-                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
-                target = ctx.guild.get_member_named(results[0])
+                target = utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -302,10 +292,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
-                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
-                target = ctx.guild.get_member_named(results[0])
+                target = utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -321,7 +308,7 @@ class Stats(commands.Cog):
             globals.config[str(target.id)][1] += amount
             if globals.config[str(target.id)][1] < 0:
                 globals.config[str(target.id)][1] = 0
-            await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
+            await ctx.reply(f"Gave <@!{target.id}> {amount} cred XP!" if amount >= 0 else f"Took {-amount} cred XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
     @gibxp.command(name="assistance", aliases=["assist"])
     async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -333,10 +320,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
-                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
-                target = ctx.guild.get_member_named(results[0])
+                target = utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -352,7 +336,7 @@ class Stats(commands.Cog):
             globals.config[str(target.id)][2] += amount
             if globals.config[str(target.id)][2] < 0:
                 globals.config[str(target.id)][2] = 0
-            await ctx.reply(f"Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"Took {-amount} level XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
+            await ctx.reply(f"Gave <@!{target.id}> {amount} assistance XP!" if amount >= 0 else f"Took {-amount} assistance XP from <@!{target.id}>!", allowed_mentions=discord.AllowedMentions(users=[ctx.author]))
 
     @commands.group()
     async def setxp(self, ctx):
@@ -369,10 +353,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
-                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
-                target = ctx.guild.get_member_named(results[0])
+                target = utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -399,10 +380,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
-                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
-                target = ctx.guild.get_member_named(results[0])
+                target = utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -429,10 +407,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                name_list = [user.name for user in ctx.guild.members] + [user.nick for user in ctx.guild.members if user.nick]
-                results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-                results.sort(key=lambda x: [xp.ensure_user_data(str(ctx.guild.get_member_named(x).id)), globals.config[str(ctx.guild.get_member_named(x).id)][0]][1], reverse=True)
-                target = ctx.guild.get_member_named(results[0])
+                target = utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
