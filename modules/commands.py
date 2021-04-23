@@ -98,8 +98,8 @@ class Commands(commands.Cog):
         else:
             await utils.embed_reply(ctx,
                                     title=f"💢 You're on cooldown!",
-                                    description=f"You can only use that command once every **24 hours** (once per bot restart to be exact)!\n"
-                                                f"You'll be able to use it again in roughly **{datetime.timedelta(seconds=(86369-(time.time()-globals.start_timestamp)))}**")
+                                    description=f"You can only use that command once every **24 hours**!\n"
+                                                f"You'll be able to use it again in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}**")
 
 
 def setup(bot):
