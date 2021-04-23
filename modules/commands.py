@@ -18,12 +18,15 @@ class Commands(commands.Cog):
 
     @commands.command(aliases=["diceroll", "rolldice", "roll"])
     async def dice(self, ctx, arg1: str = None, arg2: str = None):
-        try:
-            max = int(arg1)
-        except (ValueError, TypeError):
-            await utils.embed_reply(ctx,
-                                    title=f"💢 Please provide a valid number!")
-            return
+        if arg2 is not None:
+            try:
+                max = int(arg1)
+            except (ValueError, TypeError):
+                await utils.embed_reply(ctx,
+                                        title=f"💢 Please provide a valid number!")
+                return
+        else:
+            max = 6
 
         if arg2 is not None:
             throws = max
@@ -56,7 +59,8 @@ class Commands(commands.Cog):
                                 description=f'Throws: {throws}{" (capped)" if throws_capped else ""}\n'
                                             f'Max: {max}{" (capped)" if max_capped else ""}\n'
                                             f'\n'
-                                            f'Result: __**{str(result)}**__ ( `{", ".join(rolls)}` )')
+                                            f'Result:  __**{str(result)}**__ ( `{", ".join(rolls)}` )',
+                                add_timestamp=False)
 
     @commands.command(aliases=["reputation", "giverep", "givereputation"])
     async def rep(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):

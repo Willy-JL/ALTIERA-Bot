@@ -143,13 +143,20 @@ def get_best_member_match(ctx, target):
 
 
 # Streamlined embeds
-def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, image=None):
-    embed_to_send = (discord.Embed(title=title,
-                                  description=description,
-                                  color=discord.Color(0xEDE400),
-                                  timestamp=datetime.datetime.utcnow())
-                                  .set_footer(text=guild.name,
-                                              icon_url=guild.icon_url))
+def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True):
+    if add_timestamp:
+        embed_to_send = (discord.Embed(title=title,
+                                    description=description,
+                                    color=discord.Color(0xEDE400),
+                                    timestamp=datetime.datetime.utcnow())
+                                    .set_footer(text=guild.name,
+                                                icon_url=guild.icon_url))
+    else:
+        embed_to_send = (discord.Embed(title=title,
+                                    description=description,
+                                    color=discord.Color(0xEDE400))
+                                    .set_footer(text=guild.name,
+                                                icon_url=guild.icon_url))
     if image:
         embed_to_send.set_image(url=image)
     elif thumbnail:
@@ -160,7 +167,7 @@ def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, 
 
 
 # Cleaner reply function
-async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None):
-    embed_to_send = custom_embed(ctx.guild, title=title, description=description, fields=fields, thumbnail=thumbnail, image=image)
+async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True):
+    embed_to_send = custom_embed(ctx.guild, title=title, description=description, fields=fields, thumbnail=thumbnail, image=image, add_timestamp=add_timestamp)
     await ctx.reply(content,
                     embed=embed_to_send)
