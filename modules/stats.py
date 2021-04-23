@@ -140,8 +140,8 @@ class Stats(commands.Cog):
         await utils.embed_reply(ctx,
                                 title=f"🔥 {target.name}'s XP:",
                                 fields=[
-                                    ["Level",      f"{globals.config[str(target.id)][0]}", True]
-                                    ["Cred",       f"{globals.config[str(target.id)][1]}", True]
+                                    ["Level",      f"{globals.config[str(target.id)][0]}", True],
+                                    ["Cred",       f"{globals.config[str(target.id)][1]}", True],
                                     ["Assistance", f"{globals.config[str(target.id)][2]}", True]
                                 ],
                                 thumbnail=target.avatar_url)
