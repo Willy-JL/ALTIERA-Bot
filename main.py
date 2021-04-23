@@ -1,12 +1,12 @@
-import os
-import time
-import json
-import asyncio
-import aiohttp
-import discord
-import datetime
-import requests
 from discord.ext import commands, tasks
+import requests
+import datetime
+import discord
+import aiohttp
+import asyncio
+import json
+import time
+import os
 
 # Local imports
 from modules import utils, globals, xp

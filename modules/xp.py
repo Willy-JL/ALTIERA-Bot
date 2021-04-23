@@ -1,8 +1,8 @@
-import io
-import time
-import asyncio
-import discord
 from PIL import Image, ImageDraw
+import discord
+import asyncio
+import time
+import io
 
 # Local imports
 from modules import globals, utils
