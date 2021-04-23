@@ -1,6 +1,5 @@
 from discord.ext import commands, tasks
 import requests
-import datetime
 import discord
 import aiohttp
 import asyncio
@@ -80,6 +79,7 @@ if __name__ == '__main__':
         print(f'Logged in as {globals.bot.user}!')
         update_presence_loop.start()
         if os.environ.get("DYNO"):
+            globals.start_timestamp = time.time()
             await asyncio.sleep(86369)
             update_presence_loop.stop()
             utils.save_config()
@@ -99,17 +99,14 @@ if __name__ == '__main__':
     async def on_member_join(member):
         channel = member.guild.get_channel(globals.JOIN_LOG_CHANNEL_ID)
         await channel.send(content=f"<@!{member.id}>",
-                           embed=discord.Embed(title="Welcome!",
-                                               description=f"Welcome <@!{member.id}> to Night City!\n"
-                                                           f"\n"
-                                                           f"Make sure you have a read through <#{globals.RULES_CHANNEL_ID}>!\n"
-                                                           f"You can pick your poisons in <#{globals.ROLE_SELECT_CHANNEL_ID}>!\n"
-                                                           f"Enjoy your stay!",
-                                               color=discord.Color(0xEDE400),
-                                               timestamp=datetime.datetime.utcnow())
-                                               .set_thumbnail(url=member.avatar_url)
-                                               .set_footer(text=member.guild.name,
-                                                           icon_url=member.guild.icon_url))
+                           embed=utils.custom_embed(member.guild,
+                                                    title="👋 Welcome!",
+                                                    description=f"Welcome <@!{member.id}> to Night City!\n"
+                                                                f"\n"
+                                                                f"Make sure you have a read through <#{globals.RULES_CHANNEL_ID}>!\n"
+                                                                f"You can pick your poisons in <#{globals.ROLE_SELECT_CHANNEL_ID}>!\n"
+                                                                f"Enjoy your stay!",
+                                                    thumbnail=member.avatar_url))
 
     # Message handler and callback dispatcher
     @globals.bot.event

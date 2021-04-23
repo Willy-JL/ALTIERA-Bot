@@ -5,6 +5,7 @@ loop = None
 cur_presence = None
 write_as_token = None
 ticking_cooldowns = None
+start_timestamp = None
 
 # User configurable vars, Heroku's "Config Vars" are suggested
 ADMIN_ID = None
