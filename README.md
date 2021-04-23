@@ -6,6 +6,8 @@ Custom Discord bot for the Cyberpunk 2077 Modding Server
    - Level
    - Cred
    - Assistance
+ - Reputation command
+ - Dice command
  - Level up notification
  - Join message
 
