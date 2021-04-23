@@ -127,7 +127,7 @@ def is_staff(user):
 def xp_from_name(ctx, name, index):
     member_id_str = str(ctx.guild.get_member_named(name).id)
     xp.ensure_user_data(member_id_str)
-    globals.config[member_id_str][index]
+    return globals.config[member_id_str][index]
 
 
 # Fuzzy string match for usernames
