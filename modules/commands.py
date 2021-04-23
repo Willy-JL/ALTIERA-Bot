@@ -56,7 +56,7 @@ class Commands(commands.Cog):
                                 description=f'Throws: {throws}{" (capped)" if throws_capped else ""}\n'
                                             f'Max: {max}{" (capped)" if max_capped else ""}\n'
                                             f'\n'
-                                            f'__**Result**__: __**`{str(result)}`**__ ( {", ".join(rolls)} )')
+                                            f'Result: __**{str(result)}**__ ( `{", ".join(rolls)}` )')
 
     @commands.command(aliases=["reputation", "giverep", "givereputation"])
     async def rep(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
