@@ -161,6 +161,6 @@ def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, 
 
 # Cleaner reply function
 async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None):
-    embed_to_send = custom_embed(ctx.guild, content=content, title=title, description=description, fields=fields, thumbnail=thumbnail, image=image)
+    embed_to_send = custom_embed(ctx.guild, title=title, description=description, fields=fields, thumbnail=thumbnail, image=image)
     await ctx.reply(content,
                     embed=embed_to_send)
