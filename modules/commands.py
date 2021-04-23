@@ -19,7 +19,7 @@ class Commands(commands.Cog):
 
     @commands.command(aliases=["diceroll", "rolldice", "roll"])
     async def dice(self, ctx, arg1: str = None, arg2: str = None):
-        if arg2 is not None:
+        if arg1 is not None:
             try:
                 max = int(arg1)
             except (ValueError, TypeError):
@@ -40,14 +40,20 @@ class Commands(commands.Cog):
         else:
             throws = 1
 
-        throws_capped = False
-        max_capped = False
+        throws_adjusted = False
+        max_adjusted = False
         if throws > 10:
             throws = 10
-            throws_capped = True
+            throws_adjusted = True
+        if throws < 1:
+            throws = 1
+            throws_adjusted = True
         if max > 100:
             max = 100
-            max_capped = True
+            max_adjusted = True
+        if max < 2:
+            max = 2
+            max_adjusted = True
 
         result = 0
         rolls = []
@@ -57,8 +63,8 @@ class Commands(commands.Cog):
             rolls.append(str(roll))
         await utils.embed_reply(ctx,
                                 title=f"🎲 Dice roll!",
-                                description=f'Throws: {throws}{" (capped)" if throws_capped else ""}\n'
-                                            f'Max: {max}{" (capped)" if max_capped else ""}\n'
+                                description=f'Throws: {throws}{" (adjusted)" if throws_adjusted else ""}\n'
+                                            f'Max: {max}{" (adjusted)" if max_adjusted else ""}\n'
                                             f'\n'
                                             f'Result:  __**{str(result)}**__ ( `{", ".join(rolls)}` )',
                                 add_timestamp=False)
