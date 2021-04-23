@@ -1,4 +1,3 @@
-import io
 import os
 import time
 import json
@@ -6,6 +5,7 @@ import asyncio
 import aiohttp
 import discord
 import datetime
+import requests
 from discord.ext import commands, tasks
 
 # Local imports
@@ -23,10 +23,12 @@ globals.CONTRIB_AMOUNT                    = int(os.environ["CONTRIB_AMOUNT"])   
 globals.CONTRIB_CHANNELS_IDS              = json.loads(os.environ["CONTRIB_CHANNELS_IDS"])              if os.environ.get("CONTRIB_CHANNELS_IDS")              else []
 globals.CONTRIB_COOLDOWN                  = int(os.environ["CONTRIB_COOLDOWN"])                         if os.environ.get("CONTRIB_COOLDOWN")                  else 3600
 globals.DISCORD_TOKEN                     = str(os.environ["DISCORD_TOKEN"])                            if os.environ.get("DISCORD_TOKEN")                     else ""
+globals.HEROKU_TOKEN                      = str(os.environ["HEROKU_TOKEN"])                             if os.environ.get("HEROKU_TOKEN")                      else ""
 globals.JOIN_LOG_CHANNEL_ID               = int(os.environ["JOIN_LOG_CHANNEL_ID"])                      if os.environ.get("JOIN_LOG_CHANNEL_ID")               else 0
 globals.LEVEL_NOTIF_CHANNEL_ID            = int(os.environ["LEVEL_NOTIF_CHANNEL_ID"])                   if os.environ.get("LEVEL_NOTIF_CHANNEL_ID")            else 0
 globals.MODDER_CATEGORY_IDS               = json.loads(os.environ["MODDER_CATEGORY_IDS"])               if os.environ.get("MODDER_CATEGORY_IDS")               else []
 globals.MODDER_ROLE_ID                    = int(os.environ["MODDER_ROLE_ID"])                           if os.environ.get("MODDER_ROLE_ID")                    else 0
+globals.REP_CRED_AMOUNT                   = int(os.environ["REP_CRED_AMOUNT"])                          if os.environ.get("REP_CRED_AMOUNT")                   else 500
 globals.ROLE_SELECT_CHANNEL_ID            = int(os.environ["ROLE_SELECT_CHANNEL_ID"])                   if os.environ.get("ROLE_SELECT_CHANNEL_ID")            else 0
 globals.RULES_CHANNEL_ID                  = int(os.environ["RULES_CHANNEL_ID"])                         if os.environ.get("RULES_CHANNEL_ID")                  else 0
 globals.STAFF_ROLE_ID                     = int(os.environ["STAFF_ROLE_ID"])                            if os.environ.get("STAFF_ROLE_ID")                     else 0
@@ -76,6 +78,13 @@ if __name__ == '__main__':
     async def on_ready():
         print(f'Logged in as {globals.bot.user}!')
         update_presence_loop.start()
+        if os.environ.get("DYNO"):
+            await asyncio.sleep(86369)
+            update_presence_loop.stop()
+            utils.save_config()
+            requests.delete(f'https://api.heroku.com/apps/altiera/dynos/{os.environ["DYNO"]}',
+                            headers={'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
+                                     'Accept': 'application/vnd.heroku+json; version=3'})
 
     # Ignore command not found errors
     @globals.bot.event
