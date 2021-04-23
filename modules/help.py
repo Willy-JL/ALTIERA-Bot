@@ -31,6 +31,8 @@ class Help(commands.Cog):
                                                 f"{globals.bot.command_prefix}**rep**: Gift a cool person some reputation (500 cred XP)\n"
                                                 f"{globals.bot.command_prefix}**daily**: Claim your daily reward (500 level XP)\n"
                                                 f"{globals.bot.command_prefix}**dice**: Roll some dice\n"
+                                                f"{globals.bot.command_prefix}**cookie**: Treat someone to a CyberCookie\n"
+                                                f"{globals.bot.command_prefix}**burrito**: Deliver someone a SpaceBurrito\n"
                                                 f"\n"
                                                 f"Lookup a command with `{globals.bot.command_prefix}help command` (the command goes without `{globals.bot.command_prefix}`)\n"
                                                 f"You can't add me to your server, but [the code is open-source!](https://github.com/Willy-JL/altiera-bot)")
@@ -123,6 +125,30 @@ class Help(commands.Cog):
                                             f"max: number of faces (aka max per dice), default 6 max 100 (optional)\n"
                                             f"\n"
                                             f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["diceroll", "rolldice", "roll"]]))
+
+    @help.command(name="cookie")
+    async def help_cookie(self, ctx):
+        await utils.embed_reply(ctx,
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}cookie",
+                                description=f"Treat someone to a CyberCookie\n"
+                                            f"Purely cosmetic, no rewards whatsoever\n"
+                                            f"\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}cookie [ user ]`\n"
+                                            f"user: the user to give a cookie to (ping, name, id) (optional)\n"
+                                            f"\n"
+                                            f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["cybcookie", "cybercookie"]]))
+
+    @help.command(name="burrito")
+    async def help_burrito(self, ctx):
+        await utils.embed_reply(ctx,
+                                title=f"⁉️ A.L.T.I.E.R.A. Help > {globals.bot.command_prefix}burrito",
+                                description=f"Deliver someone a SpaceBurrito\n"
+                                            f"Purely cosmetic, no rewards whatsoever\n"
+                                            f"\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}burrito [ user ]`\n"
+                                            f"user: the user to give a burrito to (ping, name, id) (optional)\n"
+                                            f"\n"
+                                            f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["spaceburrito", "galacticburrito"]]))
 
 
 def setup(bot):
