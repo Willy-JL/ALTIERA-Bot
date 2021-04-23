@@ -71,8 +71,9 @@ if __name__ == '__main__':
     # Create bot
     globals.bot = commands.Bot(globals.BOT_PREFIX, intents=intents)
     globals.bot.remove_command('help')
-    globals.bot.load_extension('modules.stats')
     globals.bot.load_extension('modules.commands')
+    globals.bot.load_extension('modules.help')
+    globals.bot.load_extension('modules.stats')
 
     # On ready, fires when fully connected to Discord
     @globals.bot.event
