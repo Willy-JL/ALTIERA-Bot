@@ -121,8 +121,10 @@ class Help(commands.Cog):
                                             f"\n"
                                             f"**Usage**: `{globals.bot.command_prefix}dice [ max ]`\n"
                                             f"**Usage**: `{globals.bot.command_prefix}dice [ throws ] [ max ]`\n"
+                                            f"**Usage**: `{globals.bot.command_prefix}dice [ throws ] [ max ] [ modifier ]`\n"
                                             f"throws: number of dice throws, default 1, max 10 (optional)\n"
                                             f"max: number of faces (aka max per dice), default 6 max 100 (optional)\n"
+                                            f"modifier: number to add or subtract from result, default 0, max +100/-100 (optional)"
                                             f"\n"
                                             f"Aliases: " + ", ".join([f"`{globals.bot.command_prefix}{alias}`" for alias in ["diceroll", "rolldice", "roll"]]))
 

@@ -18,7 +18,7 @@ class Commands(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["diceroll", "rolldice", "roll"])
-    async def dice(self, ctx, arg1: str = None, arg2: str = None):
+    async def dice(self, ctx, arg1: str = None, arg2: str = None, arg3: str = None):
         if arg1 is not None:
             try:
                 max = int(arg1)
@@ -40,8 +40,19 @@ class Commands(commands.Cog):
         else:
             throws = 1
 
+        if arg3 is not None:
+            try:
+                mod = int(arg3)
+            except (ValueError, TypeError):
+                await utils.embed_reply(ctx,
+                                        title=f"💢 Please provide valid numbers!")
+                return
+        else:
+            mod = 0
+
         throws_adjusted = False
         max_adjusted = False
+        mod_adjusted = False
         if throws > 10:
             throws = 10
             throws_adjusted = True
@@ -54,6 +65,12 @@ class Commands(commands.Cog):
         if max < 2:
             max = 2
             max_adjusted = True
+        if mod > 100:
+            mod = 100
+            mod_adjusted = True
+        if mod < -100:
+            mod = -100
+            mod_adjusted = True
 
         result = 0
         rolls = []
@@ -61,12 +78,14 @@ class Commands(commands.Cog):
             roll = random.randint(1, max)
             result += roll
             rolls.append(str(roll))
+        result += mod
         await utils.embed_reply(ctx,
                                 title=f"🎲 Dice roll!",
                                 description=f'Throws: {throws}{" (adjusted)" if throws_adjusted else ""}\n'
                                             f'Max: {max}{" (adjusted)" if max_adjusted else ""}\n'
+                                            f'Modifier: {mod:+}{" (adjusted)" if mod_adjusted else ""}\n'
                                             f'\n'
-                                            f'Result:  __**{str(result)}**__ ( `{", ".join(rolls)}` )',
+                                            f'Result:  __**{str(result)}**__ ( `{", ".join(rolls)}{f", {mod:+}" if mod != 0 else ""}` )',
                                 add_timestamp=False)
 
     @commands.command(aliases=["reputation", "giverep", "givereputation"])
