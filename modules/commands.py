@@ -9,7 +9,8 @@ import time
 from modules import globals, utils, xp
 
 
-rep_cooldown_users = set()
+rep_cooldown_users   = set()
+daily_cooldown_users = set()
 
 
 class Commands(commands.Cog):
@@ -97,13 +98,29 @@ class Commands(commands.Cog):
             await utils.embed_reply(ctx,
                                     content=f"<@!{target.id}>",
                                     title=f"💌 You got some reputation!",
-                                    description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred xp**!",
+                                    description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
                                     thumbnail="https://cdn.discordapp.com/emojis/766042961929699358.png")
         else:
             await utils.embed_reply(ctx,
                                     title=f"💢 You're on cooldown!",
                                     description=f"You can only use that command once every **24 hours**!\n"
                                                 f"You'll be able to use it again in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}**")
+
+    @commands.command(aliases=["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"])
+    async def daily(self, ctx):
+        if not str(ctx.author.id) in daily_cooldown_users:
+            xp.ensure_user_data(str(ctx.author.id))
+            globals.config[str(ctx.author.id)][0] += globals.DAILY_LEVEL_AMOUNT
+            daily_cooldown_users.add(str(ctx.author.id))
+            await utils.embed_reply(ctx,
+                                    title=f"📅 Daily reward claimed!",
+                                    description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!"
+                                                f"Come back in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}** for more!",
+                                    thumbnail=ctx.author.avatar_url)
+        else:
+            await utils.embed_reply(ctx,
+                                    title=f"💢 It's called \"daily\" for a reason!",
+                                    description=f"Come back in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}** for your next daily reward")
 
 
 def setup(bot):

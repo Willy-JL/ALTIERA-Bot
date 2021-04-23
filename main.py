@@ -21,6 +21,7 @@ globals.BOT_PREFIX                        = str(os.environ["BOT_PREFIX"])       
 globals.CONTRIB_AMOUNT                    = int(os.environ["CONTRIB_AMOUNT"])                           if os.environ.get("CONTRIB_AMOUNT")                    else 1000
 globals.CONTRIB_CHANNELS_IDS              = json.loads(os.environ["CONTRIB_CHANNELS_IDS"])              if os.environ.get("CONTRIB_CHANNELS_IDS")              else []
 globals.CONTRIB_COOLDOWN                  = int(os.environ["CONTRIB_COOLDOWN"])                         if os.environ.get("CONTRIB_COOLDOWN")                  else 3600
+globals.DAILY_LEVEL_AMOUNT                = int(os.environ["DAILY_LEVEL_AMOUNT"])                       if os.environ.get("DAILY_LEVEL_AMOUNT")                else 500
 globals.DISCORD_TOKEN                     = str(os.environ["DISCORD_TOKEN"])                            if os.environ.get("DISCORD_TOKEN")                     else ""
 globals.HEROKU_TOKEN                      = str(os.environ["HEROKU_TOKEN"])                             if os.environ.get("HEROKU_TOKEN")                      else ""
 globals.JOIN_LOG_CHANNEL_ID               = int(os.environ["JOIN_LOG_CHANNEL_ID"])                      if os.environ.get("JOIN_LOG_CHANNEL_ID")               else 0
