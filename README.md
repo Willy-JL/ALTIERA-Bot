@@ -7,7 +7,9 @@ Custom Discord bot for the Cyberpunk 2077 Modding Server
    - Cred
    - Assistance
  - Reputation command
+ - Daily reward
  - Dice command
+ - CyberCookie and SpaceBurrito commands
  - Level up notification
  - Join message
 
