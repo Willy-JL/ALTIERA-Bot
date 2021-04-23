@@ -1,6 +1,8 @@
 from fuzzywuzzy import process, fuzz
 from PIL import Image, ImageFont
 import requests
+import datetime
+import discord
 import atexit
 import json
 import time
@@ -138,3 +140,27 @@ def get_best_member_match(ctx, target):
     results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
     results.sort(key=lambda name: xp_from_name(ctx, name, 0), reverse=True)
     return ctx.guild.get_member_named(results[0])
+
+
+# Streamlined embeds
+def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, image=None):
+    embed_to_send = (discord.Embed(title=title,
+                                  description=description,
+                                  color=discord.Color(0xEDE400),
+                                  timestamp=datetime.datetime.utcnow())
+                                  .set_footer(text=guild.name,
+                                              icon_url=guild.icon_url))
+    if image:
+        embed_to_send.set_image(url=image)
+    elif thumbnail:
+        embed_to_send.set_thumbnail(url=thumbnail)
+    for field in fields:
+        embed_to_send.add_field(name=field[0], value=field[1], inline=field[2])
+    return embed_to_send
+
+
+# Cleaner reply function
+async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None):
+    embed_to_send = custom_embed(ctx.guild, content=content, title=title, description=description, fields=fields, thumbnail=thumbnail, image=image)
+    await ctx.reply(content,
+                    embed=embed_to_send)
