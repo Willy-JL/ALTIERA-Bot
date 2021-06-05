@@ -1,50 +1,65 @@
 from fuzzywuzzy import process, fuzz
 from PIL import Image, ImageFont
-import requests
 import datetime
 import discord
+import asqlite
+import aiohttp
 import atexit
+import base64
+import zlib
 import json
-import time
 import io
 
 # Local imports
-from modules import globals, xp
+from modules import db, globals, xp
 
 
-# Get config
-def get_config():
-    r = requests.post('https://write.as/api/auth/login',
-                      headers={
-                          'Content-Type': 'application/json'
-                      },
-                      data=json.dumps({
-                          "alias": globals.WRITE_AS_USER,
-                          "pass": globals.WRITE_AS_PASS
-                      }))
-    globals.write_as_token = json.loads(r.text)["data"]["access_token"]
-    globals.config = json.loads(requests.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt").text)
-    print("Fetched config!")
+# Get database
+async def get_db():
+    async with aiohttp.ClientSession() as client:
+        async with client.post('https://write.as/api/auth/login',
+                               headers={
+                                   'Content-Type': 'application/json'
+                               },
+                               data=json.dumps({
+                                   "alias": globals.WRITE_AS_USER,
+                                   "pass": globals.WRITE_AS_PASS
+                               })) as req:
+            globals.write_as_token = (await req.json())["data"]["access_token"]
+        async with client.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt") as req:
+            db_data = await req.text()
+        decoded = base64.b85decode(db_data.encode("utf-8"))
+        decompressed = zlib.decompress(decoded)
+        with open('db.sqlite3', 'wb') as f:
+            f.write(decompressed)
+        globals.db = await asqlite.connect("db.sqlite3")
+        print("Fetched database!")
 
 
-# Save config
+# Save database
 @atexit.register
-def save_config():
-    if globals.config is not None:
-        globals.config["time"] = time.time()
-        r = requests.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
-                          headers={
-                              'Authorization': f'Token {globals.write_as_token}',
-                              'Content-Type': 'application/json'
-                          },
-                          data=json.dumps({
-                              "body": json.dumps(globals.config),
-                              "font": "code"
-                          }))
-        if not r.ok:
-            print(f"Failed to save config! Code: {r.status_code}, Message: {r.text}")
-            return False
-        return True
+async def save_db():
+    if globals.db is not None:
+        await globals.db.commit()
+        with open('db.sqlite3', 'rb') as f:
+            raw = f.read()
+        compressed = zlib.compress(raw, zlib.Z_BEST_COMPRESSION)
+        encoded = base64.b85encode(compressed)
+        db_data = encoded.decode("utf-8")
+        async with aiohttp.ClientSession() as client:
+            async with client.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
+                                   headers={
+                                       'Authorization': f'Token {globals.write_as_token}',
+                                       'Content-Type': 'application/json'
+                                   },
+                                   data=json.dumps({
+                                       "body": db_data,
+                                       "font": "code"
+                                   })) as req:
+                if not req.ok:
+                    print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
+                    return False
+                return True
 
 
 # Setup persistent image components
@@ -86,10 +101,12 @@ def bytes_to_binary_object(bytes_arr):
 
 
 # Save link image into an image object for use with pillow
-def pil_img_from_link(link):
+async def pil_img_from_link(link):
     link = link[:link.rfind(".")] + ".png?size=256"
-    r = requests.get(link)
-    img = Image.open(bytes_to_binary_object(r.content))
+    async with aiohttp.ClientSession() as client:
+        async with client.get(link) as req:
+            img_bytes = await req.read()
+    img = Image.open(bytes_to_binary_object(img_bytes))
     return img
 
 
@@ -118,28 +135,41 @@ def get_bar_index_from_lvl_percent(percent):
     return int(str(percent // 10**2 % 10) + str(percent // 10**1 % 10))
 
 
-# Check for staff role
+# Check if user has role id
+def user_has_role(user, role_id):
+    return role_id in [role.id for role in user.roles]
+
+
+# Check if user has a role id
+def user_has_a_role(user, roles):
+    for role in user.roles:
+        if role.id in roles:
+            return True
+    return False
+
+
+# Check if user is staff
 def is_staff(user):
-    return globals.STAFF_ROLE_ID in [role.id for role in user.roles]
+    return user_has_a_role(user, globals.STAFF_ROLE_IDS)
 
 
 # Find member, ensure xp and return value
-def xp_from_name(ctx, name, index):
-    member_id_str = str(ctx.guild.get_member_named(name).id)
-    xp.ensure_user_data(member_id_str)
-    return globals.config[member_id_str][index]
+async def xp_from_name(ctx, name, type):
+    member_id = ctx.guild.get_member_named(name).id
+    return (await db.get_user_xp(member_id))[type]
 
 
 # Fuzzy string match for usernames
-def get_best_member_match(ctx, target):
+async def get_best_member_match(ctx, target):
     name_list = []
     for user in ctx.guild.members:
         name_list.append(user.name)
         if user.nick:
             name_list.append(user.nick)
     results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-    results.sort(key=lambda name: xp_from_name(ctx, name, 0), reverse=True)
-    return ctx.guild.get_member_named(results[0])
+    sort_helper = [(await xp_from_name(ctx, name, 0), name) for name in results]
+    sort_helper.sort(key=lambda item: item[0], reverse=True)
+    return ctx.guild.get_member_named(sort_helper[0][1])
 
 
 # Streamlined embeds

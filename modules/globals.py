@@ -1,6 +1,6 @@
 # System stuff
 bot = None
-config = None
+db = None
 loop = None
 cur_presence = None
 write_as_token = None
@@ -9,7 +9,7 @@ start_timestamp = None
 
 # User configurable vars, Heroku's "Config Vars" are suggested
 ADMIN_ID = None
-ASSISTANCE_CATEGORY_ID = None
+ASSISTANCE_CATEGORY_IDS = None
 BLACKLISTED_CHANNELS_IDS = None
 BOT_PREFIX = None
 CONTRIB_AMOUNT = None
@@ -18,14 +18,12 @@ CONTRIB_COOLDOWN = None
 DAILY_LEVEL_AMOUNT = None
 DISCORD_TOKEN = None
 HEROKU_TOKEN = None
-JOIN_LOG_CHANNEL_ID = None
-LEVEL_NOTIF_CHANNEL_ID = None
+JOIN_LOG_CHANNEL_IDS = None
+LEVEL_NOTIF_CHANNEL_IDS = None
 MODDER_CATEGORY_IDS = None
-MODDER_ROLE_ID = None
+MODDER_ROLE_IDS = None
 REP_CRED_AMOUNT = None
-ROLE_SELECT_CHANNEL_ID = None
-RULES_CHANNEL_ID = None
-STAFF_ROLE_ID = None
+STAFF_ROLE_IDS = None
 TROPHY_ROLES = None
 WRITE_AS_PASS = None
 WRITE_AS_POST_ID = None

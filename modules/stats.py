@@ -7,7 +7,7 @@ import math
 import io
 
 # Local imports
-from modules import globals, utils, xp
+from modules import db, globals, utils, xp
 
 
 class Stats(commands.Cog):
@@ -22,7 +22,7 @@ class Stats(commands.Cog):
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
-            target = utils.get_best_member_match(ctx, target)
+            target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):
@@ -38,10 +38,10 @@ class Stats(commands.Cog):
 
         # Actual command
 
-        xp.ensure_user_data(str(target.id))
-        level =  xp.xp_to_lvl(globals.config[str(target.id)][0])
-        cred =   xp.xp_to_lvl(globals.config[str(target.id)][1])
-        assist = xp.xp_to_lvl(globals.config[str(target.id)][2])
+        xp_data = await db.get_user_xp(target.id)
+        level =  xp.xp_to_lvl(xp_data[0])
+        cred =   xp.xp_to_lvl(xp_data[1])
+        assist = xp.xp_to_lvl(xp_data[2])
         level_next =  math.floor((level[2]  - level[1] ) * 100 / level[2] )
         cred_next =   math.floor((cred[2]   - cred[1]  ) * 100 / cred[2]  )
         assist_next = math.floor((assist[2] - assist[1]) * 100 / assist[2])
@@ -121,7 +121,7 @@ class Stats(commands.Cog):
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
-            target = utils.get_best_member_match(ctx, target)
+            target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):
@@ -136,13 +136,13 @@ class Stats(commands.Cog):
             return
 
         # Actual command
-        xp.ensure_user_data(str(target.id))
+        xp_data = await db.get_user_xp(target.id)
         await utils.embed_reply(ctx,
                                 title=f"🔥 {target.name}'s XP:",
                                 fields=[
-                                    ["Level",      f"{globals.config[str(target.id)][0]}", True],
-                                    ["Cred",       f"{globals.config[str(target.id)][1]}", True],
-                                    ["Assistance", f"{globals.config[str(target.id)][2]}", True]
+                                    ["Level",      f"{xp_data[0]}", True],
+                                    ["Cred",       f"{xp_data[1]}", True],
+                                    ["Assistance", f"{xp_data[2]}", True]
                                 ],
                                 thumbnail=target.avatar_url)
 
@@ -157,21 +157,18 @@ class Stats(commands.Cog):
 
     @top.command(name="level")
     async def top_level(self, ctx):
-        uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
-        uids.sort(key=lambda x: globals.config[x][0], reverse=True)
-        uids = uids[:10]
+        top_users = await db.get_top_users(10, "level")
         max_line_length = 34
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Server Level XP:"))]) + "Server Level XP:")
-        for i, uid in enumerate(uids):
-            user = globals.bot.get_user(int(uid))
+        for i, row in enumerate(top_users):
+            user = globals.bot.get_user(row[0])
             if user:
                 name = str(user.name)
             else:
-                name = uid
-            xp = globals.config[uid][0]
+                name = row[0]
             # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
+            line = (name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "..."))-len(str(row[1])))]) + str(row[1])
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Level Leaderboard:",
@@ -179,21 +176,18 @@ class Stats(commands.Cog):
 
     @top.command(name="cred")
     async def top_cred(self, ctx):
-        uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
-        uids.sort(key=lambda x: globals.config[x][1], reverse=True)
-        uids = uids[:10]
+        top_users = await db.get_top_users(10, "cred")
         max_line_length = 34
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
-        for i, uid in enumerate(uids):
-            user = globals.bot.get_user(int(uid))
+        for i, row in enumerate(top_users):
+            user = globals.bot.get_user(row[0])
             if user:
                 name = str(user.name)
             else:
-                name = uid
-            xp = globals.config[uid][1]
+                name = row[0]
             # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
+            line = (name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "..."))-len(str(row[1])))]) + str(row[1])
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Cred Leaderboard:",
@@ -201,21 +195,18 @@ class Stats(commands.Cog):
 
     @top.command(name="assistance", aliases=["assist"])
     async def top_assistance(self, ctx):
-        uids = [uid for uid in globals.config if isinstance(globals.config[uid], list) and len(globals.config[uid]) == 3]
-        uids.sort(key=lambda x: globals.config[x][2], reverse=True)
-        uids = uids[:10]
+        top_users = await db.get_top_users(10, "assistance")
         max_line_length = 34
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Assistance XP:"))]) + "Assistance XP:")
-        for i, uid in enumerate(uids):
-            user = globals.bot.get_user(int(uid))
+        for i, row in enumerate(top_users):
+            user = globals.bot.get_user(row[0])
             if user:
                 name = str(user.name)
             else:
-                name = uid
-            xp = globals.config[uid][2]
+                name = row[0]
             # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(xp))+1)) else name[:(max_line_length-(len(str(xp))+1))-3] + "..."))-len(str(xp)))]) + str(xp)
+            line = (name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "..."))-len(str(row[1])))]) + str(row[1])
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Assistance Leaderboard:",
@@ -224,15 +215,13 @@ class Stats(commands.Cog):
     @commands.command(aliases=["backup"])
     async def save(self, ctx):
         if utils.is_staff(ctx.author):
-            if not utils.save_config():
+            if not await utils.save_db():
                 await utils.embed_reply(ctx,
                                         title=f"💢 Failed to save remote config!")
             else:
                 await ctx.message.add_reaction('👌')
-            binary = utils.bytes_to_binary_object(json.dumps(globals.config).encode())
-            await ctx.reply(file=discord.File(binary, filename="backup.json"))
-            binary.seek(0)
-            await ctx.author.send(file=discord.File(binary, filename="backup.json"))
+            await ctx.reply(file=discord.File('db.sqlite3'))
+            await ctx.author.send(file=discord.File('db.sqlite3'))
 
     @commands.group()
     async def gibxp(self, ctx):
@@ -250,7 +239,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                target = utils.get_best_member_match(ctx, target)
+                target = await utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -264,12 +253,9 @@ class Stats(commands.Cog):
                                         title=f"💢 That is not a valid user!")
                 return
             # Actual command
-            xp.ensure_user_data(str(target.id))
-            globals.config[str(target.id)][0] += amount
-            if globals.config[str(target.id)][0] < 0:
-                globals.config[str(target.id)][0] = 0
+            xp_data = await db.add_user_xp(target.id, level=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Gave <@!{target.id}> {amount} level XP!" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!")
+                                    description=(f"👌 Gave {amount} level XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!") + f"\nNew level XP value: `{xp_data[0]}`")
 
     @gibxp.command(name="cred")
     async def gibxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -282,7 +268,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                target = utils.get_best_member_match(ctx, target)
+                target = await utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -296,12 +282,9 @@ class Stats(commands.Cog):
                                         title=f"💢 That is not a valid user!")
                 return
             # Actual command
-            xp.ensure_user_data(str(target.id))
-            globals.config[str(target.id)][1] += amount
-            if globals.config[str(target.id)][1] < 0:
-                globals.config[str(target.id)][1] = 0
+            xp_data = await db.add_user_xp(target.id, cred=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Gave <@!{target.id}> {amount} cred XP!" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!")
+                                    description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!") + f"\nNew cred XP value: `{xp_data[1]}`")
 
     @gibxp.command(name="assistance", aliases=["assist"])
     async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -314,7 +297,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                target = utils.get_best_member_match(ctx, target)
+                target = await utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -328,12 +311,9 @@ class Stats(commands.Cog):
                                         title=f"💢 That is not a valid user!")
                 return
             # Actual command
-            xp.ensure_user_data(str(target.id))
-            globals.config[str(target.id)][2] += amount
-            if globals.config[str(target.id)][2] < 0:
-                globals.config[str(target.id)][2] = 0
+            xp_data = await db.add_user_xp(target.id, assistance=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Gave <@!{target.id}> {amount} assistance XP!" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!")
+                                    description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!") + f"\nNew assistance XP value: `{xp_data[2]}`")
 
     @commands.group()
     async def setxp(self, ctx):
@@ -351,7 +331,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                target = utils.get_best_member_match(ctx, target)
+                target = await utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -365,11 +345,9 @@ class Stats(commands.Cog):
                                         title=f"💢 That is not a valid user!")
                 return
             # Actual command
-            xp.ensure_user_data(str(target.id))
-            amount = abs(amount)
-            globals.config[str(target.id)][0] = amount
+            xp_data = await db.set_user_xp(target.id, level=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s level XP to {amount}!")
+                                    description=f"👌 Set <@!{target.id}>'s level XP to {xp_data[0]}!")
 
     @setxp.command(name="cred")
     async def setxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -382,7 +360,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                target = utils.get_best_member_match(ctx, target)
+                target = await utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -396,11 +374,9 @@ class Stats(commands.Cog):
                                         title=f"💢 That is not a valid user!")
                 return
             # Actual command
-            xp.ensure_user_data(str(target.id))
-            amount = abs(amount)
-            globals.config[str(target.id)][1] = amount
+            xp_data = await db.set_user_xp(target.id, cred=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s cred XP to {amount}!")
+                                    description=f"👌 Set <@!{target.id}>'s cred XP to {xp_data[1]}!")
 
     @setxp.command(name="assistance", aliases=["assist"])
     async def setxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -413,7 +389,7 @@ class Stats(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                target = utils.get_best_member_match(ctx, target)
+                target = await utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -427,11 +403,9 @@ class Stats(commands.Cog):
                                         title=f"💢 That is not a valid user!")
                 return
             # Actual command
-            xp.ensure_user_data(str(target.id))
-            amount = abs(amount)
-            globals.config[str(target.id)][2] = amount
+            xp_data = await db.set_user_xp(target.id, assistance=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s assistance XP to {amount}!")
+                                    description=f"👌 Set <@!{target.id}>'s assistance XP to {xp_data[2]}!")
 
 
 def setup(bot):

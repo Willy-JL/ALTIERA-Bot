@@ -58,7 +58,7 @@ class Help(commands.Cog):
                                 description=f"See your server stats (level, cred, assistance)\n"
                                             f"You earn level from chatting anywhere (except in bot commands channels)\n"
                                             f"Cred is only earned by users with modder role and only in modding channels\n"
-                                            f"Assistance XP is generated in the hospital channels, everyone earns, modders earn 2x\n"
+                                            f"Assistance XP is generated in the hospital and support channels, everyone earns, modders earn 2x\n"
                                             f"There are cooldowns, spamming won't get you far\n"
                                             f"\n"
                                             f"**Usage**: `{globals.bot.command_prefix}stats [ user ]`\n"

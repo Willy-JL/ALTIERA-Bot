@@ -6,7 +6,7 @@ import random
 import time
 
 # Local imports
-from modules import globals, utils, xp
+from modules import db, globals, utils
 
 
 rep_cooldown_users   = set()
@@ -99,7 +99,7 @@ class Commands(commands.Cog):
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
             elif isinstance(target, str):
-                target = utils.get_best_member_match(ctx, target)
+                target = await utils.get_best_member_match(ctx, target)
             elif isinstance(target, discord.User):
                 target = ctx.guild.get_member(target.id)
             elif isinstance(target, discord.Member):
@@ -117,8 +117,7 @@ class Commands(commands.Cog):
                                         title=f"💢 Thats low even by your standards...")
                 return
             # Actual command
-            xp.ensure_user_data(str(target.id))
-            globals.config[str(target.id)][1] += globals.REP_CRED_AMOUNT
+            await db.add_user_xp(target.id, cred=globals.REP_CRED_AMOUNT)
             rep_cooldown_users.add(str(ctx.author.id))
             await utils.embed_reply(ctx,
                                     content=f"<@!{target.id}>",
@@ -134,8 +133,7 @@ class Commands(commands.Cog):
     @commands.command(aliases=["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"])
     async def daily(self, ctx):
         if not str(ctx.author.id) in daily_cooldown_users:
-            xp.ensure_user_data(str(ctx.author.id))
-            globals.config[str(ctx.author.id)][0] += globals.DAILY_LEVEL_AMOUNT
+            await db.add_user_xp(ctx.author.id, level=globals.DAILY_LEVEL_AMOUNT)
             daily_cooldown_users.add(str(ctx.author.id))
             await utils.embed_reply(ctx,
                                     title=f"📅 Daily reward claimed!",
@@ -155,7 +153,7 @@ class Commands(commands.Cog):
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
-            target = utils.get_best_member_match(ctx, target)
+            target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):
@@ -192,7 +190,7 @@ class Commands(commands.Cog):
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
-            target = utils.get_best_member_match(ctx, target)
+            target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
         elif isinstance(target, discord.Member):
