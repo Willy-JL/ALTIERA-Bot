@@ -1,5 +1,5 @@
 # A.L.T.I.E.R.A. Bot
-Custom Discord bot for the Cyberpunk 2077 Modding Server
+Custom Discord bot for the Cyberpunk 2077 Modding Servers
 
 ## Features:
  - Leveling system for:
@@ -14,9 +14,7 @@ Custom Discord bot for the Cyberpunk 2077 Modding Server
  - Join message
 
 ## To Do:
- - Customizable stats card
- - Staff only commands:
-   - Restore backup config
+ - Mod requests system
 
 ## Credits:
 SilverEzredes#4826 for the amazing image assets
