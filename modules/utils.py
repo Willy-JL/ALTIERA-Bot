@@ -150,7 +150,7 @@ def user_has_a_role(user, roles):
 
 # Check if user is staff
 def is_staff(user):
-    return user_has_a_role(user, globals.STAFF_ROLE_IDS)
+    return user.id == globals.ADMIN_ID or user_has_a_role(user, globals.STAFF_ROLE_IDS)
 
 
 # Find member, ensure xp and return value
