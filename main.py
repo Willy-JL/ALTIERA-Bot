@@ -38,14 +38,14 @@ globals.XP_AMOUNT                         = int(os.environ["XP_AMOUNT"])        
 globals.XP_COOLDOWN                       = int(os.environ["XP_COOLDOWN"])                              if os.environ.get("XP_COOLDOWN")                       else 30
 
 
-# Main script
-async def main():
+# Only start bot if running as main and not import
+if __name__ == '__main__':
 
     # Make persistent image components
     utils.setup_persistent_components()
 
     # Fetch database
-    await utils.get_db()
+    globals.loop.run_until_complete(utils.get_db())
 
     # Periodically save database
     async def database_loop():
@@ -139,26 +139,21 @@ async def main():
     # Actually run the bot
     while True:
         try:
-            await globals.bot.start(globals.DISCORD_TOKEN)
+            globals.loop.run_until_complete(globals.bot.start(globals.DISCORD_TOKEN))
         except discord.LoginFailure:
             # Invalid token
             print("BAD TOKEN!")
-            await globals.bot.http.close()
+            globals.loop.run_until_complete(globals.bot.http.close())
             break
         except aiohttp.ClientConnectorError:
             # Connection to Discord failed
             print("CONNECTION ERROR! Sleeping 60 seconds...")
-            await globals.bot.http.close()
+            globals.loop.run_until_complete(globals.bot.http.close())
             time.sleep(60)
             continue
         except KeyboardInterrupt:
             print("INTERRUPTED BY USER! Exiting...")
-            await globals.bot.close()
+            globals.loop.run_until_complete(globals.bot.close())
             break
-        await globals.bot.http.close()
+        globals.loop.run_until_complete(globals.bot.http.close())
         time.sleep(10)
-
-
-# Only start bot if running as main and not import
-if __name__ == '__main__':
-    asyncio.run(main())
