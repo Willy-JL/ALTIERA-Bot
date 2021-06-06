@@ -1,7 +1,16 @@
 from modules import globals
 
 
-async def get_user_xp(user_id):
+async def ensure_user_data(user_id):
+    await globals.db.execute('''
+                                 INSERT INTO stats
+                                 (id, level, cred, assistance)
+                                 VALUES (?, 0, 0, 0)
+                                 ON CONFLICT DO NOTHING
+                             ''', (user_id))
+
+
+async def get_user_xp(user_id, ensure=True):
     # cur = await globals.db.execute('''
     #                                    INSERT INTO stats
     #                                    (id, level, cred, assistance)
@@ -11,12 +20,8 @@ async def get_user_xp(user_id):
     #                                        WHERE id=?
     #                                    RETURNING level, cred, assistance
     #                                ''', (user_id, user_id))
-    cur = await globals.db.execute('''
-                                       INSERT INTO stats
-                                       (id, level, cred, assistance)
-                                       VALUES (?, 0, 0, 0)
-                                       ON CONFLICT DO NOTHING
-                                   ''', (user_id))
+    if ensure:
+        await ensure_user_data(user_id)
     cur = await globals.db.execute('''
                                        SELECT level, cred, assistance
                                        FROM stats
@@ -26,6 +31,25 @@ async def get_user_xp(user_id):
 
 
 async def add_user_xp(user_id, level=0, cred=0, assistance=0):
+    # cur = await globals.db.execute('''
+    #                                    UPDATE stats
+    #                                    SET
+    #                                        level = CASE
+    #                                            WHEN level + ? < 0 THEN 0
+    #                                            ELSE level + ?
+    #                                        END,
+    #                                        cred = CASE
+    #                                            WHEN cred + ? < 0 THEN 0
+    #                                            ELSE cred + ?
+    #                                        END,
+    #                                        assistance = CASE
+    #                                            WHEN assistance + ? < 0 THEN 0
+    #                                            ELSE assistance + ?
+    #                                        END
+    #                                    WHERE id=?
+    #                                    RETURNING level, cred, assistance
+    #                                ''', (level, level, cred, cred, assistance, assistance, user_id))
+    await ensure_user_data(user_id)
     cur = await globals.db.execute('''
                                        UPDATE stats
                                        SET
@@ -42,12 +66,34 @@ async def add_user_xp(user_id, level=0, cred=0, assistance=0):
                                                ELSE assistance + ?
                                            END
                                        WHERE id=?
-                                       RETURNING level, cred, assistance
                                    ''', (level, level, cred, cred, assistance, assistance, user_id))
-    return list(await cur.fetchone())
+    # return list(await cur.fetchone())
+    return get_user_xp(user_id, ensure=False)
 
 
 async def set_user_xp(user_id, level=None, cred=None, assistance=None):
+    # cur = await globals.db.execute('''
+    #                                    UPDATE stats
+    #                                    SET
+    #                                        level = CASE
+    #                                            WHEN ? IS NULL THEN level
+    #                                            WHEN ? < 0 THEN 0
+    #                                            ELSE ?
+    #                                        END,
+    #                                        cred = CASE
+    #                                            WHEN ? IS NULL THEN cred
+    #                                            WHEN ? < 0 THEN 0
+    #                                            ELSE ?
+    #                                        END,
+    #                                        assistance = CASE
+    #                                            WHEN ? IS NULL THEN assistance
+    #                                            WHEN ? < 0 THEN 0
+    #                                            ELSE ?
+    #                                        END
+    #                                    WHERE id=?
+    #                                    RETURNING level, cred, assistance
+    #                                ''', (level, level, level, cred, cred, cred, assistance, assistance, assistance, user_id))
+    await ensure_user_data(user_id)
     cur = await globals.db.execute('''
                                        UPDATE stats
                                        SET
@@ -67,9 +113,9 @@ async def set_user_xp(user_id, level=None, cred=None, assistance=None):
                                                ELSE ?
                                            END
                                        WHERE id=?
-                                       RETURNING level, cred, assistance
                                    ''', (level, level, level, cred, cred, cred, assistance, assistance, assistance, user_id))
-    return list(await cur.fetchone())
+    # return list(await cur.fetchone())
+    return get_user_xp(user_id, ensure=False)
 
 
 async def get_top_users(limit, sort_by):
