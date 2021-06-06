@@ -68,7 +68,7 @@ async def add_user_xp(user_id, level=0, cred=0, assistance=0):
                                        WHERE id=?
                                    ''', (level, level, cred, cred, assistance, assistance, user_id))
     # return list(await cur.fetchone())
-    return get_user_xp(user_id, ensure=False)
+    return await get_user_xp(user_id, ensure=False)
 
 
 async def set_user_xp(user_id, level=None, cred=None, assistance=None):
@@ -115,7 +115,7 @@ async def set_user_xp(user_id, level=None, cred=None, assistance=None):
                                        WHERE id=?
                                    ''', (level, level, level, cred, cred, cred, assistance, assistance, assistance, user_id))
     # return list(await cur.fetchone())
-    return get_user_xp(user_id, ensure=False)
+    return await get_user_xp(user_id, ensure=False)
 
 
 async def get_top_users(limit, sort_by):
