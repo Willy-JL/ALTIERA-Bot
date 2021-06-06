@@ -2,15 +2,26 @@ from modules import globals
 
 
 async def get_user_xp(user_id):
+    # cur = await globals.db.execute('''
+    #                                    INSERT INTO stats
+    #                                    (id, level, cred, assistance)
+    #                                    VALUES (?, 0, 0, 0)
+    #                                    ON CONFLICT DO
+    #                                        UPDATE SET id=id
+    #                                        WHERE id=?
+    #                                    RETURNING level, cred, assistance
+    #                                ''', (user_id, user_id))
     cur = await globals.db.execute('''
                                        INSERT INTO stats
                                        (id, level, cred, assistance)
                                        VALUES (?, 0, 0, 0)
-                                       ON CONFLICT DO
-                                           UPDATE SET id=id
-                                           WHERE id=?
-                                       RETURNING level, cred, assistance
-                                   ''', (user_id, user_id))
+                                       ON CONFLICT DO NOTHING
+                                   ''', (user_id))
+    cur = await globals.db.execute('''
+                                       SELECT level, cred, assistance
+                                       FROM stats
+                                       WHERE id=?
+                                   ''', (user_id))
     return list(await cur.fetchone())
 
 

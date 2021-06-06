@@ -6,8 +6,6 @@ import json
 import time
 import os
 
-import sqlite3
-print(sqlite3.sqlite_version)
 
 # Local imports
 from modules import utils, globals, xp
