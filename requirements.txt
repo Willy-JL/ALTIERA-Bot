@@ -1,4 +1,5 @@
 Pillow
+jishaku
 discord.py
 fuzzywuzzy[speedup]
 git+https://github.com/Rapptz/asqlite@master
