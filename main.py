@@ -96,6 +96,11 @@ if __name__ == '__main__':
     async def on_command_error(ctx, error):
         if isinstance(error, commands.errors.CommandNotFound):
             return
+        if isinstance(error, commands.errors.NotOwner):
+            await utils.embed_reply(ctx,
+                                    title=f"💢 Yea, that's not happening buddy!",
+                                    thumbnail="https://cdn.discordapp.com/emojis/778028443417313290.png")
+            return
         raise error
 
     # Greet user when they join
