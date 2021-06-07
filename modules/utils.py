@@ -11,7 +11,7 @@ import json
 import io
 
 # Local imports
-from modules import db, globals, xp
+from modules import db, globals
 
 
 # Get database
@@ -33,6 +33,7 @@ async def get_db():
         with open('db.sqlite3', 'wb') as f:
             f.write(decompressed)
         globals.db = await asqlite.connect("db.sqlite3")
+        await db.init_db()
         print("Fetched database!")
 
 

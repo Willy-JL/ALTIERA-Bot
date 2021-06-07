@@ -1,6 +1,17 @@
 from modules import globals
 
 
+async def init_db():
+    await globals.db.execute("""
+                                 CREATE TABLE IF NOT EXISTS stats (
+                                     id         INTEGER PRIMARY KEY,
+                                     level      INTEGER DEFAULT 0,
+                                     cred       INTEGER DEFAULT 0,
+                                     assistance INTEGER DEFAULT 0
+                                 )
+                             """)
+
+
 async def ensure_user_data(user_id):
     await globals.db.execute('''
                                  INSERT INTO stats
