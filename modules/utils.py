@@ -189,7 +189,7 @@ def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, 
                                                 icon_url=guild.icon_url))
     if image:
         embed_to_send.set_image(url=image)
-    elif thumbnail:
+    if thumbnail:
         embed_to_send.set_thumbnail(url=thumbnail)
     for field in fields:
         embed_to_send.add_field(name=field[0], value=field[1], inline=field[2])
