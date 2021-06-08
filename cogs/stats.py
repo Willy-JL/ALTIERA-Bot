@@ -2,7 +2,6 @@ from PIL import Image, ImageDraw
 from discord.ext import commands
 from typing import Union
 import discord
-import json
 import math
 import io
 
@@ -168,7 +167,7 @@ class Stats(commands.Cog):
             else:
                 name = row["id"]
             # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(row["level"]))+1)) else name[:(max_line_length-(len(str(row["level"]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row["level"]))+1)) else name[:(max_line_length-(len(str(row["level"]))+1))-3] + "..."))-len(str(row["level"])))]) + str(row[1])
+            line = (name if len(name) <= (max_line_length-(len(str(row["level"]))+1)) else name[:(max_line_length-(len(str(row["level"]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row["level"]))+1)) else name[:(max_line_length-(len(str(row["level"]))+1))-3] + "..."))-len(str(row["level"])))]) + str(row["level"])
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Level Leaderboard:",
