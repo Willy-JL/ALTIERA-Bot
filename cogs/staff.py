@@ -26,14 +26,14 @@ class Staff(commands.Cog,
             await ctx.reply(file=discord.File('db.sqlite3'))
             await ctx.author.send(file=discord.File('db.sqlite3'))
 
-    @commands.command(name=            "gibxp",
-                      description=     "Give a user some xp",
-                      usage=           "{prfx}gibxp [ type ] [ user ] [ amount ]",
-                      help=            "type: either level, cred or assist (required)\n"
-                                       "user: the user to give xp to (ping, name, id) (required)\n"
-                                       "amount: how much xp to give (can be negative) (required)",
-                      aliases=         ["givexp"],
-                      case_insensitive=True)
+    @commands.group(name=            "gibxp",
+                    description=     "Give a user some xp",
+                    usage=           "{prfx}gibxp [ type ] [ user ] [ amount ]",
+                    help=            "type: either level, cred or assist (required)\n"
+                                     "user: the user to give xp to (ping, name, id) (required)\n"
+                                     "amount: how much xp to give (can be negative) (required)",
+                    aliases=         ["givexp"],
+                    case_insensitive=True)
     async def gibxp(self, ctx):
         if ctx.invoked_subcommand is None:
             pass
@@ -128,15 +128,14 @@ class Staff(commands.Cog,
             await utils.embed_reply(ctx,
                                     description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!") + f"\nNew assistance XP value: `{xp_data['assistance']}`")
 
-    @commands.group(case_insensitive=True)
-    @commands.command(name=            "setxp",
-                      description=     "Change a user's xp value",
-                      usage=           "{prfx}setxp [ type ] [ user ] [ amount ]",
-                      help=            "type: either level, cred or assist (required)\n"
-                                       "user: the user to change the xp of (ping, name, id) (required)\n"
-                                       "amount: new xp value (negative will set 0) (required)",
-                      aliases=         ["changexp"],
-                      case_insensitive=True)
+    @commands.group(name=            "setxp",
+                    description=     "Change a user's xp value",
+                    usage=           "{prfx}setxp [ type ] [ user ] [ amount ]",
+                    help=            "type: either level, cred or assist (required)\n"
+                                     "user: the user to change the xp of (ping, name, id) (required)\n"
+                                     "amount: new xp value (negative will set 0) (required)",
+                    aliases=         ["changexp"],
+                    case_insensitive=True)
     async def setxp(self, ctx):
         if ctx.invoked_subcommand is None:
             pass
