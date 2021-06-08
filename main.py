@@ -68,9 +68,11 @@ if __name__ == '__main__':
     # Create bot
     globals.bot = commands.Bot(globals.BOT_PREFIX, intents=intents, case_insensitive=True)
     globals.bot.remove_command('help')
-    for filename in os.listdir('./cogs'):
-        if filename.endswith('.py'):
-            globals.bot.load_extension(f'cogs.{filename[:-3]}')
+    globals.bot.load_extension('cogs.bot')
+    globals.bot.load_extension('cogs.fun')
+    globals.bot.load_extension('cogs.levelling')
+    globals.bot.load_extension('cogs.staff')
+    globals.bot.load_extension('cogs.utilities')
     globals.bot.load_extension('jishaku')
 
     # On ready, fires when fully connected to Discord
