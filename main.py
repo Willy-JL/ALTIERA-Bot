@@ -8,7 +8,7 @@ import os
 
 
 # Local imports
-from modules import utils, globals, xp
+from modules import globals, utils, xp
 
 # Setup globals
 globals.loop = asyncio.get_event_loop()

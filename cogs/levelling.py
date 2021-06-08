@@ -1,19 +1,37 @@
 from PIL import Image, ImageDraw
 from discord.ext import commands
 from typing import Union
+import datetime
 import discord
 import math
+import time
 import io
 
 # Local imports
 from modules import db, globals, utils, xp
 
 
-class Stats(commands.Cog):
+rep_cooldown_users   = set()
+daily_cooldown_users = set()
+
+
+class Levelling(commands.Cog,
+                description="Everything to do with levels and XP\n"
+                            "There are 3 types of XP: level, cred and assistance\n"
+                            "You earn level from chatting anywhere (except in bot commands channels)\n"
+                            "Cred is only earned by users with modder role and only in modding channels\n"
+                            "Assistance XP is generated in the hospital and support channels, everyone earns, modders earn 2x\n"
+                            "There are cooldowns, spamming won't get you far\n"
+                            "LVL1 = 1000XP, LVL2 = 2000XP, LVL3 = 3000XP, LVL4 = 4000XP and so on...\n"
+                            "You can use `a/rep` and `a/daily` once every 24 hours (or sooner if the bot restarts)"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=["levels", "level", "cred", "assistance", "assist"])
+    @commands.command(name=       "stats",
+                      description="See your server stats (level, cred, assistance)",
+                      usage=      "{prfx}stats [ user ]",
+                      help=       "user: the user to check stats for (ping, name, id) (optional)",
+                      aliases=    ["levels", "level", "cred", "assistance", "assist"])
     async def stats(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
@@ -112,7 +130,11 @@ class Stats(commands.Cog):
         binary.seek(0)
         await ctx.reply(file=discord.File(binary, filename=username[:16] + ".png"))
 
-    @commands.command(aliases=["xpamount", "levelxp", "credxp", "assistancexp", "assistxp"])
+    @commands.command(name=       "xp",
+                      description="See your XP amounts (levels depend on XP amount)",
+                      usage=      "{prfx}xp [ user ]",
+                      help=       "user: the user to check xp amounts for (ping, name, id) (optional)",
+                      aliases=    ["xpamount", "levelxp", "credxp", "assistancexp", "assistxp"])
     async def xp(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
@@ -145,7 +167,12 @@ class Stats(commands.Cog):
                                 ],
                                 thumbnail=target.avatar_url)
 
-    @commands.group(aliases=["top10", "leaderboard", "ranking"], case_insensitive=True)
+    @commands.group(name=              "top",
+                      description=     "List top ten users per XP type",
+                      usage=           "{prfx}top [ type ]",
+                      help=            "type: either level, cred or assist (required)",
+                      aliases=         ["top10", "leaderboard", "ranking"],
+                      case_insensitive=True)
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
             await utils.embed_reply(ctx,
@@ -154,7 +181,8 @@ class Stats(commands.Cog):
                                                 f"{globals.bot.command_prefix}top **cred**: Top 10 members for Server Cred\n"
                                                 f"{globals.bot.command_prefix}top **assistance**: Top 10 member for Assistance")
 
-    @top.command(name="level")
+    @top.command(name=   "level",
+                 aliases=[])
     async def top_level(self, ctx):
         top_users = await db.get_top_users(10, "level")
         max_line_length = 34
@@ -173,7 +201,8 @@ class Stats(commands.Cog):
                                 title=f"🏆 Server Level Leaderboard:",
                                 description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
 
-    @top.command(name="cred")
+    @top.command(name=   "cred",
+                 aliases=[])
     async def top_cred(self, ctx):
         top_users = await db.get_top_users(10, "cred")
         max_line_length = 34
@@ -192,7 +221,8 @@ class Stats(commands.Cog):
                                 title=f"🏆 Server Cred Leaderboard:",
                                 description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
 
-    @top.command(name="assistance", aliases=["assist"])
+    @top.command(name=   "assistance",
+                 aliases=["assist"])
     async def top_assistance(self, ctx):
         top_users = await db.get_top_users(10, "assistance")
         max_line_length = 34
@@ -211,29 +241,17 @@ class Stats(commands.Cog):
                                 title=f"🏆 Server Assistance Leaderboard:",
                                 description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
 
-    @commands.command(aliases=["backup"])
-    async def save(self, ctx):
-        if utils.is_staff(ctx.author):
-            if not await utils.save_db():
-                await utils.embed_reply(ctx,
-                                        title=f"💢 Failed to save remote config!")
-            else:
-                await ctx.message.add_reaction('👌')
-            await ctx.reply(file=discord.File('db.sqlite3'))
-            await ctx.author.send(file=discord.File('db.sqlite3'))
-
-    @commands.group(case_insensitive=True)
-    async def gibxp(self, ctx):
-        if ctx.invoked_subcommand is None:
-            pass
-
-    @gibxp.command(name="level")
-    async def gibxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if utils.is_staff(ctx.author):
+    @commands.command(name=       "rep",
+                      description="Gift a cool person some reputation (500 cred XP)",
+                      usage=      "{prfx}rep [ user ]",
+                      help=       "user: the user to give rep to (ping, name, id) (required)",
+                      aliases=    ["reputation", "giverep", "givereputation"])
+    async def rep(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
+        if not str(ctx.author.id) in rep_cooldown_users:
             # Convert target input to discord.Member
             if not target:
                 await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide a valid user!")
+                                        title=f"💢 Please provide a user to give reputation to!")
                 return
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
@@ -251,161 +269,43 @@ class Stats(commands.Cog):
                 await utils.embed_reply(ctx,
                                         title=f"💢 That is not a valid user!")
                 return
-            # Actual command
-            xp_data = await db.add_user_xp(target.id, level=amount)
-            await utils.embed_reply(ctx,
-                                    description=(f"👌 Gave {amount} level XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!") + f"\nNew level XP value: `{xp_data['level']}`")
-
-    @gibxp.command(name="cred")
-    async def gibxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if utils.is_staff(ctx.author):
-            # Convert target input to discord.Member
-            if not target:
+            if target.id == ctx.author.id:
                 await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide a valid user!")
-                return
-            if isinstance(target, int):
-                target = ctx.guild.get_member(target)
-            elif isinstance(target, str):
-                target = await utils.get_best_member_match(ctx, target)
-            elif isinstance(target, discord.User):
-                target = ctx.guild.get_member(target.id)
-            elif isinstance(target, discord.Member):
-                pass
-            else:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
+                                        title=f"💢 Thats low even by your standards...")
                 return
             # Actual command
-            xp_data = await db.add_user_xp(target.id, cred=amount)
+            await db.add_user_xp(target.id, cred=globals.REP_CRED_AMOUNT)
+            rep_cooldown_users.add(str(ctx.author.id))
             await utils.embed_reply(ctx,
-                                    description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!") + f"\nNew cred XP value: `{xp_data['cred']}`")
-
-    @gibxp.command(name="assistance", aliases=["assist"])
-    async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if utils.is_staff(ctx.author):
-            # Convert target input to discord.Member
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide a valid user!")
-                return
-            if isinstance(target, int):
-                target = ctx.guild.get_member(target)
-            elif isinstance(target, str):
-                target = await utils.get_best_member_match(ctx, target)
-            elif isinstance(target, discord.User):
-                target = ctx.guild.get_member(target.id)
-            elif isinstance(target, discord.Member):
-                pass
-            else:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            # Actual command
-            xp_data = await db.add_user_xp(target.id, assistance=amount)
+                                    content=f"<@!{target.id}>",
+                                    title=f"💌 You got some reputation!",
+                                    description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
+                                    thumbnail="https://cdn.discordapp.com/emojis/766042961929699358.png")
+        else:
             await utils.embed_reply(ctx,
-                                    description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!") + f"\nNew assistance XP value: `{xp_data['assistance']}`")
+                                    title=f"💢 You're on cooldown!",
+                                    description=f"You can only use that command once every **24 hours**!\n"
+                                                f"You'll be able to use it again in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}**")
 
-    @commands.group(case_insensitive=True)
-    async def setxp(self, ctx):
-        if ctx.invoked_subcommand is None:
-            pass
-
-    @setxp.command(name="level")
-    async def setxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if utils.is_staff(ctx.author):
-            # Convert target input to discord.Member
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide a valid user!")
-                return
-            if isinstance(target, int):
-                target = ctx.guild.get_member(target)
-            elif isinstance(target, str):
-                target = await utils.get_best_member_match(ctx, target)
-            elif isinstance(target, discord.User):
-                target = ctx.guild.get_member(target.id)
-            elif isinstance(target, discord.Member):
-                pass
-            else:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            # Actual command
-            xp_data = await db.set_user_xp(target.id, level=amount)
+    @commands.command(name=       "daily",
+                      description="Claim your daily reward (500 level XP)",
+                      usage=      "{prfx}daily",
+                      help=       "",
+                      aliases=    ["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"])
+    async def daily(self, ctx):
+        if not str(ctx.author.id) in daily_cooldown_users:
+            await db.add_user_xp(ctx.author.id, level=globals.DAILY_LEVEL_AMOUNT)
+            daily_cooldown_users.add(str(ctx.author.id))
             await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s level XP to {xp_data['level']}!")
-
-    @setxp.command(name="cred")
-    async def setxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if utils.is_staff(ctx.author):
-            # Convert target input to discord.Member
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide a valid user!")
-                return
-            if isinstance(target, int):
-                target = ctx.guild.get_member(target)
-            elif isinstance(target, str):
-                target = await utils.get_best_member_match(ctx, target)
-            elif isinstance(target, discord.User):
-                target = ctx.guild.get_member(target.id)
-            elif isinstance(target, discord.Member):
-                pass
-            else:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            # Actual command
-            xp_data = await db.set_user_xp(target.id, cred=amount)
+                                    title=f"📅 Daily reward claimed!",
+                                    description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!\n"
+                                                f"Come back in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}** for more!",
+                                    thumbnail=ctx.author.avatar_url)
+        else:
             await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s cred XP to {xp_data['cred']}!")
-
-    @setxp.command(name="assistance", aliases=["assist"])
-    async def setxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if utils.is_staff(ctx.author):
-            # Convert target input to discord.Member
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide a valid user!")
-                return
-            if isinstance(target, int):
-                target = ctx.guild.get_member(target)
-            elif isinstance(target, str):
-                target = await utils.get_best_member_match(ctx, target)
-            elif isinstance(target, discord.User):
-                target = ctx.guild.get_member(target.id)
-            elif isinstance(target, discord.Member):
-                pass
-            else:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            if not target:
-                await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
-                return
-            # Actual command
-            xp_data = await db.set_user_xp(target.id, assistance=amount)
-            await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s assistance XP to {xp_data['assistance']}!")
+                                    title=f"💢 It's called \"daily\" for a reason!",
+                                    description=f"Come back in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}** for your next daily reward")
 
 
 def setup(bot):
-    bot.add_cog(Stats(bot))
+    bot.add_cog(Levelling(bot))
