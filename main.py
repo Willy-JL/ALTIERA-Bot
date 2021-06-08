@@ -67,6 +67,7 @@ if __name__ == '__main__':
     intents.presences = True
     # Create bot
     globals.bot = commands.Bot(globals.BOT_PREFIX, intents=intents, case_insensitive=True)
+    globals.bot.remove_command('help')
     for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
             globals.bot.load_extension(f'cogs.{filename[:-3]}')
