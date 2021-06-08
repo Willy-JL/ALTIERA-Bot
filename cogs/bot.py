@@ -37,7 +37,7 @@ class Bot(commands.Cog,
                     desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n"
                     desc += f"**\nA.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
                     await utils.embed_reply(ctx,
-                                            title=f"⁉️   A.L.T.I.E.R.A. Help > {cog_name}",
+                                            title=f"⁉️   A.L.T.I.E.R.A. Help  >  {cog_name}",
                                             description=desc)
                     return
             for command in globals.bot.commands:
@@ -57,7 +57,7 @@ class Bot(commands.Cog,
                         desc += f"\n**Aliases**: `{prfx}" + f"`, `{prfx}".join(aliases) + "`\n"
                     desc += f"**\nA.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
                     await utils.embed_reply(ctx,
-                                            title=f"⁉️   A.L.T.I.E.R.A. Help > {cog_name} > {prfx}{command.name}",
+                                            title=f"⁉️   A.L.T.I.E.R.A. Help  >  {cog_name}  >  {prfx}{command.name}",
                                             description=desc)
                     return
         desc = "You can use these commands to see a category of commands:\n\n"
