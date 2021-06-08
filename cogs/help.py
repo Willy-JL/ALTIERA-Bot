@@ -17,7 +17,7 @@ class Help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group()
+    @commands.group(case_insensitive=True)
     async def help(self, ctx):
         if ctx.invoked_subcommand is None:
             await utils.embed_reply(ctx,

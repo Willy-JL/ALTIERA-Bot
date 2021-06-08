@@ -145,7 +145,7 @@ class Stats(commands.Cog):
                                 ],
                                 thumbnail=target.avatar_url)
 
-    @commands.group(aliases=["top10", "leaderboard", "ranking"])
+    @commands.group(aliases=["top10", "leaderboard", "ranking"], case_insensitive=True)
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
             await utils.embed_reply(ctx,
@@ -222,7 +222,7 @@ class Stats(commands.Cog):
             await ctx.reply(file=discord.File('db.sqlite3'))
             await ctx.author.send(file=discord.File('db.sqlite3'))
 
-    @commands.group()
+    @commands.group(case_insensitive=True)
     async def gibxp(self, ctx):
         if ctx.invoked_subcommand is None:
             pass
@@ -314,7 +314,7 @@ class Stats(commands.Cog):
             await utils.embed_reply(ctx,
                                     description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!") + f"\nNew assistance XP value: `{xp_data['assistance']}`")
 
-    @commands.group()
+    @commands.group(case_insensitive=True)
     async def setxp(self, ctx):
         if ctx.invoked_subcommand is None:
             pass
