@@ -5,7 +5,8 @@ import os
 from modules import globals, utils
 
 
-class Bot(commands.Cog):
+class Bot(commands.Cog,
+          description="Commands regarding the running bot instance"):
     def __init__(self, bot):
         self.bot = bot
 
