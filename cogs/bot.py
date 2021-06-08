@@ -41,12 +41,13 @@ class Bot(commands.Cog,
                                             description=desc)
                     return
             for command in globals.bot.commands:
-                if command.cog.qualified_name.lower() == "jishaku":
+                cog_name = command.cog.qualified_name
+                if cog_name.lower() == "jishaku":
                     continue
                 aliases = [alias.lower() for alias in command.aliases]
                 if command.name.lower() == subcommand or subcommand in aliases:
                     desc = ""
-                    if "staff" in command.cog.qualified_name.lower() and not utils.is_staff(ctx.author):
+                    if "staff" in cog_name.lower() and not utils.is_staff(ctx.author):
                         desc += "This is a **staff only** command, you can't use it!\n\n"
                     desc += command.description + "\n\n"
                     desc += "**Usage**: `" + command.usage.format(prfx=prfx) + "`\n"
@@ -56,7 +57,7 @@ class Bot(commands.Cog,
                         desc += f"\n**Aliases**: `{prfx}" + f"`, `{prfx}".join(aliases) + "`\n"
                     desc += f"**\nA.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
                     await utils.embed_reply(ctx,
-                                            title=f"⁉️   A.L.T.I.E.R.A. Help > {command.name.title()}",
+                                            title=f"⁉️   A.L.T.I.E.R.A. Help > {cog_name} > {prfx}{command.name}",
                                             description=desc)
                     return
         desc = "You can use these commands to see a category of commands:\n\n"
