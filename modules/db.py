@@ -10,6 +10,20 @@ async def init_db():
                                      assistance INTEGER DEFAULT 0
                                  )
                              """)
+    await globals.db.execute("""
+                                 CREATE TABLE IF NOT EXISTS requests (
+                                     id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                                     server_id    INTEGER,
+                                     channel_id   INTEGER,
+                                     message_id   INTEGER,
+                                     requester_id INTEGER,
+                                     description  TEXT,
+                                     image        TEXT,
+                                     status       TEXT,
+                                     link         TEXT,
+                                     modder_id    INTEGER
+                                 )
+                             """)
 
 
 async def ensure_user_data(user_id):
