@@ -28,7 +28,7 @@ class Bot(commands.Cog):
                         desc += "These are **staff only** commands, you can't use them!\n\n"
                     desc += cog.description + "\n\n"
                     for command in cog.get_commands():
-                        desc += f'{prfx}**{command.name}**: {command.description[:command.description.find("\n")] if "\n" in command.description else command.description}\n'
+                        desc += f'{prfx}**{command.name}**: ' + (command.description[:command.description.find("\n")] if "\n" in command.description else command.description) + '\n'
                     desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n\n"
                     desc += f"**A.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
                     await utils.embed_reply(ctx,
@@ -57,7 +57,7 @@ class Bot(commands.Cog):
             if "staff" in cog_name.lower() and not utils.is_staff(ctx.author):
                 continue
             cog = globals.bot.get_cog(cog_name)
-            desc += f"{prfx}help **{cog_name.lower()}**: {cog.description[:cog.description.find('\n')] if '\n' in cog.description else cog.description}\n"
+            desc += f"{prfx}help **{cog_name.lower()}**: " + (cog.description[:cog.description.find('\n')] if '\n' in cog.description else cog.description) + "\n"
         desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n\n"
         desc += f"**A.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
         await utils.embed_reply(ctx,
