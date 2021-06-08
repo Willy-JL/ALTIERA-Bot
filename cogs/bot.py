@@ -32,8 +32,8 @@ class Bot(commands.Cog,
                     desc += cog.description + "\n\n"
                     for command in cog.get_commands():
                         desc += f'{prfx}**{command.name}**: ' + (command.description[:command.description.find("\n")] if "\n" in command.description else command.description) + '\n'
-                    desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n\n"
-                    desc += f"**A.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
+                    desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n"
+                    desc += f"**\nA.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
                     await utils.embed_reply(ctx,
                                             title=f"⁉️   A.L.T.I.E.R.A. Help > {cog_name}",
                                             description=desc)
@@ -52,7 +52,7 @@ class Bot(commands.Cog,
                         desc += command.help + "\n"
                     if aliases:
                         desc += f"\n**Aliases**: `{prfx}" + f"`, `{prfx}".join(aliases) + "`\n"
-                    desc += f"**A.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
+                    desc += f"**\nA.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
                     await utils.embed_reply(ctx,
                                             title=f"⁉️   A.L.T.I.E.R.A. Help > {command.name.title()}",
                                             description=desc)
@@ -65,8 +65,8 @@ class Bot(commands.Cog,
                 continue
             cog = globals.bot.get_cog(cog_name)
             desc += f"{prfx}help **{cog_name.lower()}**: " + (cog.description[:cog.description.find('\n')] if '\n' in cog.description else cog.description) + "\n"
-        desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n\n"
-        desc += f"**A.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
+        desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n"
+        desc += f"\n**A.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
         await utils.embed_reply(ctx,
                                 title=f"⁉️   A.L.T.I.E.R.A. Help",
                                 description=desc)
