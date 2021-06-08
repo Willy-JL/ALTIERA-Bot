@@ -22,6 +22,8 @@ class Bot(commands.Cog,
         if subcommand:
             subcommand = subcommand.lower()
             for cog_name in globals.bot.cogs:
+                if cog_name.lower() == "jishaku":
+                    continue
                 if cog_name.lower() == subcommand:
                     cog = globals.bot.get_cog(cog_name)
                     desc = ""
@@ -37,6 +39,8 @@ class Bot(commands.Cog,
                                             description=desc)
                     return
             for command in globals.bot.commands:
+                if command.cog.qualified_name.lower() == "jishaku":
+                    continue
                 aliases = [alias.lower() for alias in command.aliases]
                 if command.name.lower() == subcommand or subcommand in aliases:
                     desc = ""
@@ -55,6 +59,8 @@ class Bot(commands.Cog,
                     return
         desc = "You can use these commands to see a category of commands:\n\n"
         for cog_name in globals.bot.cogs:
+            if cog_name.lower() == "jishaku":
+                continue
             if "staff" in cog_name.lower() and not utils.is_staff(ctx.author):
                 continue
             cog = globals.bot.get_cog(cog_name)
