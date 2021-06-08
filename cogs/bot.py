@@ -11,7 +11,9 @@ class Bot(commands.Cog,
         self.bot = bot
 
     @commands.command(name=       "help",
-                      description="See info about bot commands",
+                      description="Think real hard and guess what this does\n"
+                                  "Why are you like this?\n"
+                                  "Ugh, I guess I'll explain this one too...",
                       usage=      "{prfx}help [ subcommand ]",
                       help=       "subcommand: the submenu/command to look up (optional)",
                       aliases=    [])
