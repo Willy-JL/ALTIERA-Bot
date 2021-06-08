@@ -21,9 +21,7 @@ class Levelling(commands.Cog,
                             "You earn level from chatting anywhere (except in bot commands channels)\n"
                             "Cred is only earned by users with modder role and only in modding channels\n"
                             "Assistance XP is generated in the hospital and support channels, everyone earns, modders earn 2x\n"
-                            "There are cooldowns, spamming won't get you far\n"
-                            "LVL1 = 1000XP, LVL2 = 2000XP, LVL3 = 3000XP, LVL4 = 4000XP and so on...\n"
-                            "You can use `a/rep` and `a/daily` once every 24 hours (or sooner if the bot restarts)"):
+                            "There are cooldowns, spamming won't get you far"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -131,7 +129,8 @@ class Levelling(commands.Cog,
         await ctx.reply(file=discord.File(binary, filename=username[:16] + ".png"))
 
     @commands.command(name=       "xp",
-                      description="See your XP amounts (levels depend on XP amount)",
+                      description="See your XP amounts (levels depend on XP amount)\n"
+                                  "LVL1 = 1000XP, LVL2 = 2000XP, LVL3 = 3000XP, LVL4 = 4000XP and so on...",
                       usage=      "{prfx}xp [ user ]",
                       help=       "user: the user to check xp amounts for (ping, name, id) (optional)",
                       aliases=    ["xpamount", "levelxp", "credxp", "assistancexp", "assistxp"])
@@ -242,7 +241,8 @@ class Levelling(commands.Cog,
                                 description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
 
     @commands.command(name=       "rep",
-                      description="Gift a cool person some reputation (500 cred XP)",
+                      description="Gift a cool person some reputation (500 cred XP)\n"
+                                  "Only once every 24 hours (or sooner if the bot restarts)",
                       usage=      "{prfx}rep [ user ]",
                       help=       "user: the user to give rep to (ping, name, id) (required)",
                       aliases=    ["reputation", "giverep", "givereputation"])
@@ -288,7 +288,8 @@ class Levelling(commands.Cog,
                                                 f"You'll be able to use it again in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}**")
 
     @commands.command(name=       "daily",
-                      description="Claim your daily reward (500 level XP)",
+                      description="Claim your daily reward (500 level XP)\n"
+                                  "Only once every 24 hours (or sooner if the bot restarts)",
                       usage=      "{prfx}daily",
                       help=       "",
                       aliases=    ["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"])
