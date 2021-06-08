@@ -66,7 +66,7 @@ if __name__ == '__main__':
     intents.members = True
     intents.presences = True
     # Create bot
-    globals.bot = commands.Bot(globals.BOT_PREFIX, intents=intents)
+    globals.bot = commands.Bot(globals.BOT_PREFIX, intents=intents, case_insensitive=True)
     globals.bot.remove_command('help')
     globals.bot.load_extension('cogs.commands')
     globals.bot.load_extension('cogs.help')
