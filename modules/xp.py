@@ -37,9 +37,9 @@ async def process_xp(message):
     if message.channel.id in globals.BLACKLISTED_CHANNELS_IDS:
         return
     xp_data = await db.get_user_xp(message.author.id)
-    level =  xp_to_lvl(xp_data[0])[0]
-    cred =   xp_to_lvl(xp_data[1])[0]
-    assist = xp_to_lvl(xp_data[2])[0]
+    level =  xp_to_lvl(xp_data["level"]     )[0]
+    cred =   xp_to_lvl(xp_data["cred"]      )[0]
+    assist = xp_to_lvl(xp_data["assistance"])[0]
 
     # Regular XP
     level_xp_to_add =  0
@@ -74,9 +74,9 @@ async def process_xp(message):
             added_contrib_boost = True
 
     # Notify levelups
-    new_level =  xp_to_lvl(xp_data[0])[0]
-    new_cred =   xp_to_lvl(xp_data[1])[0]
-    new_assist = xp_to_lvl(xp_data[2])[0]
+    new_level =  xp_to_lvl(xp_data["level"]     )[0]
+    new_cred =   xp_to_lvl(xp_data["cred"]      )[0]
+    new_assist = xp_to_lvl(xp_data["assistance"])[0]
     if new_level > level:
         await notify_level_up(message, "level",      level,  new_level )
     if new_cred > cred:

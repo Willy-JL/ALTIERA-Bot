@@ -52,7 +52,7 @@ async def get_user_xp(user_id, ensure=True):
                                        FROM stats
                                        WHERE id=?
                                    ''', (user_id))
-    return list(await cur.fetchone())
+    return dict(await cur.fetchone())
 
 
 async def add_user_xp(user_id, level=0, cred=0, assistance=0):
@@ -74,6 +74,7 @@ async def add_user_xp(user_id, level=0, cred=0, assistance=0):
     #                                    WHERE id=?
     #                                    RETURNING level, cred, assistance
     #                                ''', (level, level, cred, cred, assistance, assistance, user_id))
+    # return dict(await cur.fetchone())
     await ensure_user_data(user_id)
     cur = await globals.db.execute('''
                                        UPDATE stats
@@ -92,7 +93,6 @@ async def add_user_xp(user_id, level=0, cred=0, assistance=0):
                                            END
                                        WHERE id=?
                                    ''', (level, level, cred, cred, assistance, assistance, user_id))
-    # return list(await cur.fetchone())
     return await get_user_xp(user_id, ensure=False)
 
 
@@ -118,6 +118,7 @@ async def set_user_xp(user_id, level=None, cred=None, assistance=None):
     #                                    WHERE id=?
     #                                    RETURNING level, cred, assistance
     #                                ''', (level, level, level, cred, cred, cred, assistance, assistance, assistance, user_id))
+    # return dict(await cur.fetchone())
     await ensure_user_data(user_id)
     cur = await globals.db.execute('''
                                        UPDATE stats
@@ -139,7 +140,6 @@ async def set_user_xp(user_id, level=None, cred=None, assistance=None):
                                            END
                                        WHERE id=?
                                    ''', (level, level, level, cred, cred, cred, assistance, assistance, assistance, user_id))
-    # return list(await cur.fetchone())
     return await get_user_xp(user_id, ensure=False)
 
 
@@ -152,5 +152,5 @@ async def get_top_users(limit, sort_by):
                                    ''', (limit))
     results = list(await cur.fetchall())
     for i in range(len(results)):
-        results[i] = list(results[i])
+        results[i] = dict(results[i])
     return results

@@ -39,9 +39,9 @@ class Stats(commands.Cog):
         # Actual command
 
         xp_data = await db.get_user_xp(target.id)
-        level =  xp.xp_to_lvl(xp_data[0])
-        cred =   xp.xp_to_lvl(xp_data[1])
-        assist = xp.xp_to_lvl(xp_data[2])
+        level =  xp.xp_to_lvl(xp_data["level"]     )
+        cred =   xp.xp_to_lvl(xp_data["cred"]      )
+        assist = xp.xp_to_lvl(xp_data["assistance"])
         level_next =  math.floor((level[2]  - level[1] ) * 100 / level[2] )
         cred_next =   math.floor((cred[2]   - cred[1]  ) * 100 / cred[2]  )
         assist_next = math.floor((assist[2] - assist[1]) * 100 / assist[2])
@@ -140,9 +140,9 @@ class Stats(commands.Cog):
         await utils.embed_reply(ctx,
                                 title=f"🔥 {target.name}'s XP:",
                                 fields=[
-                                    ["Level",      f"{xp_data[0]}", True],
-                                    ["Cred",       f"{xp_data[1]}", True],
-                                    ["Assistance", f"{xp_data[2]}", True]
+                                    ["Level",      f"{xp_data['level']}",      True],
+                                    ["Cred",       f"{xp_data['cred']}",       True],
+                                    ["Assistance", f"{xp_data['assistance']}", True]
                                 ],
                                 thumbnail=target.avatar_url)
 
@@ -162,13 +162,13 @@ class Stats(commands.Cog):
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Server Level XP:"))]) + "Server Level XP:")
         for i, row in enumerate(top_users):
-            user = globals.bot.get_user(row[0])
+            user = globals.bot.get_user(row["id"])
             if user:
                 name = str(user.name)
             else:
-                name = row[0]
+                name = row["id"]
             # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "..."))-len(str(row[1])))]) + str(row[1])
+            line = (name if len(name) <= (max_line_length-(len(str(row["level"]))+1)) else name[:(max_line_length-(len(str(row["level"]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row["level"]))+1)) else name[:(max_line_length-(len(str(row["level"]))+1))-3] + "..."))-len(str(row["level"])))]) + str(row[1])
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Level Leaderboard:",
@@ -181,13 +181,13 @@ class Stats(commands.Cog):
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
         for i, row in enumerate(top_users):
-            user = globals.bot.get_user(row[0])
+            user = globals.bot.get_user(row["id"])
             if user:
                 name = str(user.name)
             else:
-                name = row[0]
+                name = row["id"]
             # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "..."))-len(str(row[1])))]) + str(row[1])
+            line = (name if len(name) <= (max_line_length-(len(str(row["cred"]))+1)) else name[:(max_line_length-(len(str(row["cred"]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row["cred"]))+1)) else name[:(max_line_length-(len(str(row["cred"]))+1))-3] + "..."))-len(str(row["cred"])))]) + str(row["cred"])
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Cred Leaderboard:",
@@ -200,13 +200,13 @@ class Stats(commands.Cog):
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Assistance XP:"))]) + "Assistance XP:")
         for i, row in enumerate(top_users):
-            user = globals.bot.get_user(row[0])
+            user = globals.bot.get_user(row["id"])
             if user:
                 name = str(user.name)
             else:
-                name = row[0]
+                name = row["id"]
             # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row[1]))+1)) else name[:(max_line_length-(len(str(row[1]))+1))-3] + "..."))-len(str(row[1])))]) + str(row[1])
+            line = (name if len(name) <= (max_line_length-(len(str(row["assistance"]))+1)) else name[:(max_line_length-(len(str(row["assistance"]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row["assistance"]))+1)) else name[:(max_line_length-(len(str(row["assistance"]))+1))-3] + "..."))-len(str(row["assistance"])))]) + str(row["assistance"])
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Assistance Leaderboard:",
@@ -255,7 +255,7 @@ class Stats(commands.Cog):
             # Actual command
             xp_data = await db.add_user_xp(target.id, level=amount)
             await utils.embed_reply(ctx,
-                                    description=(f"👌 Gave {amount} level XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!") + f"\nNew level XP value: `{xp_data[0]}`")
+                                    description=(f"👌 Gave {amount} level XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!") + f"\nNew level XP value: `{xp_data['level']}`")
 
     @gibxp.command(name="cred")
     async def gibxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -284,7 +284,7 @@ class Stats(commands.Cog):
             # Actual command
             xp_data = await db.add_user_xp(target.id, cred=amount)
             await utils.embed_reply(ctx,
-                                    description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!") + f"\nNew cred XP value: `{xp_data[1]}`")
+                                    description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!") + f"\nNew cred XP value: `{xp_data['cred']}`")
 
     @gibxp.command(name="assistance", aliases=["assist"])
     async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -313,7 +313,7 @@ class Stats(commands.Cog):
             # Actual command
             xp_data = await db.add_user_xp(target.id, assistance=amount)
             await utils.embed_reply(ctx,
-                                    description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!") + f"\nNew assistance XP value: `{xp_data[2]}`")
+                                    description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!") + f"\nNew assistance XP value: `{xp_data['assistance']}`")
 
     @commands.group()
     async def setxp(self, ctx):
@@ -347,7 +347,7 @@ class Stats(commands.Cog):
             # Actual command
             xp_data = await db.set_user_xp(target.id, level=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s level XP to {xp_data[0]}!")
+                                    description=f"👌 Set <@!{target.id}>'s level XP to {xp_data['level']}!")
 
     @setxp.command(name="cred")
     async def setxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -376,7 +376,7 @@ class Stats(commands.Cog):
             # Actual command
             xp_data = await db.set_user_xp(target.id, cred=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s cred XP to {xp_data[1]}!")
+                                    description=f"👌 Set <@!{target.id}>'s cred XP to {xp_data['cred']}!")
 
     @setxp.command(name="assistance", aliases=["assist"])
     async def setxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
@@ -405,7 +405,7 @@ class Stats(commands.Cog):
             # Actual command
             xp_data = await db.set_user_xp(target.id, assistance=amount)
             await utils.embed_reply(ctx,
-                                    description=f"👌 Set <@!{target.id}>'s assistance XP to {xp_data[2]}!")
+                                    description=f"👌 Set <@!{target.id}>'s assistance XP to {xp_data['assistance']}!")
 
 
 def setup(bot):

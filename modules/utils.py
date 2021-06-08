@@ -168,7 +168,7 @@ async def get_best_member_match(ctx, target):
         if user.nick:
             name_list.append(user.nick)
     results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-    sort_helper = [(await xp_from_name(ctx, name, 0), name) for name in results]
+    sort_helper = [(await xp_from_name(ctx, name, 'level'), name) for name in results]
     sort_helper.sort(key=lambda item: item[0], reverse=True)
     return ctx.guild.get_member_named(sort_helper[0][1])
 
