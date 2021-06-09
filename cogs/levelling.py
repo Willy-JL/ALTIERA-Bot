@@ -103,12 +103,12 @@ class Levelling(commands.Cog,
         x = 267
         for i in range(utils.get_trophy_amount(target)):
             if i % 2:
-                img.paste(    globals.shard_white,  (x, 194), globals.shards_white )
+                img.paste(    globals.shards_white,  (x, 194), globals.shards_white )
             else:
                 if target.id == globals.ADMIN_ID:
-                    img.paste(globals.shard_orange, (x, 194), globals.shards_teal  )
+                    img.paste(globals.shards_teal,   (x, 194), globals.shards_teal  )
                 else:
-                    img.paste(globals.shard_orange, (x, 194), globals.shards_orange)
+                    img.paste(globals.shards_orange, (x, 194), globals.shards_orange)
             x += 24
 
         # Draw single level values
