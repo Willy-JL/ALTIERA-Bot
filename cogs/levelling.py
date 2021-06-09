@@ -112,8 +112,12 @@ class Levelling(commands.Cog,
             x += 24
 
         # Draw single level values
-        utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (275, 425), 999)
-        utils.draw_text(draw, globals.font24, f"{level[0]}",  "#FFFFFF", (308, 423), 999)
+        if target.id == globals.ADMIN_ID:
+            utils.draw_text(draw, globals.font16, f"LVL:",        "#090D18", (275, 425), 999)
+            utils.draw_text(draw, globals.font24, f"{level[0]}",  "#090D18", (308, 423), 999)
+        else:
+            utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (275, 425), 999)
+            utils.draw_text(draw, globals.font24, f"{level[0]}",  "#FFFFFF", (308, 423), 999)
         utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (275, 518), 999)
         utils.draw_text(draw, globals.font24, f"{cred[0]}",   "#FFFFFF", (308, 516), 999)
         if target.id == globals.ADMIN_ID:
