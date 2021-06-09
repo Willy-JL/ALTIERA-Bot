@@ -88,7 +88,7 @@ class Bot(commands.Cog,
                                 title="📊 Bot Info",
                                 fields=[
                                     ["♾️ Uptime:",          f"{utils.time_from_start()}",                                                                                                                                          True],
-                                    ["🔁 Next Restart In:", f"{utils.time_to_restart()}",                                                                                                                                          True],
+                                    ["☯️ Next Restart In:", f"{utils.time_to_restart()}",                                                                                                                                          True],
                                     ["⏳ Ping:",            f"{int(globals.bot.latency * 1000)}ms",                                                                                                                                True],
                                     ["📟 CPU Usage",        f"{psutil.cpu_percent()}%",                                                                                                                                            True],
                                     ["💾 RAM Usage",        f"{utils.pretty_size(psutil.Process(os.getpid()).memory_info().rss)}/{'512MB' if os.environ.get('DYNO') else utils.pretty_size(psutil.virtual_memory().total)}",       True],
