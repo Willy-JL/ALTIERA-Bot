@@ -1,4 +1,7 @@
 from discord.ext import commands
+import datetime
+import discord
+import psutil
 import os
 
 # Local imports
@@ -6,7 +9,7 @@ from modules import globals, utils
 
 
 class Bot(commands.Cog,
-          description="Commands regarding the running bot instance"):
+          description="Commands regarding the bot instance"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -74,6 +77,27 @@ class Bot(commands.Cog,
                                 title=f"⁉️   A.L.T.I.E.R.A. Help",
                                 description=desc)
         return
+
+    @commands.command(name=       "info",
+                      description="Show info and details about the bot",
+                      usage=      "{prfx}info",
+                      help=       "",
+                      aliases=    ["botinfo"])
+    async def info(self, ctx):
+        await utils.embed_reply(ctx,
+                                title="📊 Bot Info",
+                                fields=[
+                                    ["♾️ Uptime:",          f"{utils.time_from_start()}",                                                                                                                                          True],
+                                    ["🔁 Next Restart In:", f"{utils.time_to_restart()}",                                                                                                                                          True],
+                                    ["⏳ Ping:",            f"{int(globals.bot.latency * 1000)}ms",                                                                                                                                True],
+                                    ["📟 CPU Usage",        f"{psutil.cpu_percent()}%",                                                                                                                                            True],
+                                    ["💾 RAM Usage",        f"{utils.pretty_size(psutil.Process(os.getpid()).memory_info().rss)}/{'512MB' if os.environ.get('DYNO') else utils.pretty_size(psutil.virtual_memory().total)}",       True],
+                                    ["🚀 Last Update",      f"{datetime.datetime.fromisoformat(os.environ.get('HEROKU_RELEASE_CREATED_AT')[:-1]).strftime('%d/%m/%Y') if os.environ.get('HEROKU_RELEASE_CREATED_AT') else 'N/A'}", True],
+                                    ["👨‍💻 Developer",        f"[WillyJL](https://linktr.ee/WillyJL)",                                                                                                                               True],
+                                    ["📚 Library",          f"discord.py v{discord.__version__}",                                                                                                                                  True],
+                                    ["📦 Version",          f"{os.environ.get('HEROKU_RELEASE_VERSION') if os.environ.get('HEROKU_RELEASE_VERSION') else 'N/A'}",                                                                  True],
+                                ],
+                                thumbnail=globals.bot.user.avatar_url)
 
 
 def setup(bot):

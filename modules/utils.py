@@ -189,6 +189,16 @@ def time_to_restart():
     return str(datetime.timedelta(seconds=int(missing_seconds)))
 
 
+# Convert byte size amount into human readable format
+def pretty_size(size, precision=0):
+    suffixes = ['B','KB','MB','GB','TB']
+    suffix_index = 0
+    while size > 1024 and suffix_index < 4:
+        suffix_index += 1
+        size = size / 1024.0
+    return "%.*f%s" % (precision, size, suffixes[suffix_index])
+
+
 # Streamlined embeds
 def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True):
     if add_timestamp:
@@ -207,7 +217,7 @@ def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, 
     if image:
         embed_to_send.set_image(url=image)
     if thumbnail:
-        embed_to_send.set_thumbnail(url=thumbnail)
+        embed_to_send.set_thumbnail(url=str(thumbnail))
     for field in fields:
         embed_to_send.add_field(name=field[0], value=field[1], inline=field[2])
     return embed_to_send
