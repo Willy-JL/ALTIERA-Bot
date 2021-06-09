@@ -175,6 +175,13 @@ async def get_best_member_match(ctx, target):
     return ctx.guild.get_member_named(sort_helper[0][1])
 
 
+# Format time elapsed from bot start
+def time_from_start():
+    now = datetime.datetime.utcnow()
+    elapsed_seconds = (now - globals.start_dt).total_seconds()
+    return str(datetime.timedelta(seconds=int(elapsed_seconds)))
+
+
 # Format time until next bot restart
 def time_to_restart():
     now = datetime.datetime.utcnow()
