@@ -175,6 +175,13 @@ async def get_best_member_match(ctx, target):
     return ctx.guild.get_member_named(sort_helper[0][1])
 
 
+# Format time until next bot restart
+def time_to_restart():
+    now = datetime.datetime.utcnow()
+    missing_seconds = (globals.restart_dt - now).total_seconds()
+    return str(datetime.timedelta(seconds=int(missing_seconds)))
+
+
 # Streamlined embeds
 def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True):
     if add_timestamp:

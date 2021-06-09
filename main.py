@@ -1,4 +1,5 @@
 from discord.ext import commands, tasks
+import datetime
 import discord
 import aiohttp
 import asyncio
@@ -81,8 +82,14 @@ if __name__ == '__main__':
         print(f'Logged in as {globals.bot.user}!')
         update_presence_loop.start()
         if os.environ.get("DYNO") is not None:
-            globals.start_timestamp = time.time()
-            await asyncio.sleep(86369)
+            now = datetime.datetime.utcnow()
+            midnight = datetime.time(0, 0)
+            globals.restart_dt = datetime.datetime.combine(now, midnight)
+            if globals.restart_dt < now:
+                globals.restart_dt += datetime.timedelta(days=1)
+
+            await discord.utils.sleep_until(globals.restart_dt)
+
             update_presence_loop.stop()
             await utils.save_db()
             await globals.db.close()

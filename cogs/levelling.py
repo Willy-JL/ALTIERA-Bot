@@ -1,10 +1,8 @@
 from PIL import Image, ImageDraw
 from discord.ext import commands
 from typing import Union
-import datetime
 import discord
 import math
-import time
 import io
 
 # Local imports
@@ -319,7 +317,7 @@ class Levelling(commands.Cog,
             await utils.embed_reply(ctx,
                                     title=f"💢 You're on cooldown!",
                                     description=f"You can only use that command once every **24 hours**!\n"
-                                                f"You'll be able to use it again in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}**")
+                                                f"You'll be able to use it again in roughly **{utils.time_to_restart()}**")
 
     @commands.command(name=       "daily",
                       description="Claim your daily reward (500 level XP)\n"
@@ -334,12 +332,12 @@ class Levelling(commands.Cog,
             await utils.embed_reply(ctx,
                                     title=f"📅 Daily reward claimed!",
                                     description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!\n"
-                                                f"Come back in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}** for more!",
+                                                f"Come back in roughly **{utils.time_to_restart()}** for more!",
                                     thumbnail=ctx.author.avatar_url)
         else:
             await utils.embed_reply(ctx,
                                     title=f"💢 It's called \"daily\" for a reason!",
-                                    description=f"Come back in roughly **{datetime.timedelta(seconds=int(86369-(time.time()-globals.start_timestamp)))}** for your next daily reward")
+                                    description=f"Come back in roughly **{utils.time_to_restart()}** for your next daily reward")
 
 
 def setup(bot):
