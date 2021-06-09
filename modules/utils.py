@@ -74,14 +74,16 @@ def setup_persistent_components():
 
     globals.default_avatar = Image.open('assets/default_avatar.png').resize((200, 200))
 
-    globals.overlay = Image.open('assets/overlay.png')
-    globals.staff_overlay = Image.open('assets/staff_overlay.png')
+    globals.overlays_default = Image.open('assets/overlays/default.png')
+    globals.overlays_staff =   Image.open('assets/overlays/staff.png'  )
+    globals.overlays_admin =   Image.open('assets/overlays/admin.png'  )
 
-    globals.shard_orange = Image.open("assets/shard_orange.png").resize((33, 28))
-    globals.shard_white = Image.open("assets/shard_white.png").resize((33, 28))
+    globals.shards_orange = Image.open("assets/shards/orange.png").resize((33, 28))
+    globals.shards_white =  Image.open("assets/shards/white.png" ).resize((33, 28))
+    globals.shards_teal =   Image.open("assets/shards/teal.png"  ).resize((33, 28))
 
     globals.bars = {}
-    for color in ["blue", "orange", "white"]:
+    for color in ["blue_white", "orange_white", "teal_white", "white_blue", "white_orange"]:
         globals.bars[color] = []
         for i in range(11):
             globals.bars[color].append(Image.open(f"assets/bars/{color}/{i}.png"))
