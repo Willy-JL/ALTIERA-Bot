@@ -5,6 +5,7 @@ import aiohttp
 import asyncio
 import json
 import time
+import sys
 import os
 
 
@@ -81,24 +82,30 @@ if __name__ == '__main__':
     async def on_ready():
         print(f'Logged in as {globals.bot.user}!')
         update_presence_loop.start()
-        if os.environ.get("DYNO") is not None:
-            now = datetime.datetime.utcnow()
-            midnight = datetime.time(0, 0)
-            globals.restart_dt = datetime.datetime.combine(now, midnight)
-            if globals.restart_dt < now:
-                globals.restart_dt += datetime.timedelta(days=1)
 
-            await discord.utils.sleep_until(globals.restart_dt)
+        now = datetime.datetime.utcnow()
+        midnight = datetime.time(0, 0)
+        next_midnight = datetime.datetime.combine(now, midnight)
+        if next_midnight < now:
+            next_midnight += datetime.timedelta(days=1)
+        globals.start_dt = now
+        globals.restart_dt = next_midnight
 
-            update_presence_loop.stop()
-            await utils.save_db()
-            await globals.db.close()
+        await discord.utils.sleep_until(globals.restart_dt)
+
+        update_presence_loop.stop()
+        await utils.save_db()
+        await globals.db.close()
+
+        if os.environ.get("DYNO") is not None:  # Heroku restart
             async with aiohttp.ClientSession() as client:
                 await client.delete(f'https://api.heroku.com/apps/altiera/dynos/{os.environ["DYNO"]}',
                                     headers={
                                         'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
                                         'Accept': 'application/vnd.heroku+json; version=3'
                                     })
+        else:
+            os.execl(sys.executable, 'python', __file__, *sys.argv[1:])
 
     # Ignore command not found errors
     @globals.bot.event
