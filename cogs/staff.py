@@ -230,6 +230,17 @@ class Staff(commands.Cog,
             await utils.embed_reply(ctx,
                                     description=f"👌 Set <@!{target.id}>'s assistance XP to {xp_data['assistance']}!")
 
+    @commands.command(name=       "restart",
+                      description="Save DB and restart the bot",
+                      usage=      "{prfx}restart",
+                      help=       "",
+                      aliases=    ["reboot"])
+    async def restart(self, ctx):
+        if utils.is_staff(ctx.author):
+            await utils.embed_reply(ctx,
+                                    description=f"👌 Restarting...")
+            await utils.restart()
+
 
 def setup(bot):
     bot.add_cog(Staff(bot))
