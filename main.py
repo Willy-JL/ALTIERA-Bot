@@ -3,6 +3,7 @@ import datetime
 import discord
 import aiohttp
 import asyncio
+import signal
 import json
 import time
 import sys
@@ -91,11 +92,19 @@ if __name__ == '__main__':
         globals.start_dt = now
         globals.restart_dt = next_midnight
 
-        await discord.utils.sleep_until(globals.restart_dt)
+        async def graceful_exit():
+            print("Saving DB...")
+            update_presence_loop.stop()
+            await utils.save_db()
+            await globals.db.close()
+            print("Exiting...")
+            globals.loop.stop()
+            os._exit(os.EX_OK)
 
-        update_presence_loop.stop()
-        await utils.save_db()
-        await globals.db.close()
+        for signame in ['SIGINT', 'SIGTERM']:
+            globals.loop.add_signal_handler(getattr(signal, signame), lambda: globals.loop.create_task(graceful_exit()))
+
+        await discord.utils.sleep_until(globals.restart_dt)
 
         if os.environ.get("DYNO"):  # Heroku restart
             async with aiohttp.ClientSession() as client:
