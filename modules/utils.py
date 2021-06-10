@@ -247,6 +247,27 @@ def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, 
     return embed_to_send
 
 
+# Upload image to imgur and retrieve link
+async def imgur_image_upload(img: bytes):
+    if len(img) > 10000000:
+        return None
+
+    try:
+        async with aiohttp.ClientSession() as client:
+            async with client.post("https://api.imgur.com/3/image",
+                                   headers={
+                                       "Authorization": f"Client-ID {globals.IMGUR_CLIENT_ID}"
+                                   },
+                                   data = {
+                                       'image': base64.b64encode(img)
+                                   }) as req:
+                resp = await req.json()
+
+        return resp["data"]["link"]
+    except Exception:
+        return None
+
+
 # Cleaner reply function
 async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True):
     embed_to_send = custom_embed(ctx.guild, title=title, description=description, fields=fields, thumbnail=thumbnail, image=image, add_timestamp=add_timestamp)

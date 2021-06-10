@@ -154,3 +154,24 @@ async def get_top_users(limit, sort_by):
     for i in range(len(results)):
         results[i] = dict(results[i])
     return results
+
+
+async def create_request(ctx, description, image=None):
+    cur = await globals.db.execute('''
+                                       INSERT INTO requests
+                                       (requester_id, description, image, status)
+                                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                   ''', (ctx.author.id, description, image, "waiting"))
+    req_id = cur.get_cursor().lastrowid
+    return req_id
+
+
+async def add_request_message_info(req_id, msg):
+    await globals.db.execute('''
+                                 UPDATE requests
+                                 SET
+                                     server_id =  ?
+                                     channel_id = ?
+                                     message_id = ?
+                                 WHERE id=?
+                             ''', (msg.guild.id, msg.channel.id, msg.id, req_id))
