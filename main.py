@@ -97,13 +97,23 @@ if __name__ == '__main__':
         await utils.save_db()
         await globals.db.close()
 
-        if os.environ.get("DYNO") is not None:  # Heroku restart
+        if os.environ.get("DYNO"):  # Heroku restart
             async with aiohttp.ClientSession() as client:
-                await client.delete(f'https://api.heroku.com/apps/altiera/dynos/{os.environ["DYNO"]}',
-                                    headers={
-                                        'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
-                                        'Accept': 'application/vnd.heroku+json; version=3'
-                                    })
+                async with client.delete(f'https://api.heroku.com/apps/altiera/dynos/{os.environ["DYNO"]}',
+                                         headers={
+                                             'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
+                                             'Accept': 'application/vnd.heroku+json; version=3'
+                                         }) as req:
+                    response = await req.text()
+                    if not req.ok:
+                        admin = globals.bot.get_user(globals.ADMIN_ID)
+                        if admin:
+                            await admin.send(embed=utils.custom_embed(list(globals.bot.guilds)[0],
+                                                                      title="Failed to Restart!",
+                                                                      description=response,
+                                                                      fields=[
+                                                                          ["Status:", f"{req.status}", True]
+                                                                      ]))
         else:
             os.execl(sys.executable, 'python', __file__, *sys.argv[1:])
 
