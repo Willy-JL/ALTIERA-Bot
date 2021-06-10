@@ -160,7 +160,7 @@ async def create_request(ctx, description, image=None):
     cur = await globals.db.execute('''
                                        INSERT INTO requests
                                        (requester_id, description, image, status)
-                                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                       VALUES (?, ?, ?, ?)
                                    ''', (ctx.author.id, description, image, "waiting"))
     req_id = cur.get_cursor().lastrowid
     return req_id
