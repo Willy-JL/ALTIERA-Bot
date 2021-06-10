@@ -10,15 +10,15 @@ class Utilities(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name=       "dice",
+    @commands.command(name="dice",
                       description="Roll some dice",
-                      usage=      "{prfx}dice [ max ]`\n**Usage**: `"
-                                  "{prfx}dice [ throws ] [ max ]`\n**Usage**: `"
-                                  "{prfx}dice [ throws ] [ max ] [ modifier ]",
-                      help=       "throws: number of dice throws, default 1, max 10 (optional)\n"
-                                  "max: number of faces (aka max per dice), default 6 max 100 (optional)\n"
-                                  "modifier: number to add or subtract from result, default 0, max +100/-100 (optional)",
-                      aliases=    ["diceroll", "rolldice", "roll"])
+                      usage="{prfx}dice [ max ]`\n**Usage**: `"
+                            "{prfx}dice [ throws ] [ max ]`\n**Usage**: `"
+                            "{prfx}dice [ throws ] [ max ] [ modifier ]",
+                      help="throws: number of dice throws, default 1, max 10 (optional)\n"
+                           "max: number of faces (aka max per dice), default 6 max 100 (optional)\n"
+                           "modifier: number to add or subtract from result, default 0, max +100/-100 (optional)",
+                      aliases=["diceroll", "rolldice", "roll"])
     async def dice(self, ctx, arg1: str = None, arg2: str = None, arg3: str = None):
         if arg1 is not None:
             try:

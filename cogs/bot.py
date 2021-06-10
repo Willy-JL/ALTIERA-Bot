@@ -13,13 +13,13 @@ class Bot(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name=       "help",
+    @commands.command(name="help",
                       description="Think real hard and guess what this does\n"
                                   "Why are you like this?\n"
                                   "Ugh, I guess I'll explain this one too...",
-                      usage=      "{prfx}help [ subcommand ]",
-                      help=       "subcommand: the submenu/command to look up (optional)",
-                      aliases=    [])
+                      usage="{prfx}help [ subcommand ]",
+                      help="subcommand: the submenu/command to look up (optional)",
+                      aliases=[])
     async def help(self, ctx, subcommand=None):
         prfx = globals.bot.command_prefix
         if subcommand and subcommand.startswith(prfx):
@@ -78,11 +78,11 @@ class Bot(commands.Cog,
                                 description=desc)
         return
 
-    @commands.command(name=       "info",
+    @commands.command(name="info",
                       description="Show info and details about the bot",
-                      usage=      "{prfx}info",
-                      help=       "",
-                      aliases=    ["botinfo"])
+                      usage="{prfx}info",
+                      help="",
+                      aliases=["botinfo"])
     async def info(self, ctx):
         await utils.embed_reply(ctx,
                                 title="📊 Bot Info",

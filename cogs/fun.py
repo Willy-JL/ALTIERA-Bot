@@ -11,11 +11,11 @@ class Fun(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name=       "cookie",
+    @commands.command(name="cookie",
                       description="Treat someone to a CyberCookie (cosmetic, no rewards)",
-                      usage=      "{prfx}cookie [ user ]",
-                      help=       "user: the user to give a cookie to (ping, name, id) (optional)",
-                      aliases=    ["cybcookie", "cybercookie"])
+                      usage="{prfx}cookie [ user ]",
+                      help="user: the user to give a cookie to (ping, name, id) (optional)",
+                      aliases=["cybcookie", "cybercookie"])
     async def cookie(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
@@ -52,11 +52,11 @@ class Fun(commands.Cog,
                                                 f"Time to eagerly eat it in complete silence!",
                                     thumbnail="https://cdn.discordapp.com/emojis/766054797673496596.png")
 
-    @commands.command(name=       "burrito",
+    @commands.command(name="burrito",
                       description="Deliver someone a SpaceBurrito (cosmetic, no rewards)",
-                      usage=      "{prfx}burrito [ user ]",
-                      help=       "user: the user to give a burrito to (ping, name, id) (optional)",
-                      aliases=    ["spaceburrito", "galacticburrito"])
+                      usage="{prfx}burrito [ user ]",
+                      help="user: the user to give a burrito to (ping, name, id) (optional)",
+                      aliases=["spaceburrito", "galacticburrito"])
     async def burrito(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:

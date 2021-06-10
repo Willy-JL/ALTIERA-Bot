@@ -11,11 +11,11 @@ class Staff(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name=       "save",
+    @commands.command(name="save",
                       description="Save the bot's database and send a copy of it",
-                      usage=      "{prfx}save",
-                      help=       "",
-                      aliases=    ["backup"])
+                      usage="{prfx}save",
+                      help="",
+                      aliases=["backup"])
     async def save(self, ctx):
         if not utils.is_staff(ctx.author):
             return
@@ -28,19 +28,19 @@ class Staff(commands.Cog,
         await ctx.reply(file=discord.File('db.sqlite3'))
         await ctx.author.send(file=discord.File('db.sqlite3'))
 
-    @commands.group(name=            "gibxp",
-                    description=     "Give a user some xp",
-                    usage=           "{prfx}gibxp [ type ] [ user ] [ amount ]",
-                    help=            "type: either level, cred or assist (required)\n"
-                                     "user: the user to give xp to (ping, name, id) (required)\n"
-                                     "amount: how much xp to give (can be negative) (required)",
-                    aliases=         ["givexp"],
+    @commands.group(name="gibxp",
+                    description="Give a user some xp",
+                    usage="{prfx}gibxp [ type ] [ user ] [ amount ]",
+                    help="type: either level, cred or assist (required)\n"
+                         "user: the user to give xp to (ping, name, id) (required)\n"
+                         "amount: how much xp to give (can be negative) (required)",
+                    aliases=["givexp"],
                     case_insensitive=True)
     async def gibxp(self, ctx):
         if ctx.invoked_subcommand is None:
             pass
 
-    @gibxp.command(name=   "level",
+    @gibxp.command(name="level",
                    aliases=[])
     async def gibxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
@@ -72,7 +72,7 @@ class Staff(commands.Cog,
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} level XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!") + f"\nNew level XP value: `{xp_data['level']}`")
 
-    @gibxp.command(name=   "cred",
+    @gibxp.command(name="cred",
                    aliases=[])
     async def gibxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
@@ -104,7 +104,7 @@ class Staff(commands.Cog,
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!") + f"\nNew cred XP value: `{xp_data['cred']}`")
 
-    @gibxp.command(name=   "assistance",
+    @gibxp.command(name="assistance",
                    aliases=["assist"])
     async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
@@ -136,19 +136,19 @@ class Staff(commands.Cog,
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!") + f"\nNew assistance XP value: `{xp_data['assistance']}`")
 
-    @commands.group(name=            "setxp",
-                    description=     "Change a user's xp value",
-                    usage=           "{prfx}setxp [ type ] [ user ] [ amount ]",
-                    help=            "type: either level, cred or assist (required)\n"
-                                     "user: the user to change the xp of (ping, name, id) (required)\n"
-                                     "amount: new xp value (negative will set 0) (required)",
-                    aliases=         ["changexp"],
+    @commands.group(name="setxp",
+                    description="Change a user's xp value",
+                    usage="{prfx}setxp [ type ] [ user ] [ amount ]",
+                    help="type: either level, cred or assist (required)\n"
+                         "user: the user to change the xp of (ping, name, id) (required)\n"
+                         "amount: new xp value (negative will set 0) (required)",
+                    aliases=["changexp"],
                     case_insensitive=True)
     async def setxp(self, ctx):
         if ctx.invoked_subcommand is None:
             pass
 
-    @setxp.command(name=   "level",
+    @setxp.command(name="level",
                    aliases=[])
     async def setxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
@@ -180,7 +180,7 @@ class Staff(commands.Cog,
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s level XP to {xp_data['level']}!")
 
-    @setxp.command(name=   "cred",
+    @setxp.command(name="cred",
                    aliases=[])
     async def setxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
@@ -212,7 +212,7 @@ class Staff(commands.Cog,
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s cred XP to {xp_data['cred']}!")
 
-    @setxp.command(name=   "assistance",
+    @setxp.command(name="assistance",
                    aliases=["assist"])
     async def setxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
@@ -244,11 +244,11 @@ class Staff(commands.Cog,
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s assistance XP to {xp_data['assistance']}!")
 
-    @commands.command(name=       "restart",
+    @commands.command(name="restart",
                       description="Save DB and restart the bot",
-                      usage=      "{prfx}restart",
-                      help=       "",
-                      aliases=    ["reboot"])
+                      usage="{prfx}restart",
+                      help="",
+                      aliases=["reboot"])
     async def restart(self, ctx):
         if not utils.is_staff(ctx.author):
             return

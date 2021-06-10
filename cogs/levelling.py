@@ -23,11 +23,11 @@ class Levelling(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name=       "stats",
+    @commands.command(name="stats",
                       description="See your server stats (level, cred, assistance)",
-                      usage=      "{prfx}stats [ user ]",
-                      help=       "user: the user to check stats for (ping, name, id) (optional)",
-                      aliases=    ["levels", "level", "cred", "assistance", "assist"])
+                      usage="{prfx}stats [ user ]",
+                      help="user: the user to check stats for (ping, name, id) (optional)",
+                      aliases=["levels", "level", "cred", "assistance", "assist"])
     async def stats(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
@@ -160,12 +160,12 @@ class Levelling(commands.Cog,
         binary.seek(0)
         await ctx.reply(file=discord.File(binary, filename=username[:16] + ".png"))
 
-    @commands.command(name=       "xp",
+    @commands.command(name="xp",
                       description="See your XP amounts (levels depend on XP amount)\n"
                                   "LVL1 = 1000XP, LVL2 = 2000XP, LVL3 = 3000XP, LVL4 = 4000XP and so on...",
-                      usage=      "{prfx}xp [ user ]",
-                      help=       "user: the user to check xp amounts for (ping, name, id) (optional)",
-                      aliases=    ["xpamount", "levelxp", "credxp", "assistancexp", "assistxp"])
+                      usage="{prfx}xp [ user ]",
+                      help="user: the user to check xp amounts for (ping, name, id) (optional)",
+                      aliases=["xpamount", "levelxp", "credxp", "assistancexp", "assistxp"])
     async def xp(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         # Convert target input to discord.Member
         if not target:
@@ -198,11 +198,11 @@ class Levelling(commands.Cog,
                                 ],
                                 thumbnail=target.avatar_url)
 
-    @commands.group(name=              "top",
-                      description=     "List top ten users per XP type",
-                      usage=           "{prfx}top [ type ]",
-                      help=            "type: either level, cred or assist (required)",
-                      aliases=         ["top10", "leaderboard", "ranking"],
+    @commands.group(name="top",
+                      description="List top ten users per XP type",
+                      usage="{prfx}top [ type ]",
+                      help="type: either level, cred or assist (required)",
+                      aliases=["top10", "leaderboard", "ranking"],
                       case_insensitive=True)
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -212,7 +212,7 @@ class Levelling(commands.Cog,
                                                 f"{globals.bot.command_prefix}top **cred**: Top 10 members for Server Cred\n"
                                                 f"{globals.bot.command_prefix}top **assistance**: Top 10 member for Assistance")
 
-    @top.command(name=   "level",
+    @top.command(name="level",
                  aliases=[])
     async def top_level(self, ctx):
         top_users = await db.get_top_users(10, "level")
@@ -232,7 +232,7 @@ class Levelling(commands.Cog,
                                 title=f"🏆 Server Level Leaderboard:",
                                 description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
 
-    @top.command(name=   "cred",
+    @top.command(name="cred",
                  aliases=[])
     async def top_cred(self, ctx):
         top_users = await db.get_top_users(10, "cred")
@@ -252,7 +252,7 @@ class Levelling(commands.Cog,
                                 title=f"🏆 Server Cred Leaderboard:",
                                 description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
 
-    @top.command(name=   "assistance",
+    @top.command(name="assistance",
                  aliases=["assist"])
     async def top_assistance(self, ctx):
         top_users = await db.get_top_users(10, "assistance")
@@ -272,12 +272,12 @@ class Levelling(commands.Cog,
                                 title=f"🏆 Server Assistance Leaderboard:",
                                 description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
 
-    @commands.command(name=       "rep",
+    @commands.command(name="rep",
                       description="Gift a cool person some reputation (500 cred XP)\n"
                                   "Only once every 24 hours (or sooner if the bot restarts)",
-                      usage=      "{prfx}rep [ user ]",
-                      help=       "user: the user to give rep to (ping, name, id) (required)",
-                      aliases=    ["reputation", "giverep", "givereputation"])
+                      usage="{prfx}rep [ user ]",
+                      help="user: the user to give rep to (ping, name, id) (required)",
+                      aliases=["reputation", "giverep", "givereputation"])
     async def rep(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
         if not str(ctx.author.id) in rep_cooldown_users:
             # Convert target input to discord.Member
@@ -319,12 +319,12 @@ class Levelling(commands.Cog,
                                     description=f"You can only use that command once every **24 hours**!\n"
                                                 f"You'll be able to use it again in roughly **{utils.time_to_restart()}**")
 
-    @commands.command(name=       "daily",
+    @commands.command(name="daily",
                       description="Claim your daily reward (500 level XP)\n"
                                   "Only once every 24 hours (or sooner if the bot restarts)",
-                      usage=      "{prfx}daily",
-                      help=       "",
-                      aliases=    ["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"])
+                      usage="{prfx}daily",
+                      help="",
+                      aliases=["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"])
     async def daily(self, ctx):
         if not str(ctx.author.id) in daily_cooldown_users:
             await db.add_user_xp(ctx.author.id, level=globals.DAILY_LEVEL_AMOUNT)
