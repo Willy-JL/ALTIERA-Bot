@@ -259,8 +259,7 @@ async def imgur_image_upload(img: bytes):
                                        "Authorization": f"Client-ID {globals.IMGUR_CLIENT_ID}"
                                    },
                                    data = {
-                                       'image': base64.b64encode(img),
-                                       "type": "base64"
+                                       'image': img
                                    }) as req:
                 resp = await req.json()
         print(resp)
