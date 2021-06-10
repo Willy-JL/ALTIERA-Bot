@@ -161,7 +161,7 @@ async def create_request(ctx, description, image=None):
                                        INSERT INTO requests
                                        (requester_id, description, image, status)
                                        VALUES (?, ?, ?, ?)
-                                   ''', (ctx.author.id, str(description), image, "waiting"))
+                                   ''', (ctx.author.id, description, image, "waiting"))
     req_id = cur.get_cursor().lastrowid
     return req_id
 

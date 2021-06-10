@@ -34,7 +34,7 @@ class Requests(commands.Cog,
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
                 img_bytes = await attachment.read(use_cached=True)
-                image = utils.imgur_image_upload(img_bytes)
+                image = await utils.imgur_image_upload(img_bytes)
                 break
 
         req_id = await db.create_request(ctx, description, image)
