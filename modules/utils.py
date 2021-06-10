@@ -4,11 +4,12 @@ import datetime
 import discord
 import asqlite
 import aiohttp
-import atexit
 import base64
 import zlib
 import json
+import sys
 import io
+import os
 
 # Local imports
 from modules import db, globals
@@ -38,7 +39,6 @@ async def get_db():
 
 
 # Save database
-@atexit.register
 async def save_db():
     if globals.db is not None:
         await globals.db.commit()
@@ -61,6 +61,30 @@ async def save_db():
                     print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
                     return False
                 return True
+
+
+# Restart the bot, dyno restart on heroku
+async def restart():
+    if os.environ.get("DYNO"):
+        async with aiohttp.ClientSession() as client:
+            async with client.delete(f'https://api.heroku.com/apps/altiera/dynos/{os.environ["DYNO"]}',
+                                     headers={
+                                         'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
+                                         'Accept':        f'application/vnd.heroku+json; version=3'
+                                     }) as req:
+                response = await req.text()
+                if not req.ok:
+                    admin = globals.bot.get_user(globals.ADMIN_ID)
+                    if admin:
+                        await admin.send(embed=custom_embed(list(globals.bot.guilds)[0],
+                                                            title="Failed to Restart!",
+                                                            description=response,
+                                                            fields=[
+                                                                ["Status:", f"{req.status}", True]
+                                                            ]))
+    else:
+        import main  # I know, I know, please Lord forgive me
+        os.execl(sys.executable, 'python', main.__file__, *sys.argv[1:])
 
 
 # Setup persistent image components
