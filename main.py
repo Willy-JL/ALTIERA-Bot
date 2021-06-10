@@ -75,6 +75,7 @@ if __name__ == '__main__':
     globals.bot.load_extension('cogs.bot')
     globals.bot.load_extension('cogs.fun')
     globals.bot.load_extension('cogs.levelling')
+    globals.bot.load_extension('cogs.requests')
     globals.bot.load_extension('cogs.utilities')
     globals.bot.load_extension('cogs.staff')
     globals.bot.load_extension('jishaku')
