@@ -35,7 +35,7 @@ async def get_db():
             f.write(decompressed)
         globals.db = await asqlite.connect("db.sqlite3")
         await db.init_db()
-        print("Fetched database!")
+        print("Fetched DB!")
 
 
 # Save database
