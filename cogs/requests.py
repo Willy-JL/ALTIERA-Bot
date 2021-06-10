@@ -29,6 +29,7 @@ class Requests(commands.Cog,
                                                            title="💢 Please provide a description of your request!"))
             return
 
+        description = str(description)
         image = None
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
