@@ -254,7 +254,7 @@ class Staff(commands.Cog,
             return
 
         await utils.embed_reply(ctx,
-                                description=f"👌 Restarting...")
+                                title=f"👌 Restarting...")
         await utils.restart()
 
 
