@@ -53,7 +53,7 @@ if __name__ == '__main__':
     # Periodically save database
     async def database_loop():
         while True:
-            await asyncio.sleep(5)
+            await asyncio.sleep(900)
             await utils.save_db()
             if globals.bot.user:  # Check if logged in
                 admin = globals.bot.get_user(globals.ADMIN_ID)
@@ -61,7 +61,6 @@ if __name__ == '__main__':
                     await admin.send(file=discord.File('db.sqlite3'))
                 else:
                     print("Couldn't DM database backup!")
-            await asyncio.sleep(895)
     globals.loop.create_task(database_loop())
 
     # Enable intents
