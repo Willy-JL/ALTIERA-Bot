@@ -170,8 +170,8 @@ async def add_request_message_info(req_id, msg):
     await globals.db.execute('''
                                  UPDATE requests
                                  SET
-                                     server_id =  ?
-                                     channel_id = ?
+                                     server_id =  ?,
+                                     channel_id = ?,
                                      message_id = ?
                                  WHERE id=?
                              ''', (msg.guild.id, msg.channel.id, msg.id, req_id))
