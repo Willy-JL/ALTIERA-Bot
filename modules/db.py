@@ -13,15 +13,15 @@ async def init_db():
     await globals.db.execute("""
                                  CREATE TABLE IF NOT EXISTS requests (
                                      id           INTEGER PRIMARY KEY AUTOINCREMENT,
-                                     server_id    INTEGER,
-                                     channel_id   INTEGER,
-                                     message_id   INTEGER,
-                                     requester_id INTEGER,
-                                     description  TEXT,
-                                     image        TEXT,
-                                     status       TEXT,
-                                     link         TEXT,
-                                     modder_id    INTEGER
+                                     server_id    INTEGER DEFAULT 0,
+                                     channel_id   INTEGER DEFAULT 0,
+                                     message_id   INTEGER DEFAULT 0,
+                                     requester_id INTEGER DEFAULT 0,
+                                     description  TEXT    DEFAULT "",
+                                     image        TEXT    DEFAULT "",
+                                     status       TEXT    DEFAULT "",
+                                     link         TEXT    DEFAULT "",
+                                     modder_id    INTEGER DEFAULT 0
                                  )
                              """)
 
