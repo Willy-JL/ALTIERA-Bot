@@ -1,5 +1,6 @@
 from fuzzywuzzy import process, fuzz
 from PIL import Image, ImageFont
+import itertools
 import datetime
 import aiofiles
 import discord
@@ -272,3 +273,8 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
     embed_to_send = custom_embed(ctx.guild, title=title, description=description, fields=fields, thumbnail=thumbnail, image=image, add_timestamp=add_timestamp)
     await ctx.reply(content,
                     embed=embed_to_send)
+
+
+# Get all possible case variations for a string
+def case_insensitive(prefix):
+    return list(set(map(''.join, itertools.product(*((char.upper(), char.lower()) for char in prefix)))))
