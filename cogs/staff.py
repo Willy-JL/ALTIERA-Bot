@@ -181,7 +181,7 @@ class Staff(commands.Cog,
         # Actual command
         xp_data = await db.set_user_xp(target.id, level=amount)
         await utils.embed_reply(ctx,
-                                description=f"👌 Set <@!{target.id}>'s level XP successfully!"
+                                description=f"👌 Set <@!{target.id}>'s level XP successfully!\n"
                                             f"New level XP value: `{xp_data['level']}`")
 
     @setxp.command(name="cred",
@@ -214,7 +214,7 @@ class Staff(commands.Cog,
         # Actual command
         xp_data = await db.set_user_xp(target.id, cred=amount)
         await utils.embed_reply(ctx,
-                                description=f"👌 Set <@!{target.id}>'s cred XP successfully!"
+                                description=f"👌 Set <@!{target.id}>'s cred XP successfully!\n"
                                             f"New cred XP value: `{xp_data['cred']}`")
 
     @setxp.command(name="assistance",
@@ -247,7 +247,7 @@ class Staff(commands.Cog,
         # Actual command
         xp_data = await db.set_user_xp(target.id, assistance=amount)
         await utils.embed_reply(ctx,
-                                description=f"👌 Set <@!{target.id}>'s assistance XP successfully!"
+                                description=f"👌 Set <@!{target.id}>'s assistance XP successfully!\n"
                                             f"New assistance XP value: `{xp_data['assistance']}`")
 
     @commands.command(name="restart",
