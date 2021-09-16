@@ -8,7 +8,6 @@ import io
 # Local imports
 from modules import db, globals, utils, xp
 
-
 rep_cooldown_users   = set()
 daily_cooldown_users = set()
 
