@@ -1,8 +1,8 @@
 from fuzzywuzzy import process, fuzz
 from PIL import Image, ImageFont
 import datetime
+import aiofiles
 import discord
-import asqlite
 import aiohttp
 import base64
 import zlib
@@ -31,9 +31,8 @@ async def get_db():
             db_data = await req.text()
         decoded = base64.b85decode(db_data.encode("utf-8"))
         decompressed = zlib.decompress(decoded)
-        with open('db.sqlite3', 'wb') as f:
-            f.write(decompressed)
-        globals.db = await asqlite.connect("db.sqlite3")
+        with aiofiles.open('db.sqlite3', 'wb') as f:
+            await f.write(decompressed)
         await db.init_db()
         print("Fetched DB!")
 
@@ -42,8 +41,8 @@ async def get_db():
 async def save_db():
     if globals.db is not None:
         await globals.db.commit()
-        with open('db.sqlite3', 'rb') as f:
-            raw = f.read()
+        with aiofiles.open('db.sqlite3', 'rb') as f:
+            raw = await f.read()
         compressed = zlib.compress(raw, zlib.Z_BEST_COMPRESSION)
         encoded = base64.b85encode(compressed)
         db_data = encoded.decode("utf-8")

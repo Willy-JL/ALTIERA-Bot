@@ -1,6 +1,7 @@
-psutil
-Pillow
-jishaku
-discord.py
 fuzzywuzzy[speedup]
-git+https://github.com/Rapptz/asqlite@master
+discord.py
+aiosqlite
+aiofiles
+jishaku
+Pillow
+psutil
