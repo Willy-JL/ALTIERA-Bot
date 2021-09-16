@@ -67,7 +67,7 @@ async def save_db():
 async def restart():
     if os.environ.get("DYNO"):
         async with aiohttp.ClientSession() as client:
-            async with client.delete(f'https://api.heroku.com/apps/altiera/dynos/{os.environ["DYNO"]}',
+            async with client.delete(f'https://api.heroku.com/apps/{os.environ.get("HEROKU_APP_NAME")}/dynos/{os.environ["DYNO"]}',
                                      headers={
                                          'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
                                          'Accept':        f'application/vnd.heroku+json; version=3'
