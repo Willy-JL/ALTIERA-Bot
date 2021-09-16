@@ -276,5 +276,5 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
 
 
 # Get all possible case variations for a string
-def case_insensitive(prefix):
-    return list(set(map(''.join, itertools.product(*((char.upper(), char.lower()) for char in prefix)))))
+def case_insensitive(text):
+    return list(set(map(''.join, itertools.product(*((char.upper(), char.lower()) for char in text)))))

@@ -141,7 +141,7 @@ if __name__ == '__main__':
     # Message handler and callback dispatcher
     @globals.bot.event
     async def on_message(message):
-        if message.content and message.content.startswith(globals.bot.command_prefix):
+        if message.content and message.content.lower().startswith(globals.BOT_PREFIX.lower()):
             await globals.bot.process_commands(message)
         else:
             await xp.process_xp(message)

@@ -21,7 +21,7 @@ class Bot(commands.Cog,
                       help="subcommand: the submenu/command to look up (optional)",
                       aliases=[])
     async def help(self, ctx, subcommand=None):
-        prfx = globals.bot.command_prefix
+        prfx = globals.BOT_PREFIX
         if subcommand and subcommand.startswith(prfx):
             subcommand = subcommand[len(prfx):]
         if subcommand:

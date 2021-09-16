@@ -207,9 +207,9 @@ class Levelling(commands.Cog,
         if ctx.invoked_subcommand is None:
             await utils.embed_reply(ctx,
                                     title=f"🏆 Leaderboard Categories:",
-                                    description=f"{globals.bot.command_prefix}top **level**: Top 10 members for Server Level\n"
-                                                f"{globals.bot.command_prefix}top **cred**: Top 10 members for Server Cred\n"
-                                                f"{globals.bot.command_prefix}top **assistance**: Top 10 member for Assistance")
+                                    description=f"{globals.BOT_PREFIX}top **level**: Top 10 members for Server Level\n"
+                                                f"{globals.BOT_PREFIX}top **cred**: Top 10 members for Server Cred\n"
+                                                f"{globals.BOT_PREFIX}top **assistance**: Top 10 member for Assistance")
 
     @top.command(name="level",
                  aliases=[])
