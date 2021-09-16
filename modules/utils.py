@@ -31,7 +31,7 @@ async def get_db():
             db_data = await req.text()
         decoded = base64.b85decode(db_data.encode("utf-8"))
         decompressed = zlib.decompress(decoded)
-        with aiofiles.open('db.sqlite3', 'wb') as f:
+        async with aiofiles.open('db.sqlite3', 'wb') as f:
             await f.write(decompressed)
         await db.init_db()
         print("Fetched DB!")
@@ -41,7 +41,7 @@ async def get_db():
 async def save_db():
     if globals.db is not None:
         await globals.db.commit()
-        with aiofiles.open('db.sqlite3', 'rb') as f:
+        async with aiofiles.open('db.sqlite3', 'rb') as f:
             raw = await f.read()
         compressed = zlib.compress(raw, zlib.Z_BEST_COMPRESSION)
         encoded = base64.b85encode(compressed)
