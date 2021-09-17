@@ -96,10 +96,10 @@ if __name__ == '__main__':
             print("Saving DB...")
             update_presence_loop.stop()
             await utils.save_db()
+            await globals.db.close()
             admin = globals.bot.get_user(globals.ADMIN_ID)
             if admin:
                 await admin.send(file=discord.File('db.sqlite3'))
-            await globals.db.close()
             print("Exiting...")
             globals.loop.stop()
             os._exit(os.EX_OK)

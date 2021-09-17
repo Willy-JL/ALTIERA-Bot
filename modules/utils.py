@@ -41,7 +41,8 @@ async def get_db():
 # Save database
 async def save_db():
     if globals.db is not None:
-        await globals.db.commit()
+        if globals.db._running is True:
+            await db.save_to_disk()
         async with aiofiles.open('db.sqlite3', 'rb') as f:
             raw = await f.read()
         compressed = zlib.compress(raw, zlib.Z_BEST_COMPRESSION)

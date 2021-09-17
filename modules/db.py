@@ -1,4 +1,5 @@
 import aiosqlite
+import asyncio
 
 # Local imports
 from modules import globals
@@ -31,7 +32,25 @@ async def init_db():
                              """)
 
 
+# Committing should save to disk, but for some reason it only saves to file after closing
+async def save_to_disk():
+    await globals.db.commit()
+    await globals.db.close()
+    await init_db()
+
+
+# Ensure that the database is running and available
+async def ensure_database():
+    await asyncio.wait_for(_ensure_database(), timeout=30)
+
+
+async def _ensure_database():
+    while globals.db is None or not globals.db._running:
+        await asyncio.sleep(0.25)
+
+
 async def ensure_user_data(user_id):
+    await ensure_database()
     await globals.db.execute("""
                                  INSERT INTO stats
                                  (id, level, cred, assistance)
@@ -41,6 +60,7 @@ async def ensure_user_data(user_id):
 
 
 async def get_user_xp(user_id, ensure=True):
+    # await ensure_database()
     # cur = await globals.db.execute("""
     #                                    INSERT INTO stats
     #                                    (id, level, cred, assistance)
@@ -52,6 +72,7 @@ async def get_user_xp(user_id, ensure=True):
     #                                """, (user_id, user_id,))
     if ensure:
         await ensure_user_data(user_id)
+    await ensure_database()
     cur = await globals.db.execute("""
                                        SELECT level, cred, assistance
                                        FROM stats
@@ -61,6 +82,7 @@ async def get_user_xp(user_id, ensure=True):
 
 
 async def add_user_xp(user_id, level=0, cred=0, assistance=0):
+    # await ensure_database()
     # cur = await globals.db.execute("""
     #                                    UPDATE stats
     #                                    SET
@@ -81,6 +103,7 @@ async def add_user_xp(user_id, level=0, cred=0, assistance=0):
     #                                """, (level, level, cred, cred, assistance, assistance, user_id,))
     # return dict(await cur.fetchone())
     await ensure_user_data(user_id)
+    await ensure_database()
     await globals.db.execute("""
                                  UPDATE stats
                                  SET
@@ -102,6 +125,7 @@ async def add_user_xp(user_id, level=0, cred=0, assistance=0):
 
 
 async def set_user_xp(user_id, level=None, cred=None, assistance=None):
+    # await ensure_database()
     # cur = await globals.db.execute("""
     #                                    UPDATE stats
     #                                    SET
@@ -125,6 +149,7 @@ async def set_user_xp(user_id, level=None, cred=None, assistance=None):
     #                                """, (level, level, level, cred, cred, cred, assistance, assistance, assistance, user_id,))
     # return dict(await cur.fetchone())
     await ensure_user_data(user_id)
+    await ensure_database()
     await globals.db.execute("""
                                  UPDATE stats
                                  SET
@@ -149,6 +174,7 @@ async def set_user_xp(user_id, level=None, cred=None, assistance=None):
 
 
 async def get_top_users(limit, sort_by):
+    await ensure_database()
     cur = await globals.db.execute(f"""
                                        SELECT id, {sort_by}
                                        FROM stats
@@ -162,6 +188,7 @@ async def get_top_users(limit, sort_by):
 
 
 async def create_request(ctx, description, image=None):
+    await ensure_database()
     cur = await globals.db.execute("""
                                        INSERT INTO requests
                                        (requester_id, description, image, status)
@@ -172,6 +199,7 @@ async def create_request(ctx, description, image=None):
 
 
 async def add_request_message_info(req_id, msg):
+    await ensure_database()
     await globals.db.execute("""
                                  UPDATE requests
                                  SET
