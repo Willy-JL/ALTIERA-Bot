@@ -311,7 +311,8 @@ class Requests(commands.Cog,
     @commands.command(name="release",
                       description="Release a mod request",
                       usage="{prfx}release [ id ] [ link ]",
-                      help="id: the id of the request to release (required)",
+                      help="id: the id of the request to release (required)\n"
+                           "link: the link to the released mod",
                       aliases=["publish"])
     async def release(self, ctx, req_id=None, link=None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
