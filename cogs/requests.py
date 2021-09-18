@@ -1,4 +1,3 @@
-from discord.errors import NotFound
 from discord.ext import commands
 
 # Local imports
@@ -79,7 +78,7 @@ class Requests(commands.Cog,
 
         try:
             requester_id, modder_id, status, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "image", "channel_id", "message_id")
-        except NotFound:
+        except FileNotFoundError:
             await ctx.message.delete()
             await ctx.author.send(embed=utils.custom_embed(ctx.guild,
                                                            title=f"💢 There is no request with id `{req_id}`!"))
@@ -158,7 +157,7 @@ class Requests(commands.Cog,
 
         try:
             requester_id, status, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "channel_id", "message_id")
-        except NotFound:
+        except FileNotFoundError:
             await ctx.message.delete()
             await ctx.author.send(embed=utils.custom_embed(ctx.guild,
                                                            title=f"💢 There is no request with id `{req_id}`!"))
@@ -210,7 +209,7 @@ class Requests(commands.Cog,
 
         try:
             requester_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "description", "image", "channel_id", "message_id")
-        except NotFound:
+        except FileNotFoundError:
             await ctx.message.delete()
             await ctx.author.send(embed=utils.custom_embed(ctx.guild,
                                                            title=f"💢 There is no request with id `{req_id}`!"))
@@ -271,7 +270,7 @@ class Requests(commands.Cog,
 
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
-        except NotFound:
+        except FileNotFoundError:
             await ctx.message.delete()
             await ctx.author.send(embed=utils.custom_embed(ctx.guild,
                                                            title=f"💢 There is no request with id `{req_id}`!"))
@@ -333,7 +332,7 @@ class Requests(commands.Cog,
 
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
-        except NotFound:
+        except FileNotFoundError:
             await ctx.message.delete()
             await ctx.author.send(embed=utils.custom_embed(ctx.guild,
                                                            title=f"💢 There is no request with id `{req_id}`!"))
@@ -394,7 +393,7 @@ class Requests(commands.Cog,
 
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
-        except NotFound:
+        except FileNotFoundError:
             await ctx.message.delete()
             await ctx.author.send(embed=utils.custom_embed(ctx.guild,
                                                            title=f"💢 There is no request with id `{req_id}`!"))

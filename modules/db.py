@@ -1,4 +1,3 @@
-from discord.errors import NotFound
 import aiosqlite
 import asyncio
 
@@ -224,7 +223,7 @@ async def get_request_info(req_id, *args):
                                    """, (req_id,))
     req_info = await cur.fetchone()
     if req_info is None:
-        raise NotFound
+        raise FileNotFoundError
     return req_info
 
 
