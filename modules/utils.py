@@ -100,12 +100,12 @@ def setup_persistent_components():
     globals.default_avatar = Image.open('assets/default_avatar.png').resize((200, 200))
 
     globals.overlays_default = Image.open('assets/overlays/default.png')
-    globals.overlays_staff =   Image.open('assets/overlays/staff.png'  )
-    globals.overlays_admin =   Image.open('assets/overlays/admin.png'  )
+    globals.overlays_staff   = Image.open('assets/overlays/staff.png'  )
+    globals.overlays_admin   = Image.open('assets/overlays/admin.png'  )
 
     globals.shards_orange = Image.open("assets/shards/orange.png").resize((33, 28))
-    globals.shards_white =  Image.open("assets/shards/white.png" ).resize((33, 28))
-    globals.shards_teal =   Image.open("assets/shards/teal.png"  ).resize((33, 28))
+    globals.shards_white  = Image.open("assets/shards/white.png" ).resize((33, 28))
+    globals.shards_teal   = Image.open("assets/shards/teal.png"  ).resize((33, 28))
 
     globals.bars = {}
     for color in ["blue_white", "orange_white", "teal_white", "white_blue", "white_orange"]:
@@ -195,7 +195,7 @@ async def get_best_member_match(ctx, target):
         if user.nick:
             name_list.append(user.nick)
     results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-    sort_helper = [(await xp_from_name(ctx, name, 'level'), name) for name in results]
+    sort_helper = [(await xp_from_name(ctx, name, 0), name) for name in results]
     sort_helper.sort(key=lambda item: item[0], reverse=True)
     return ctx.guild.get_member_named(sort_helper[0][1])
 
@@ -228,17 +228,17 @@ def pretty_size(size, precision=0):
 def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True):
     if add_timestamp:
         embed_to_send = (discord.Embed(title=title,
-                                    description=description,
-                                    color=discord.Color(0xEDE400),
-                                    timestamp=datetime.datetime.utcnow())
-                                    .set_footer(text=guild.name,
-                                                icon_url=guild.icon_url))
+                                       description=description,
+                                       color=discord.Color(0xEDE400),
+                                       timestamp=datetime.datetime.utcnow())
+                                       .set_footer(text=guild.name,
+                                                   icon_url=guild.icon_url))
     else:
         embed_to_send = (discord.Embed(title=title,
-                                    description=description,
-                                    color=discord.Color(0xEDE400))
-                                    .set_footer(text=guild.name,
-                                                icon_url=guild.icon_url))
+                                       description=description,
+                                       color=discord.Color(0xEDE400))
+                                       .set_footer(text=guild.name,
+                                                   icon_url=guild.icon_url))
     if image:
         embed_to_send.set_image(url=image)
     if thumbnail:
@@ -271,7 +271,13 @@ async def imgur_image_upload(img: bytes):
 
 # Cleaner reply function
 async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True):
-    embed_to_send = custom_embed(ctx.guild, title=title, description=description, fields=fields, thumbnail=thumbnail, image=image, add_timestamp=add_timestamp)
+    embed_to_send = custom_embed(ctx.guild,
+                                 title=title,
+                                 description=description,
+                                 fields=fields,
+                                 thumbnail=thumbnail,
+                                 image=image,
+                                 add_timestamp=add_timestamp)
     await ctx.reply(content,
                     embed=embed_to_send)
 

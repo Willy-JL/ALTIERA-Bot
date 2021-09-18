@@ -31,7 +31,7 @@ class Staff(commands.Cog,
     @commands.group(name="gibxp",
                     description="Give a user some xp",
                     usage="{prfx}gibxp [ type ] [ user ] [ amount ]",
-                    help="type: either level, cred or assist (required)\n"
+                    help="type: either level, cred or assistance (required)\n"
                          "user: the user to give xp to (ping, name, id) (required)\n"
                          "amount: how much xp to give (can be negative) (required)",
                     aliases=["givexp"],
@@ -68,10 +68,10 @@ class Staff(commands.Cog,
                                     title=f"💢 That is not a valid user!")
             return
         # Actual command
-        xp_data = await db.add_user_xp(target.id, level=amount)
+        level_xp, _, _ = await db.add_user_xp(target.id, level=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} level XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!\n") +
-                                             f"New level XP value: `{xp_data['level']}`")
+                                             f"New level XP value: `{level_xp}`")
 
     @gibxp.command(name="cred",
                    aliases=[])
@@ -101,10 +101,10 @@ class Staff(commands.Cog,
                                     title=f"💢 That is not a valid user!")
             return
         # Actual command
-        xp_data = await db.add_user_xp(target.id, cred=amount)
+        _, cred_xp, _ = await db.add_user_xp(target.id, cred=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!\n") +
-                                             f"New cred XP value: `{xp_data['cred']}`")
+                                             f"New cred XP value: `{cred_xp}`")
 
     @gibxp.command(name="assistance",
                    aliases=["assist"])
@@ -134,15 +134,15 @@ class Staff(commands.Cog,
                                     title=f"💢 That is not a valid user!")
             return
         # Actual command
-        xp_data = await db.add_user_xp(target.id, assistance=amount)
+        _, _, assistance_xp = await db.add_user_xp(target.id, assistance=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!\n") +
-                                             f"New assistance XP value: `{xp_data['assistance']}`")
+                                             f"New assistance XP value: `{assistance_xp}`")
 
     @commands.group(name="setxp",
                     description="Change a user's xp value",
                     usage="{prfx}setxp [ type ] [ user ] [ amount ]",
-                    help="type: either level, cred or assist (required)\n"
+                    help="type: either level, cred or assistance (required)\n"
                          "user: the user to change the xp of (ping, name, id) (required)\n"
                          "amount: new xp value (negative will set 0) (required)",
                     aliases=["changexp"],
@@ -179,10 +179,10 @@ class Staff(commands.Cog,
                                     title=f"💢 That is not a valid user!")
             return
         # Actual command
-        xp_data = await db.set_user_xp(target.id, level=amount)
+        level_xp, _, _ = await db.set_user_xp(target.id, level=amount)
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s level XP successfully!\n"
-                                            f"New level XP value: `{xp_data['level']}`")
+                                            f"New level XP value: `{level_xp}`")
 
     @setxp.command(name="cred",
                    aliases=[])
@@ -212,10 +212,10 @@ class Staff(commands.Cog,
                                     title=f"💢 That is not a valid user!")
             return
         # Actual command
-        xp_data = await db.set_user_xp(target.id, cred=amount)
+        _, cred_xp, _ = await db.set_user_xp(target.id, cred=amount)
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s cred XP successfully!\n"
-                                            f"New cred XP value: `{xp_data['cred']}`")
+                                            f"New cred XP value: `{cred_xp}`")
 
     @setxp.command(name="assistance",
                    aliases=["assist"])
@@ -245,10 +245,10 @@ class Staff(commands.Cog,
                                     title=f"💢 That is not a valid user!")
             return
         # Actual command
-        xp_data = await db.set_user_xp(target.id, assistance=amount)
+        _, _, assistance_xp = await db.set_user_xp(target.id, assistance=amount)
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s assistance XP successfully!\n"
-                                            f"New assistance XP value: `{xp_data['assistance']}`")
+                                            f"New assistance XP value: `{assistance_xp}`")
 
     @commands.command(name="restart",
                       description="Save DB and restart the bot",

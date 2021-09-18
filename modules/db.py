@@ -1,3 +1,4 @@
+from discord.errors import NotFound
 import aiosqlite
 import asyncio
 
@@ -7,7 +8,7 @@ from modules import globals
 
 async def init_db():
     globals.db = await aiosqlite.connect("db.sqlite3")
-    globals.db.row_factory = aiosqlite.Row
+    # globals.db.row_factory = aiosqlite.Row  # return sqlite3.Row instead of tuple
     await globals.db.execute("""
                                  CREATE TABLE IF NOT EXISTS stats (
                                      id         INTEGER PRIMARY KEY,
@@ -54,7 +55,8 @@ async def ensure_user_data(user_id):
     await globals.db.execute("""
                                  INSERT INTO stats
                                  (id, level, cred, assistance)
-                                 VALUES (?, 0, 0, 0)
+                                 VALUES
+                                 (?,  0,     0,    0         )
                                  ON CONFLICT DO NOTHING
                              """, (user_id,))
 
@@ -64,12 +66,14 @@ async def get_user_xp(user_id, ensure=True):
     # cur = await globals.db.execute("""
     #                                    INSERT INTO stats
     #                                    (id, level, cred, assistance)
-    #                                    VALUES (?, 0, 0, 0)
+    #                                    VALUES
+    #                                    (?,  0,     0,    0         )
     #                                    ON CONFLICT DO
     #                                        UPDATE SET id=id
     #                                        WHERE id=?
     #                                    RETURNING level, cred, assistance
     #                                """, (user_id, user_id,))
+    # return await cur.fetchone()
     if ensure:
         await ensure_user_data(user_id)
     await ensure_database()
@@ -78,7 +82,7 @@ async def get_user_xp(user_id, ensure=True):
                                        FROM stats
                                        WHERE id=?
                                    """, (user_id,))
-    return dict(await cur.fetchone())
+    return await cur.fetchone()
 
 
 async def add_user_xp(user_id, level=0, cred=0, assistance=0):
@@ -101,7 +105,7 @@ async def add_user_xp(user_id, level=0, cred=0, assistance=0):
     #                                    WHERE id=?
     #                                    RETURNING level, cred, assistance
     #                                """, (level, level, cred, cred, assistance, assistance, user_id,))
-    # return dict(await cur.fetchone())
+    # return await cur.fetchone()
     await ensure_user_data(user_id)
     await ensure_database()
     await globals.db.execute("""
@@ -147,7 +151,7 @@ async def set_user_xp(user_id, level=None, cred=None, assistance=None):
     #                                    WHERE id=?
     #                                    RETURNING level, cred, assistance
     #                                """, (level, level, level, cred, cred, cred, assistance, assistance, assistance, user_id,))
-    # return dict(await cur.fetchone())
+    # return await cur.fetchone()
     await ensure_user_data(user_id)
     await ensure_database()
     await globals.db.execute("""
@@ -181,10 +185,10 @@ async def get_top_users(limit, sort_by):
                                        ORDER BY {sort_by} DESC
                                        LIMIT ?
                                    """, (limit,))
-    results = list(await cur.fetchall())
-    for i in range(len(results)):
-        results[i] = dict(results[i])
-    return results
+    # results = list(await cur.fetchall())
+    # for i in range(len(results)):
+    #     results[i] = dict(results[i])
+    return await cur.fetchall()
 
 
 async def create_request(ctx, description, image=None):
@@ -192,8 +196,9 @@ async def create_request(ctx, description, image=None):
     cur = await globals.db.execute("""
                                        INSERT INTO requests
                                        (requester_id, description, image, status)
-                                       VALUES (?, ?, ?, ?)
-                                   """, (ctx.author.id, description, image, "waiting",))
+                                       VALUES
+                                       (?,            ?,           ?,     ?     )
+                                   """, (ctx.author.id, description, image, "Waiting",))
     req_id = cur.lastrowid
     return req_id
 
@@ -203,8 +208,47 @@ async def add_request_message_info(req_id, msg):
     await globals.db.execute("""
                                  UPDATE requests
                                  SET
-                                     server_id =  ?,
+                                     server_id  = ?,
                                      channel_id = ?,
                                      message_id = ?
                                  WHERE id=?
                              """, (msg.guild.id, msg.channel.id, msg.id, req_id,))
+
+
+async def get_request_info(req_id, *args):
+    await ensure_database()
+    cur = await globals.db.execute(f"""
+                                       SELECT {', '.join(args)}
+                                       FROM requests
+                                       WHERE id=?
+                                   """, (req_id,))
+    req_info = await cur.fetchone()
+    if req_info is None:
+        raise NotFound
+    return req_info
+
+
+async def edit_request(req_id, description, image=None):
+    await ensure_database()
+    await globals.db.execute("""
+                                 UPDATE requests
+                                 SET
+                                     description = ?,
+                                     image       = ?
+                                 WHERE id=?
+                             """, (description, image, req_id,))
+
+
+async def delete_request(*, req_id=None, msg=None):
+    if req_id:
+        await ensure_database()
+        await globals.db.execute("""
+                                     DELETE FROM requests
+                                     WHERE id=?
+                                 """, (req_id,))
+    if msg:
+        await ensure_database()
+        await globals.db.execute("""
+                                     DELETE FROM requests
+                                     WHERE server_id=? AND channel_id=? AND message_id=?
+                                 """, (msg.guild_id, msg.channel_id, msg.message_id,))

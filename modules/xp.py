@@ -36,15 +36,15 @@ async def process_xp(message):
         return
     if message.channel.id in globals.BLACKLISTED_CHANNELS_IDS:
         return
-    xp_data = await db.get_user_xp(message.author.id)
-    level =  xp_to_lvl(xp_data["level"]     )[0]
-    cred =   xp_to_lvl(xp_data["cred"]      )[0]
-    assist = xp_to_lvl(xp_data["assistance"])[0]
+    level_xp, cred_xp, assistance_xp = await db.get_user_xp(message.author.id)
+    level      = xp_to_lvl(level_xp     )[0]
+    cred       = xp_to_lvl(cred_xp      )[0]
+    assistance = xp_to_lvl(assistance_xp)[0]
 
     # Regular XP
-    level_xp_to_add =  0
-    cred_xp_to_add =   0
-    assist_xp_to_add = 0
+    level_xp_to_add      = 0
+    cred_xp_to_add       = 0
+    assistance_xp_to_add = 0
     try:
         cooldowns[message.author.id]
     except KeyError:
@@ -53,43 +53,43 @@ async def process_xp(message):
             if (message.channel.category.id if message.channel.category else 0) in globals.MODDER_CATEGORY_IDS:
                 cred_xp_to_add += globals.XP_AMOUNT  # Server cred if modder in modder categories
             if (message.channel.category.id if message.channel.category else 0) in globals.ASSISTANCE_CATEGORY_IDS or "support" in message.channel.name:
-                assist_xp_to_add += (2 * globals.XP_AMOUNT)  # Double assistance if modder and assistance categories
+                assistance_xp_to_add += (2 * globals.XP_AMOUNT)  # Double assistance if modder and assistance categories
         elif (message.channel.category.id if message.channel.category else 0) in globals.ASSISTANCE_CATEGORY_IDS or "support" in message.channel.name:
-            assist_xp_to_add += globals.XP_AMOUNT  # Assistance if assistance categories
-        xp_data = await db.add_user_xp(message.author.id, level=level_xp_to_add, cred=cred_xp_to_add, assistance=assist_xp_to_add)
+            assistance_xp_to_add += globals.XP_AMOUNT  # Assistance if assistance categories
+        level_xp, cred_xp, assistance_xp = await db.add_user_xp(message.author.id, level=level_xp_to_add, cred=cred_xp_to_add, assistance=assistance_xp_to_add)
         cooldowns[message.author.id] = time.time() + globals.XP_COOLDOWN
 
     # Contrib xp (e.g. tutorial, resource, mod release...)
     added_contrib_boost = False
-    level_xp_to_add =  0
-    cred_xp_to_add =   0
-    assist_xp_to_add = 0
+    level_xp_to_add  = 0
+    cred_xp_to_add   = 0
+    assistance_xp_to_add = 0
     if message.channel.id in globals.CONTRIB_CHANNELS_IDS:
         try:
             contrib_cooldowns[message.author.id]
         except KeyError:
             cred_xp_to_add += globals.CONTRIB_AMOUNT  # Server cred boost
-            xp_data = await db.add_user_xp(message.author.id, level=level_xp_to_add, cred=cred_xp_to_add, assistance=assist_xp_to_add)
+            level_xp, cred_xp, assistance_xp = await db.add_user_xp(message.author.id, level=level_xp_to_add, cred=cred_xp_to_add, assistance=assistance_xp_to_add)
             contrib_cooldowns[message.author.id] = time.time() + globals.CONTRIB_COOLDOWN
             added_contrib_boost = True
 
     # Notify levelups
-    new_level =  xp_to_lvl(xp_data["level"]     )[0]
-    new_cred =   xp_to_lvl(xp_data["cred"]      )[0]
-    new_assist = xp_to_lvl(xp_data["assistance"])[0]
+    new_level      = xp_to_lvl(level_xp     )[0]
+    new_cred       = xp_to_lvl(cred_xp      )[0]
+    new_assistance = xp_to_lvl(assistance_xp)[0]
     if new_level > level:
-        await notify_level_up(message, "level",      level,  new_level )
+        await notify_level_up(message, "level",      level,      new_level     )
     if new_cred > cred:
-        await notify_level_up(message, "cred",       cred,   new_cred  )
-    if new_assist > assist:
-        await notify_level_up(message, "assistance", assist, new_assist)
+        await notify_level_up(message, "cred",       cred,       new_cred      )
+    if new_assistance > assistance:
+        await notify_level_up(message, "assistance", assistance, new_assistance)
 
     # Revert contrib boost if message is deleted
     if added_contrib_boost:
         try:
             await globals.bot.wait_for('message_delete', check=lambda msg: message == msg, timeout=600)
             # Message was deleted, remove boost
-            await db.add_user_xp(message.author.id, level=-level_xp_to_add, cred=-cred_xp_to_add, assistance=-assist_xp_to_add)
+            await db.add_user_xp(message.author.id, level=-level_xp_to_add, cred=-cred_xp_to_add, assistance=-assistance_xp_to_add)
             while globals.ticking_cooldowns:
                 await asyncio.sleep(0.25)
             del contrib_cooldowns[message.author.id]

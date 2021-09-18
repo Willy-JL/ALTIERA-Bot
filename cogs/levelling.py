@@ -50,13 +50,13 @@ class Levelling(commands.Cog,
 
         # Actual command
 
-        xp_data = await db.get_user_xp(target.id)
-        level =  xp.xp_to_lvl(xp_data["level"]     )
-        cred =   xp.xp_to_lvl(xp_data["cred"]      )
-        assist = xp.xp_to_lvl(xp_data["assistance"])
-        level_next =  math.floor((level[2]  - level[1] ) * 100 / level[2] )
-        cred_next =   math.floor((cred[2]   - cred[1]  ) * 100 / cred[2]  )
-        assist_next = math.floor((assist[2] - assist[1]) * 100 / assist[2])
+        level_xp, cred_xp, assistance_xp = await db.get_user_xp(target.id)
+        level      = xp.xp_to_lvl(level_xp )
+        cred       = xp.xp_to_lvl(cred_xp  )
+        assistance = xp.xp_to_lvl(assistance_xp)
+        level_next      = math.floor((level [2] - level [1]) * 100 / level [2])
+        cred_next       = math.floor((cred  [2] - cred  [1]) * 100 / cred  [2])
+        assistance_next = math.floor((assistance[2] - assistance[1]) * 100 / assistance[2])
 
         # Setup image foundation
         if target.id == globals.ADMIN_ID:
@@ -90,7 +90,7 @@ class Levelling(commands.Cog,
         utils.draw_text(draw, globals.font35, username, "#FFFFFF", (268, 85), 298)
 
         # Draw main level and cred values
-        utils.draw_text(draw, globals.font47, f"LV:{level[0]}", "#009EDF", (277, 141), 999)
+        utils.draw_text    (draw, globals.font47, f"LV:{level[0]}", "#009EDF", (277, 141), 999)
         if target.id == globals.ADMIN_ID:
             utils.draw_text(draw, globals.font47, f"SC:{cred[0]}",  "#16F2D6", (434, 141), 999)
         else:
@@ -100,7 +100,7 @@ class Levelling(commands.Cog,
         x = 267
         for i in range(utils.get_trophy_amount(target)):
             if i % 2:
-                img.paste(    globals.shards_white,  (x, 194), globals.shards_white )
+                img.paste    (globals.shards_white,  (x, 194), globals.shards_white )
             else:
                 if target.id == globals.ADMIN_ID:
                     img.paste(globals.shards_teal,   (x, 194), globals.shards_teal  )
@@ -110,49 +110,49 @@ class Levelling(commands.Cog,
 
         # Draw single level values
         if target.id == globals.ADMIN_ID:
-            utils.draw_text(draw, globals.font16, f"LVL:",        "#090D18", (275, 425), 999)
-            utils.draw_text(draw, globals.font24, f"{level[0]}",  "#090D18", (308, 423), 999)
+            utils.draw_text(draw, globals.font16, f"LVL:",            "#090D18", (275, 425), 999)
+            utils.draw_text(draw, globals.font24, f"{level[0]}",      "#090D18", (308, 423), 999)
         else:
-            utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (275, 425), 999)
-            utils.draw_text(draw, globals.font24, f"{level[0]}",  "#FFFFFF", (308, 423), 999)
-        utils.draw_text(draw, globals.font16, f"LVL:",        "#FFFFFF", (275, 518), 999)
-        utils.draw_text(draw, globals.font24, f"{cred[0]}",   "#FFFFFF", (308, 516), 999)
+            utils.draw_text(draw, globals.font16, f"LVL:",            "#FFFFFF", (275, 425), 999)
+            utils.draw_text(draw, globals.font24, f"{level[0]}",      "#FFFFFF", (308, 423), 999)
+        utils.draw_text    (draw, globals.font16, f"LVL:",            "#FFFFFF", (275, 518), 999)
+        utils.draw_text    (draw, globals.font24, f"{cred[0]}",       "#FFFFFF", (308, 516), 999)
         if target.id == globals.ADMIN_ID:
-            utils.draw_text(draw, globals.font16, f"LVL:",        "#009EDF", (275, 619), 999)
-            utils.draw_text(draw, globals.font24, f"{assist[0]}", "#009EDF", (308, 617), 999)
+            utils.draw_text(draw, globals.font16, f"LVL:",            "#009EDF", (275, 619), 999)
+            utils.draw_text(draw, globals.font24, f"{assistance[0]}", "#009EDF", (308, 617), 999)
         else:
-            utils.draw_text(draw, globals.font16, f"LVL:",        "#F06B02", (275, 619), 999)
-            utils.draw_text(draw, globals.font24, f"{assist[0]}", "#F06B02", (308, 617), 999)
+            utils.draw_text(draw, globals.font16, f"LVL:",            "#F06B02", (275, 619), 999)
+            utils.draw_text(draw, globals.font24, f"{assistance[0]}", "#F06B02", (308, 617), 999)
 
         # Draw single percentage values
         if level_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (579-globals.font30.getsize(f"MAX")[0],           398), 999)
+            utils.draw_text(draw, globals.font30, f"MAX",               "#090D18", (579-globals.font30.getsize(f"MAX")[0],               398), 999)
         else:
-            utils.draw_text(draw, globals.font30, f"{level_next}",  "#090D18", (565-globals.font30.getsize(f"{level_next}")[0],  398), 999)
-            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             407), 999)
+            utils.draw_text(draw, globals.font30, f"{level_next}",      "#090D18", (565-globals.font30.getsize(f"{level_next}")[0],      398), 999)
+            utils.draw_text(draw, globals.font20, f"%",                 "#090D18", (565,                                                 407), 999)
         if cred_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (579-globals.font30.getsize(f"MAX")[0],           491), 999)
+            utils.draw_text(draw, globals.font30, f"MAX",               "#090D18", (579-globals.font30.getsize(f"MAX")[0],               491), 999)
         else:
-            utils.draw_text(draw, globals.font30, f"{cred_next}",   "#090D18", (565-globals.font30.getsize(f"{cred_next}")[0],   491), 999)
-            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             500), 999)
-        if assist_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",           "#090D18", (579-globals.font30.getsize(f"MAX")[0],           593), 999)
+            utils.draw_text(draw, globals.font30, f"{cred_next}",       "#090D18", (565-globals.font30.getsize(f"{cred_next}")[0],       491), 999)
+            utils.draw_text(draw, globals.font20, f"%",                 "#090D18", (565,                                                 500), 999)
+        if assistance_next >= 100:
+            utils.draw_text(draw, globals.font30, f"MAX",               "#090D18", (579-globals.font30.getsize(f"MAX")[0],               593), 999)
         else:
-            utils.draw_text(draw, globals.font30, f"{assist_next}", "#090D18", (565-globals.font30.getsize(f"{assist_next}")[0], 593), 999)
-            utils.draw_text(draw, globals.font20, f"%",             "#090D18", (565,                                             602), 999)
+            utils.draw_text(draw, globals.font30, f"{assistance_next}", "#090D18", (565-globals.font30.getsize(f"{assistance_next}")[0], 593), 999)
+            utils.draw_text(draw, globals.font20, f"%",                 "#090D18", (565,                                                 602), 999)
 
         # Overlay percentage bars
         if target.id == globals.ADMIN_ID:
-            level_bar =  globals.bars[ "teal_white" ][utils.get_bar_index_from_lvl_percent(level_next )]
-            cred_bar =   globals.bars[ "blue_white" ][utils.get_bar_index_from_lvl_percent( cred_next )]
-            assist_bar = globals.bars[ "white_blue" ][utils.get_bar_index_from_lvl_percent(assist_next)]
+            level_bar      = globals.bars[ "teal_white" ][utils.get_bar_index_from_lvl_percent(level_next     )]
+            cred_bar       = globals.bars[ "blue_white" ][utils.get_bar_index_from_lvl_percent(cred_next      )]
+            assistance_bar = globals.bars[ "white_blue" ][utils.get_bar_index_from_lvl_percent(assistance_next)]
         else:
-            level_bar =  globals.bars[ "blue_white" ][utils.get_bar_index_from_lvl_percent(level_next )]
-            cred_bar =   globals.bars["orange_white"][utils.get_bar_index_from_lvl_percent( cred_next )]
-            assist_bar = globals.bars["white_orange"][utils.get_bar_index_from_lvl_percent(assist_next)]
+            level_bar      = globals.bars[ "blue_white" ][utils.get_bar_index_from_lvl_percent(level_next     )]
+            cred_bar       = globals.bars["orange_white"][utils.get_bar_index_from_lvl_percent(cred_next      )]
+            assistance_bar = globals.bars["white_orange"][utils.get_bar_index_from_lvl_percent(assistance_next)]
         img.paste(level_bar,  (218, 457), level_bar )
         img.paste(cred_bar,   (218, 550), cred_bar  )
-        img.paste(assist_bar, (218, 650), assist_bar)
+        img.paste(assistance_bar, (218, 650), assistance_bar)
 
         binary = io.BytesIO()
         img.save(binary, format="PNG")
@@ -187,22 +187,22 @@ class Levelling(commands.Cog,
             return
 
         # Actual command
-        xp_data = await db.get_user_xp(target.id)
+        level_xp, cred_xp, assistance_xp = await db.get_user_xp(target.id)
         await utils.embed_reply(ctx,
                                 title=f"🔥 {target.name}'s XP:",
                                 fields=[
-                                    ["Level",      f"{xp_data['level']}",      True],
-                                    ["Cred",       f"{xp_data['cred']}",       True],
-                                    ["Assistance", f"{xp_data['assistance']}", True]
+                                    ["Level",      f"{level_xp}",      True],
+                                    ["Cred",       f"{cred_xp}",       True],
+                                    ["Assistance", f"{assistance_xp}", True]
                                 ],
                                 thumbnail=target.avatar_url)
 
     @commands.group(name="top",
-                      description="List top ten users per XP type",
-                      usage="{prfx}top [ type ]",
-                      help="type: either level, cred or assist (required)",
-                      aliases=["top10", "leaderboard", "ranking"],
-                      case_insensitive=True)
+                    description="List top ten users per XP type",
+                    usage="{prfx}top [ type ]",
+                    help="type: either level, cred or assistance (required)",
+                    aliases=["top10", "leaderboard", "ranking"],
+                    case_insensitive=True)
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
             await utils.embed_reply(ctx,
@@ -219,13 +219,16 @@ class Levelling(commands.Cog,
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Server Level XP:"))]) + "Server Level XP:")
         for i, row in enumerate(top_users):
-            user = globals.bot.get_user(row["id"])
+            id, level = row
+            level = str(level)
+            user = globals.bot.get_user(id)
             if user:
                 name = str(user.name)
             else:
-                name = row["id"]
-            # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(row["level"]))+1)) else name[:(max_line_length-(len(str(row["level"]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row["level"]))+1)) else name[:(max_line_length-(len(str(row["level"]))+1))-3] + "..."))-len(str(row["level"])))]) + str(row["level"])
+                name = id
+            left = name if len(name) <= (max_line_length-(len(level)+1)) else name[:(max_line_length-(len(level)+1))-3] + "..."
+            spacing = "".join([" " for _ in range(max_line_length-len(left)-len(level))])
+            line = left + spacing + level
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Level Leaderboard:",
@@ -239,13 +242,16 @@ class Levelling(commands.Cog,
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Server Cred XP:"))]) + "Server Cred XP:")
         for i, row in enumerate(top_users):
-            user = globals.bot.get_user(row["id"])
+            id, cred = row
+            cred = str(cred)
+            user = globals.bot.get_user(id)
             if user:
                 name = str(user.name)
             else:
-                name = row["id"]
-            # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(row["cred"]))+1)) else name[:(max_line_length-(len(str(row["cred"]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row["cred"]))+1)) else name[:(max_line_length-(len(str(row["cred"]))+1))-3] + "..."))-len(str(row["cred"])))]) + str(row["cred"])
+                name = id
+            left = name if len(name) <= (max_line_length-(len(cred)+1)) else name[:(max_line_length-(len(cred)+1))-3] + "..."
+            spacing = "".join([" " for _ in range(max_line_length-len(left)-len(cred))])
+            line = left + spacing + cred
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Cred Leaderboard:",
@@ -259,13 +265,16 @@ class Levelling(commands.Cog,
         lines = []
         lines.append("User:" + "".join([" " for _ in range(max_line_length+2-len("User:")-len("Assistance XP:"))]) + "Assistance XP:")
         for i, row in enumerate(top_users):
-            user = globals.bot.get_user(row["id"])
+            id, assistance = row
+            assistance = str(assistance)
+            user = globals.bot.get_user(id)
             if user:
                 name = str(user.name)
             else:
-                name = row["id"]
-            # I know, I'm also ashamed by this one liner
-            line = (name if len(name) <= (max_line_length-(len(str(row["assistance"]))+1)) else name[:(max_line_length-(len(str(row["assistance"]))+1))-3] + "...") + "".join([" " for _ in range(max_line_length-len((name if len(name) <= (max_line_length-(len(str(row["assistance"]))+1)) else name[:(max_line_length-(len(str(row["assistance"]))+1))-3] + "..."))-len(str(row["assistance"])))]) + str(row["assistance"])
+                name = id
+            left = name if len(name) <= (max_line_length-(len(assistance)+1)) else name[:(max_line_length-(len(assistance)+1))-3] + "..."
+            spacing = "".join([" " for _ in range(max_line_length-len(left)-len(assistance))])
+            line = left + spacing + assistance
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
                                 title=f"🏆 Server Assistance Leaderboard:",
