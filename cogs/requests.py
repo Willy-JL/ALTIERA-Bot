@@ -38,7 +38,7 @@ class Requests(commands.Cog,
                 image = await utils.imgur_image_upload(img_bytes)
                 break
 
-        req_id = await db.create_request(ctx, description, image)
+        req_id = await db.create_request(ctx.author.id, description, image)
         req_msg = await ctx.channel.send(embed=utils.custom_embed(ctx.guild,
                                                                   title=f"Request #`{req_id}`",
                                                                   description=description,
@@ -60,7 +60,7 @@ class Requests(commands.Cog,
                            "description: your request (required), you can optionally add a single image (attachment)\n"
                            "if you don't add a new image this will keep the old image, or you can remove it by adding `REMOVE IMAGE` anywhere in the description",
                       aliases=["modify"])
-    async def edit(self, ctx: commands.Context, req_id=None, *, description: str = None):
+    async def edit(self, ctx, req_id=None, *, description: str = None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
         if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
@@ -183,6 +183,250 @@ class Requests(commands.Cog,
         await db.delete_request(req_id)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.delete()
+        await ctx.message.add_reaction('👌')
+        await ctx.message.delete()
+
+    @commands.command(name="claim",
+                      description="Claim a mod request",
+                      usage="{prfx}claim [ id ]",
+                      help="id: the id of the request to claim (required)",
+                      aliases=["wip"])
+    async def claim(self, ctx, req_id=None):
+        if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
+            return
+        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+            await utils.embed_reply(ctx,
+                                    title="💢 No requests here!",
+                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+            return
+
+        try:
+            req_id = int(req_id)
+        except (TypeError, ValueError):
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title="💢 Please provide a valid request id!"))
+            return
+
+        try:
+            requester_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "description", "image", "channel_id", "message_id")
+        except NotFound:
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            return
+
+        if not utils.is_staff(ctx.author):
+
+            if not utils.user_has_a_role(ctx.author, globals.MODDER_ROLE_IDS):
+                await ctx.message.delete()
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 Only users with Modder role can claim requests!"))
+                return
+
+        if status in ("Released", "WIP"):
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                            title=f"💢 You cannot claim a request that has already been claimed!"))
+            return
+
+        # Actual command
+
+        await db.claim_request(req_id, ctx.author.id)
+        req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
+        await req_msg.edit(embed=utils.custom_embed(ctx.guild,
+                                                    title=f"Request #`{req_id}`",
+                                                    description=description,
+                                                    fields=[
+                                                        ["Requester:", f"<@!{requester_id}>",  True],
+                                                        ["Status:",    "WIP",                  True],
+                                                        ["Modder:",    f"<@!{ctx.author.id}>", True]
+                                                    ],
+                                                    thumbnail=globals.REQUESTS_ICONS["WIP"],
+                                                    image=image))
+        await ctx.message.add_reaction('👌')
+        await ctx.message.delete()
+
+    @commands.command(name="unclaim",
+                      description="Unclaim a mod request",
+                      usage="{prfx}unclaim [ id ]",
+                      help="id: the id of the request to unclaim (required)",
+                      aliases=["abandon"])
+    async def unclaim(self, ctx, req_id=None):
+        if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
+            return
+        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+            await utils.embed_reply(ctx,
+                                    title="💢 No requests here!",
+                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+            return
+
+        try:
+            req_id = int(req_id)
+        except (TypeError, ValueError):
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title="💢 Please provide a valid request id!"))
+            return
+
+        try:
+            requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
+        except NotFound:
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            return
+
+        if not utils.is_staff(ctx.author):
+
+            if ctx.author.id != modder_id:
+                await ctx.message.delete()
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 Only the modder assigned to this request can unclaim it!"))
+                return
+
+        if status == "Released":
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                            title=f"💢 You cannot unclaim a request that has been released!"))
+            return
+
+        # Actual command
+
+        await db.unclaim_request(req_id)
+        req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
+        await req_msg.edit(embed=utils.custom_embed(ctx.guild,
+                                                    title=f"Request #`{req_id}`",
+                                                    description=description,
+                                                    fields=[
+                                                        ["Requester:", f"<@!{requester_id}>", True],
+                                                        ["Status:",    "Waiting",             True],
+                                                        ["Modder:",    "TBD",                 True]
+                                                    ],
+                                                    thumbnail=globals.REQUESTS_ICONS["Waiting"],
+                                                    image=image))
+        await ctx.message.add_reaction('👌')
+        await ctx.message.delete()
+
+    @commands.command(name="release",
+                      description="Release a mod request",
+                      usage="{prfx}release [ id ] [ link ]",
+                      help="id: the id of the request to release (required)",
+                      aliases=["publish"])
+    async def release(self, ctx, req_id=None, link=None):
+        if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
+            return
+        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+            await utils.embed_reply(ctx,
+                                    title="💢 No requests here!",
+                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+            return
+
+        try:
+            req_id = int(req_id)
+        except (TypeError, ValueError):
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title="💢 Please provide a valid request id!"))
+            return
+
+        try:
+            requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
+        except NotFound:
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            return
+
+        if not utils.is_staff(ctx.author):
+
+            if ctx.author.id != modder_id:
+                await ctx.message.delete()
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 Only the modder assigned to this request can release it!"))
+                return
+
+        if not link:
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title="💢 Please provide a link for the mod!"))
+            return
+
+        # Actual command
+
+        await db.release_request(req_id, ctx.author.id, link)
+        req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
+        await req_msg.edit(embed=utils.custom_embed(ctx.guild,
+                                                    title=f"Request #`{req_id}`",
+                                                    description=description,
+                                                    fields=[
+                                                        ["Requester:", f"<@!{requester_id}>",  True],
+                                                        ["Status:",    f"[Released]({link})",  True],
+                                                        ["Modder:",    f"<@!{ctx.author.id}>", True]
+                                                    ],
+                                                    thumbnail=globals.REQUESTS_ICONS["Released"],
+                                                    image=image))
+        await ctx.message.add_reaction('👌')
+        await ctx.message.delete()
+
+    @commands.command(name="unrelease",
+                      description="Unrelease a mod request",
+                      usage="{prfx}unrelease [ id ]",
+                      help="id: the id of the request to unrelease (required)",
+                      aliases=["takedown"])
+    async def unrelease(self, ctx, req_id=None):
+        if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
+            return
+        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+            await utils.embed_reply(ctx,
+                                    title="💢 No requests here!",
+                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+            return
+
+        try:
+            req_id = int(req_id)
+        except (TypeError, ValueError):
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title="💢 Please provide a valid request id!"))
+            return
+
+        try:
+            requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
+        except NotFound:
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            return
+
+        if not utils.is_staff(ctx.author):
+
+            if ctx.author.id != modder_id:
+                await ctx.message.delete()
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 Only the modder assigned to this request can unrelease it!"))
+                return
+
+        if status == "WIP":
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                            title=f"💢 You cannot unrelease a request that has not been released!"))
+            return
+
+        # Actual command
+
+        await db.unrelease_request(req_id, ctx.author.id)
+        req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
+        await req_msg.edit(embed=utils.custom_embed(ctx.guild,
+                                                    title=f"Request #`{req_id}`",
+                                                    description=description,
+                                                    fields=[
+                                                        ["Requester:", f"<@!{requester_id}>",  True],
+                                                        ["Status:",    "WIP",                  True],
+                                                        ["Modder:",    f"<@!{ctx.author.id}>", True]
+                                                    ],
+                                                    thumbnail=globals.REQUESTS_ICONS["WIP"],
+                                                    image=image))
         await ctx.message.add_reaction('👌')
         await ctx.message.delete()
 

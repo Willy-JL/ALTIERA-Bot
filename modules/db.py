@@ -191,14 +191,14 @@ async def get_top_users(limit, sort_by):
     return await cur.fetchall()
 
 
-async def create_request(ctx, description, image=""):
+async def create_request(requester_id, description, image=""):
     await ensure_database()
     cur = await globals.db.execute("""
                                        INSERT INTO requests
                                        (requester_id, description, image, status)
                                        VALUES
                                        (?,            ?,           ?,     ?     )
-                                   """, (ctx.author.id, description, image, "Waiting",))
+                                   """, (requester_id, description, image, "Waiting",))
     req_id = cur.lastrowid
     return req_id
 
@@ -252,3 +252,39 @@ async def delete_request(*, req_id=None, msg=None):
                                      DELETE FROM requests
                                      WHERE server_id=? AND channel_id=? AND message_id=?
                                  """, (msg.guild_id, msg.channel_id, msg.message_id,))
+
+
+async def claim_request(req_id, modder_id):
+    await ensure_database()
+    await globals.db.execute("""
+                                 UPDATE requests
+                                 SET
+                                     status    = ?,
+                                     link      = ?,
+                                     modder_id = ?
+                                 WHERE id=?
+                             """, ("WIP", "", modder_id, req_id,))
+
+
+async def unclaim_request(req_id):
+    await ensure_database()
+    await globals.db.execute("""
+                                 UPDATE requests
+                                 SET
+                                     status    = ?,
+                                     link      = ?,
+                                     modder_id = ?
+                                 WHERE id=?
+                             """, ("Waiting", "", 0, req_id,))
+
+
+async def release_request(req_id, modder_id, link):
+    await ensure_database()
+    await globals.db.execute("""
+                                 UPDATE requests
+                                 SET
+                                     status    = ?,
+                                     link      = ?,
+                                     modder_id = ?
+                                 WHERE id=?
+                             """, ("Released", link, modder_id, req_id,))
