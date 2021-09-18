@@ -47,7 +47,7 @@ class Requests(commands.Cog,
                                                                       ["Status:",    f"Waiting",             True],
                                                                       ["Modder:",    f"TBD",                 True]
                                                                   ],
-                                                                  thumbnail="https://cdn.discordapp.com/emojis/777999272456486923.png",
+                                                                  thumbnail=globals.REQUESTS_ICONS["Waiting"],
                                                                   image=image))
         await db.add_request_message_info(req_id, req_msg)
         await ctx.message.add_reaction('👌')

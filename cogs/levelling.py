@@ -320,7 +320,7 @@ class Levelling(commands.Cog,
                                     content=f"<@!{target.id}>",
                                     title=f"💌 You got some reputation!",
                                     description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
-                                    thumbnail="https://cdn.discordapp.com/emojis/766042961929699358.png")
+                                    thumbnail=globals.REP_ICON)
         else:
             await utils.embed_reply(ctx,
                                     title=f"💢 You're on cooldown!",

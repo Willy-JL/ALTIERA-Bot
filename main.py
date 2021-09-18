@@ -30,9 +30,11 @@ globals.JOIN_LOG_CHANNEL_IDS     = json.loads(os.environ["JOIN_LOG_CHANNEL_IDS"]
 globals.LEVEL_NOTIF_CHANNEL_IDS  = json.loads(os.environ["LEVEL_NOTIF_CHANNEL_IDS"])  if os.environ.get("LEVEL_NOTIF_CHANNEL_IDS")  else {}
 globals.MODDER_CATEGORY_IDS      = json.loads(os.environ["MODDER_CATEGORY_IDS"])      if os.environ.get("MODDER_CATEGORY_IDS")      else []
 globals.MODDER_ROLE_IDS          = json.loads(os.environ["MODDER_ROLE_IDS"])          if os.environ.get("MODDER_ROLE_IDS")          else []
+globals.NO_PERM_ICON             = str       (os.environ["NO_PERM_ICON"])             if os.environ.get("NO_PERM_ICON")             else "https://cdn.discordapp.com/emojis/778028443417313290.png"
 globals.REP_CRED_AMOUNT          = int       (os.environ["REP_CRED_AMOUNT"])          if os.environ.get("REP_CRED_AMOUNT")          else 500
+globals.REP_ICON                 = str       (os.environ["REP_ICON"])                 if os.environ.get("REP_ICON")                 else "https://cdn.discordapp.com/emojis/766042961929699358.png"
 globals.REQUESTS_CHANNEL_IDS     = json.loads(os.environ["REQUESTS_CHANNEL_IDS"])     if os.environ.get("REQUESTS_CHANNEL_IDS")     else []
-globals.REQUESTS_ICONS           = json.loads(os.environ["REQUESTS_ICONS"])           if os.environ.get("REQUESTS_ICONS")           else {}
+globals.REQUESTS_ICONS           = json.loads(os.environ["REQUESTS_ICONS"])           if os.environ.get("REQUESTS_ICONS")           else {"Waiting": "https://cdn.discordapp.com/emojis/777999272456486923.png", "WIP": "https://cdn.discordapp.com/emojis/888854834927767593.png", "Released": "https://cdn.discordapp.com/emojis/777999272401698847.png"}
 globals.STAFF_ROLE_IDS           = json.loads(os.environ["STAFF_ROLE_IDS"])           if os.environ.get("STAFF_ROLE_IDS")           else []
 globals.TROPHY_ROLES             = json.loads(os.environ["TROPHY_ROLES"])             if os.environ.get("TROPHY_ROLES")             else []
 globals.WRITE_AS_PASS            = str       (os.environ["WRITE_AS_PASS"])            if os.environ.get("WRITE_AS_PASS")            else ""
@@ -120,7 +122,7 @@ if __name__ == '__main__':
         if isinstance(error, commands.errors.NotOwner):
             await utils.embed_reply(ctx,
                                     title=f"💢 Yea, that's not happening buddy!",
-                                    thumbnail="https://cdn.discordapp.com/emojis/778028443417313290.png")
+                                    thumbnail=globals.NO_PERM_ICON)
             return
         raise error
 
