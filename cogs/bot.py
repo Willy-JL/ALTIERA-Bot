@@ -22,7 +22,7 @@ class Bot(commands.Cog,
                       aliases=[])
     async def help(self, ctx, subcommand=None):
         prfx = globals.BOT_PREFIX.lower()
-        if subcommand and subcommand.startswith(prfx):
+        if subcommand and subcommand.lower().startswith(prfx):
             subcommand = subcommand[len(prfx):]
         if subcommand:
             subcommand = subcommand.lower()
