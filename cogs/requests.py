@@ -31,7 +31,7 @@ class Requests(commands.Cog,
             return
 
         description = str(description)
-        image = None
+        image = ""
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
                 img_bytes = await attachment.read(use_cached=True)
@@ -108,7 +108,7 @@ class Requests(commands.Cog,
         # Actual command
 
         description = str(description)
-        new_image = None
+        new_image = ""
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
                 img_bytes = await attachment.read(use_cached=True)

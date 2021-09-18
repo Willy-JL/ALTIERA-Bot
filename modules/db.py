@@ -191,7 +191,7 @@ async def get_top_users(limit, sort_by):
     return await cur.fetchall()
 
 
-async def create_request(ctx, description, image=None):
+async def create_request(ctx, description, image=""):
     await ensure_database()
     cur = await globals.db.execute("""
                                        INSERT INTO requests
@@ -228,7 +228,7 @@ async def get_request_info(req_id, *args):
     return req_info
 
 
-async def edit_request(req_id, description, image=None):
+async def edit_request(req_id, description, image=""):
     await ensure_database()
     await globals.db.execute("""
                                  UPDATE requests
