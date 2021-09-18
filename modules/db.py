@@ -287,3 +287,15 @@ async def release_request(req_id, modder_id, link):
                                      modder_id = ?
                                  WHERE id=?
                              """, ("Released", link, modder_id, req_id,))
+
+
+async def unrelease_request(req_id, modder_id):
+    await ensure_database()
+    await globals.db.execute("""
+                                 UPDATE requests
+                                 SET
+                                     status    = ?,
+                                     link      = ?,
+                                     modder_id = ?
+                                 WHERE id=?
+                             """, ("WIP", "", modder_id, req_id,))
