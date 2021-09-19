@@ -13,7 +13,7 @@ import io
 import os
 
 # Local imports
-from modules import db, globals
+from modules import globals, db, errors
 
 
 # Get database
@@ -218,9 +218,9 @@ def time_to_restart():
 def pretty_size(size, precision=0):
     suffixes = ['B','KB','MB','GB','TB']
     suffix_index = 0
-    while size > 1024 and suffix_index < 4:
+    while size > 1000 and suffix_index < 4:
         suffix_index += 1
-        size = size / 1024.0
+        size = size / 1000
     return "%.*f%s" % (precision, size, suffixes[suffix_index])
 
 
@@ -250,10 +250,13 @@ def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, 
 
 # Upload image to imgur and retrieve link
 async def imgur_image_upload(img: bytes):
-    # if len(img) > 10000000:
-    #     return ""
+    size = len(img)
+    maximum = 10000000
+    if size > maximum:
+        raise errors.FileTooBig(size=size, maximum=maximum)
 
     try:
+        resp = None
         async with aiohttp.ClientSession() as client:
             async with client.post("https://api.imgur.com/3/image",
                                    headers={
@@ -262,12 +265,12 @@ async def imgur_image_upload(img: bytes):
                                    data = {
                                        'image': img
                                    }) as req:
-                # if not req.ok:
                 resp = await req.json()
-                print(resp)
+                if not req.ok:
+                    print(resp)
         return resp["data"]["link"]
     except Exception:
-        return ""
+        raise errors.ImgurError(exc_info=sys.exc_info, resp=resp)
 
 
 # Cleaner reply function

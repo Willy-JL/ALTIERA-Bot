@@ -1,9 +1,13 @@
 from discord.ext import commands
+import traceback
+import discord
 import asyncio
+import json
 import time
+import io
 
 # Local imports
-from modules import db, globals, utils
+from modules import globals, db, errors, utils
 
 cooldowns = dict()
 
@@ -58,7 +62,38 @@ class Requests(commands.Cog,
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
                 img_bytes = await attachment.read(use_cached=True)
-                image = await utils.imgur_image_upload(img_bytes)
+                try:
+                    image = await utils.imgur_image_upload(img_bytes)
+                except errors.FileTooBig as exc:
+                    try:
+                        await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                       title="💢 The image you attached is too large!",
+                                                                       description=f"Only files smaller than {utils.pretty_size(exc.maximum)} are allowed. The image you attached is {utils.pretty_size(exc.size, 1)} and has been therefore ignored."))
+                    except Exception:
+                        await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                               embed=utils.custom_embed(ctx.guild,
+                                                                        title="💢 The image you attached is too large!",
+                                                                        description=f"Only files smaller than {utils.pretty_size(exc.maximum)} are allowed. The image you attached is {utils.pretty_size(exc.size, 1)} and has been therefore ignored."),
+                                               delete_after=5)
+                except errors.ImgurError as exc:
+                    exc_str = "".join(traceback.format_exception(*exc.exc_info))
+                    resp_str = json.dumps(exc.resp, indent=4)
+                    fp = io.BytesIO()
+                    fp.write(exc_str + "\n\nResponse:\n" + resp_str)
+                    try:
+                        fp.seek(0)
+                        await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                       title="💢 Something went wrong with your image!",
+                                                                       description="Please report this issue [here](https://github.com/Willy-JL/ALTIERA-Bot/issues) with the attached error info file."),
+                                              file=discord.File(fp, filename="error_info.txt"))
+                    except Exception:
+                        fp.seek(0)
+                        await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                               embed=utils.custom_embed(ctx.guild,
+                                                                        title="💢 Something went wrong with your image!",
+                                                                        description="Please report this issue [here](https://github.com/Willy-JL/ALTIERA-Bot/issues) with the attached error info file."),
+                                               delete_after=5,
+                                               file=discord.File(fp, filename="error_info.txt"))
                 break
 
         req_id = await db.create_request(ctx.author.id, description, image)
@@ -167,7 +202,38 @@ class Requests(commands.Cog,
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
                 img_bytes = await attachment.read(use_cached=True)
-                new_image = await utils.imgur_image_upload(img_bytes)
+                try:
+                    new_image = await utils.imgur_image_upload(img_bytes)
+                except errors.FileTooBig as exc:
+                    try:
+                        await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                       title="💢 The image you attached is too large!",
+                                                                       description=f"Only files smaller than {utils.pretty_size(exc.maximum)} are allowed. The image you attached is {utils.pretty_size(exc.size, 1)} and has been therefore ignored."))
+                    except Exception:
+                        await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                               embed=utils.custom_embed(ctx.guild,
+                                                                        title="💢 The image you attached is too large!",
+                                                                        description=f"Only files smaller than {utils.pretty_size(exc.maximum)} are allowed. The image you attached is {utils.pretty_size(exc.size, 1)} and has been therefore ignored."),
+                                               delete_after=5)
+                except errors.ImgurError as exc:
+                    exc_str = "".join(traceback.format_exception(*exc.exc_info))
+                    resp_str = json.dumps(exc.resp, indent=4)
+                    fp = io.BytesIO()
+                    fp.write(exc_str + "\n\nResponse:\n" + resp_str)
+                    try:
+                        fp.seek(0)
+                        await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                       title="💢 Something went wrong with your image!",
+                                                                       description="Please report this issue [here](https://github.com/Willy-JL/ALTIERA-Bot/issues) with the attached error info file."),
+                                              file=discord.File(fp, filename="error_info.txt"))
+                    except Exception:
+                        fp.seek(0)
+                        await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                               embed=utils.custom_embed(ctx.guild,
+                                                                        title="💢 Something went wrong with your image!",
+                                                                        description="Please report this issue [here](https://github.com/Willy-JL/ALTIERA-Bot/issues) with the attached error info file."),
+                                               delete_after=5,
+                                               file=discord.File(fp, filename="error_info.txt"))
                 print(f"{new_image = }", f"{image = }")
                 break
         if "REMOVE IMAGE" in description:
