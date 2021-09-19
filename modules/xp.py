@@ -5,7 +5,7 @@ import time
 import io
 
 # Local imports
-from modules import db, globals, utils
+from modules import globals, db, utils
 
 cooldowns = {}
 contrib_cooldowns = {}

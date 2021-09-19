@@ -3,7 +3,7 @@ from typing import Union
 import discord
 
 # Local imports
-from modules import db, globals, utils
+from modules import globals, db, utils
 
 
 class Staff(commands.Cog,
