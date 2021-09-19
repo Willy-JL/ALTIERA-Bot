@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
     # Message handler and callback dispatcher
     @globals.bot.event
-    async def on_message(message: discord.Message):
+    async def on_message(message):
         if not message.guild:
             return
         if message.channel.id == globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)):
