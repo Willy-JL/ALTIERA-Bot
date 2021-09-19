@@ -198,7 +198,6 @@ class Requests(commands.Cog,
 
         description = str(description)
         new_image = ""
-        print(f"{new_image = }", f"{image = }")
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
                 img_bytes = await attachment.read(use_cached=True)
@@ -234,14 +233,11 @@ class Requests(commands.Cog,
                                                                         description="Please report this issue [here](https://github.com/Willy-JL/ALTIERA-Bot/issues) with the attached error info file."),
                                                delete_after=5,
                                                file=discord.File(fp, filename="error_info.txt"))
-                print(f"{new_image = }", f"{image = }")
                 break
         if "REMOVE IMAGE" in description:
             description = description.replace("REMOVE IMAGE", "")
         else:
-            print("not found")
             new_image = new_image or image
-        print(f"{new_image = }", f"{image = }")
 
         await db.edit_request(req_id, description, new_image)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
