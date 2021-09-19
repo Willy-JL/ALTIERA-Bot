@@ -107,16 +107,16 @@ async def notify_level_up(message, xp_type, old_lvl, new_lvl):
         if str(message.author.avatar_url).startswith("https://cdn.discordapp.com/embed/avatars"):
             avatar = globals.default_avatar.resize((84, 84))
         else:
-            avatar = (await utils.pil_img_from_link(str(message.author.avatar_url))).resize((84, 84))
+            avatar = (await utils.pil_img_from_link(str(message.author.avatar_url))).resize((84, 84,))
         try:
-            img.paste(avatar, (5, 5), avatar)
+            img.paste(avatar, (5, 5,), avatar)
         except ValueError:
-            img.paste(avatar, (5, 5))
+            img.paste(avatar, (5, 5,))
         # Apply base overlay
-        img.paste(globals.levelups[xp_type]["overlay"], (0, 0), globals.levelups[xp_type]["overlay"])
+        img.paste(globals.levelups[xp_type]["overlay"], (0, 0,), globals.levelups[xp_type]["overlay"])
         # Draw old and new level values
-        utils.draw_text(draw, globals.font47, f"{old_lvl}", globals.levelups[xp_type]["color"], (344, 56), 999)
-        utils.draw_text(draw, globals.font47, f"{new_lvl}", globals.levelups[xp_type]["color"], (530, 56), 999)
+        utils.draw_text(draw, globals.font47, f"{old_lvl}", globals.levelups[xp_type]["color"], (344, 56,), 999)
+        utils.draw_text(draw, globals.font47, f"{new_lvl}", globals.levelups[xp_type]["color"], (530, 56,), 999)
 
         binary = io.BytesIO()
         img.save(binary, format="PNG")

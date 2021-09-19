@@ -95,7 +95,7 @@ class Requests(commands.Cog,
 
         try:
             req_id = int(req_id)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
                 await ctx.author.send(embed=utils.custom_embed(ctx.guild,
@@ -204,7 +204,7 @@ class Requests(commands.Cog,
 
         try:
             req_id = int(req_id)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
                 await ctx.author.send(embed=utils.custom_embed(ctx.guild,
@@ -280,7 +280,7 @@ class Requests(commands.Cog,
 
         try:
             req_id = int(req_id)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
                 await ctx.author.send(embed=utils.custom_embed(ctx.guild,
@@ -365,7 +365,7 @@ class Requests(commands.Cog,
 
         try:
             req_id = int(req_id)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
                 await ctx.author.send(embed=utils.custom_embed(ctx.guild,
@@ -451,7 +451,7 @@ class Requests(commands.Cog,
 
         try:
             req_id = int(req_id)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
                 await ctx.author.send(embed=utils.custom_embed(ctx.guild,
@@ -548,7 +548,7 @@ class Requests(commands.Cog,
 
         try:
             req_id = int(req_id)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
                 await ctx.author.send(embed=utils.custom_embed(ctx.guild,
@@ -634,7 +634,7 @@ class Requests(commands.Cog,
 
         try:
             req_id = int(req_id)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
                 await ctx.author.send(embed=utils.custom_embed(ctx.guild,
@@ -731,7 +731,7 @@ class Requests(commands.Cog,
 
         try:
             req_id = int(req_id)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
                 await ctx.author.send(embed=utils.custom_embed(ctx.guild,
