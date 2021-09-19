@@ -132,7 +132,7 @@ class Fun(commands.Cog,
                                     title="<a:PatPatPat:836341685952184388> \*PatPat\*",
                                     description=f"<@!{ctx.author.id}> doesn't have any friends yet so they tried consoling themselves with a few pats!\n"
                                                 "Cheer up pal, life gets better!",
-                                    thumbnail="https://cdn.discordapp.com/emojis/889187488915128421.gif")
+                                    thumbnail="https://cdn.discordapp.com/emojis/889190978001465476.gif")
 
 
 def setup(bot):
