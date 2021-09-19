@@ -152,9 +152,12 @@ if __name__ == '__main__':
                 await globals.bot.process_commands(message)
             elif not utils.is_staff(message.author):
                 await message.delete()
-                await message.author.send(embed=utils.custom_embed(message.guild,
-                                                                   title="💢 Only relevant commands are allowed in mod requests channels!",
-                                                                   description="Check the pinned messages for more information!"))
+                try:
+                    await message.author.send(embed=utils.custom_embed(message.guild,
+                                                                       title="💢 Only relevant commands are allowed in mod requests channels!",
+                                                                       description="Check the pinned messages for more information!"))
+                except Exception:
+                    pass
         elif message.content and message.content.lower().startswith(globals.BOT_PREFIX.lower()):
             await globals.bot.process_commands(message)
         else:

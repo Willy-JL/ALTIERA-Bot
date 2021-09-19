@@ -29,15 +29,28 @@ class Requests(commands.Cog,
 
         if ctx.author.id in cooldowns:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 You're on cooldown!",
-                                                           description="You can only post one request every 10 minutes!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 You're on cooldown!",
+                                                               description="You can only post one request every 10 minutes!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 You're on cooldown!",
+                                                                description="You can only post one request every 10 minutes!"),
+                                       delete_after=5)
             return
 
         if not description:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a description of your request!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a description of your request!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a description of your request!"),
+                                       delete_after=5)
             return
 
         description = str(description)
@@ -84,36 +97,66 @@ class Requests(commands.Cog,
             req_id = int(req_id)
         except (TypeError, ValueError):
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a valid request id!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a valid request id!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a valid request id!"),
+                                       delete_after=5)
             return
 
         try:
             requester_id, modder_id, status, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "image", "channel_id", "message_id")
         except FileNotFoundError:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title=f"💢 There is no request with id `{req_id}`!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 There is no request with id `{req_id}`!"),
+                                       delete_after=5)
             return
 
         if not utils.is_staff(ctx.author):
 
             if ctx.author.id not in (requester_id, modder_id):
                 await ctx.message.delete()
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                               title=f"💢 You cannot edit someone else's request!"))
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title=f"💢 You cannot edit someone else's request!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title=f"💢 You cannot edit someone else's request!"),
+                                           delete_after=5)
                 return
 
             if status in ("Released", "WIP") and ctx.author.id == requester_id:
                 await ctx.message.delete()
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                               title=f"💢 You cannot edit a request that has been claimed!"))
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title=f"💢 You cannot edit a request that has been claimed!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title=f"💢 You cannot edit a request that has been claimed!"),
+                                           delete_after=5)
                 return
 
         if not description:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a new description for the request!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a new description for the request!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a new description for the request!"),
+                                       delete_after=5)
             return
 
         # Actual command
@@ -163,30 +206,54 @@ class Requests(commands.Cog,
             req_id = int(req_id)
         except (TypeError, ValueError):
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a valid request id!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a valid request id!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a valid request id!"),
+                                       delete_after=5)
             return
 
         try:
             requester_id, status, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "channel_id", "message_id")
         except FileNotFoundError:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title=f"💢 There is no request with id `{req_id}`!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 There is no request with id `{req_id}`!"),
+                                       delete_after=5)
             return
 
         if not utils.is_staff(ctx.author):
 
             if ctx.author.id != requester_id:
                 await ctx.message.delete()
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                               title=f"💢 You cannot delete someone else's request!"))
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title=f"💢 You cannot delete someone else's request!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title=f"💢 You cannot delete someone else's request!"),
+                                           delete_after=5)
                 return
 
             if status in ("Released", "WIP"):
                 await ctx.message.delete()
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                               title=f"💢 You cannot delete a request that has been claimed!"))
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title=f"💢 You cannot delete a request that has been claimed!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title=f"💢 You cannot delete a request that has been claimed!"),
+                                           delete_after=5)
                 return
 
         # Actual command
@@ -215,30 +282,54 @@ class Requests(commands.Cog,
             req_id = int(req_id)
         except (TypeError, ValueError):
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a valid request id!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a valid request id!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a valid request id!"),
+                                       delete_after=5)
             return
 
         try:
             requester_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title=f"💢 There is no request with id `{req_id}`!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 There is no request with id `{req_id}`!"),
+                                       delete_after=5)
             return
 
         if not utils.is_staff(ctx.author):
 
             if not utils.user_has_a_role(ctx.author, globals.MODDER_ROLE_IDS):
                 await ctx.message.delete()
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                title=f"💢 Only users with Modder role can claim requests!"))
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title=f"💢 Only users with Modder role can claim requests!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title=f"💢 Only users with Modder role can claim requests!"),
+                                           delete_after=5)
                 return
 
         if status in ("Released", "WIP"):
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                            title=f"💢 You cannot claim a request that has already been claimed!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 You cannot claim a request that has already been claimed!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 You cannot claim a request that has already been claimed!"),
+                                       delete_after=5)
             return
 
         # Actual command
@@ -276,30 +367,54 @@ class Requests(commands.Cog,
             req_id = int(req_id)
         except (TypeError, ValueError):
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a valid request id!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a valid request id!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a valid request id!"),
+                                       delete_after=5)
             return
 
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title=f"💢 There is no request with id `{req_id}`!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 There is no request with id `{req_id}`!"),
+                                       delete_after=5)
             return
 
         if not utils.is_staff(ctx.author):
 
             if ctx.author.id != modder_id:
                 await ctx.message.delete()
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                title=f"💢 Only the modder assigned to this request can unclaim it!"))
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title="💢 Only the modder assigned to this request can unclaim it!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title="💢 Only the modder assigned to this request can unclaim it!"),
+                                           delete_after=5)
                 return
 
         if status == "Released":
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                            title=f"💢 You cannot unclaim a request that has been released!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 You cannot unclaim a request that has been released!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 You cannot unclaim a request that has been released!"),
+                                       delete_after=5)
             return
 
         # Actual command
@@ -338,30 +453,54 @@ class Requests(commands.Cog,
             req_id = int(req_id)
         except (TypeError, ValueError):
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a valid request id!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a valid request id!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a valid request id!"),
+                                       delete_after=5)
             return
 
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title=f"💢 There is no request with id `{req_id}`!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 There is no request with id `{req_id}`!"),
+                                       delete_after=5)
             return
 
         if not utils.is_staff(ctx.author):
 
             if ctx.author.id != modder_id:
                 await ctx.message.delete()
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                title=f"💢 Only the modder assigned to this request can release it!"))
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title="💢 Only the modder assigned to this request can release it!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title="💢 Only the modder assigned to this request can release it!"),
+                                           delete_after=5)
                 return
 
         if not link:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a link for the mod!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a link for the mod!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a link for the mod!"),
+                                       delete_after=5)
             return
 
         # Actual command
@@ -399,30 +538,54 @@ class Requests(commands.Cog,
             req_id = int(req_id)
         except (TypeError, ValueError):
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title="💢 Please provide a valid request id!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 Please provide a valid request id!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 Please provide a valid request id!"),
+                                       delete_after=5)
             return
 
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                           title=f"💢 There is no request with id `{req_id}`!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title=f"💢 There is no request with id `{req_id}`!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title=f"💢 There is no request with id `{req_id}`!"),
+                                       delete_after=5)
             return
 
         if not utils.is_staff(ctx.author):
 
             if ctx.author.id != modder_id:
                 await ctx.message.delete()
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                title=f"💢 Only the modder assigned to this request can unrelease it!"))
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title="💢 Only the modder assigned to this request can unrelease it!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title="💢 Only the modder assigned to this request can unrelease it!"),
+                                           delete_after=5)
                 return
 
         if status == "WIP":
             await ctx.message.delete()
-            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                            title=f"💢 You cannot unrelease a request that has not been released!"))
+            try:
+                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                               title="💢 You cannot unrelease a request that has not been released!"))
+            except Exception:
+                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                       embed=utils.custom_embed(ctx.guild,
+                                                                title="💢 You cannot unrelease a request that has not been released!"),
+                                       delete_after=5)
             return
 
         # Actual command
