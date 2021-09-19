@@ -295,9 +295,9 @@ def is_requests_command(content):
     commands = cog.get_commands()
     command_names = []
     for command in commands:
-        command_names.append(prfx + command.name.lower())
+        command_names.append(prfx + command.name.lower() + " ")
         for alias in command.aliases:
-            command_names.append(prfx + alias.lower())
+            command_names.append(prfx + alias.lower() + " ")
     for command in command_names:
         if content.startswith(command):
             return True
