@@ -191,7 +191,7 @@ class Requests(commands.Cog,
 
         # Actual command
 
-        await db.delete_request(req_id)
+        await db.delete_request(req_id=req_id)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.delete()
         await ctx.message.add_reaction('👌')
