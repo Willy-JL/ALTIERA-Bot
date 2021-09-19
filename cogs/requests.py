@@ -620,7 +620,7 @@ class Requests(commands.Cog,
     @commands.command(name="link",
                       description="Link a mod request",
                       usage="{prfx}link [ id ] [ link ]",
-                      help="id: the id of the request to claim (required)\n"
+                      help="id: the id of the request to link (required)\n"
                            "link: the link to the released mod (required)",
                       aliases=["exists", "alreadyexists"])
     async def link(self, ctx, req_id=None, link=None):
