@@ -285,3 +285,19 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
 # Get all possible case variations for a string
 def case_insensitive(text):
     return list(set(map(''.join, itertools.product(*((char.upper(), char.lower()) for char in text)))))
+
+
+# Check if command is related to requests
+def is_requests_command(content):
+    prfx = globals.BOT_PREFIX.lower()
+    cog = globals.bot.get_cog("Requests")
+    commands = cog.get_commands()
+    command_names = []
+    for command in commands:
+        command_names.append(prfx + command.name.lower())
+        for alias in command.aliases:
+            command_names.append(prfx + alias.lower())
+    for command in command_names:
+        if content.startswith(command):
+            return True
+    return False

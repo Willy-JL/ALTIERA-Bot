@@ -34,6 +34,7 @@ globals.NO_PERM_ICON             = str       (os.environ["NO_PERM_ICON"])       
 globals.REP_CRED_AMOUNT          = int       (os.environ["REP_CRED_AMOUNT"])          if os.environ.get("REP_CRED_AMOUNT")          else 500
 globals.REP_ICON                 = str       (os.environ["REP_ICON"])                 if os.environ.get("REP_ICON")                 else "https://cdn.discordapp.com/emojis/766042961929699358.png"
 globals.REQUESTS_CHANNEL_IDS     = json.loads(os.environ["REQUESTS_CHANNEL_IDS"])     if os.environ.get("REQUESTS_CHANNEL_IDS")     else []
+globals.REQUESTS_COOLDOWN        = int       (os.environ["REQUESTS_COOLDOWN"])        if os.environ.get("REQUESTS_COOLDOWN")        else 600
 globals.REQUESTS_ICONS           = json.loads(os.environ["REQUESTS_ICONS"])           if os.environ.get("REQUESTS_ICONS")           else {"Waiting": "https://cdn.discordapp.com/emojis/777999272456486923.png", "WIP": "https://cdn.discordapp.com/emojis/888854834927767593.png", "Released": "https://cdn.discordapp.com/emojis/777999272401698847.png"}
 globals.STAFF_ROLE_IDS           = json.loads(os.environ["STAFF_ROLE_IDS"])           if os.environ.get("STAFF_ROLE_IDS")           else []
 globals.TROPHY_ROLES             = json.loads(os.environ["TROPHY_ROLES"])             if os.environ.get("TROPHY_ROLES")             else []
@@ -143,8 +144,18 @@ if __name__ == '__main__':
 
     # Message handler and callback dispatcher
     @globals.bot.event
-    async def on_message(message):
-        if message.content and message.content.lower().startswith(globals.BOT_PREFIX.lower()):
+    async def on_message(message: discord.Message):
+        if not message.guild:
+            return
+        if message.channel.id == globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)):
+            if message.content and utils.is_requests_command(message.content):
+                await globals.bot.process_commands(message)
+            elif not utils.is_staff(message.author):
+                await message.delete()
+                await message.author.send(embed=utils.custom_embed(message.guild,
+                                                                   title="💢 Only relevant commands are allowed in mod requests channels!",
+                                                                   description="Check the pinned messages for more information!"))
+        elif message.content and message.content.lower().startswith(globals.BOT_PREFIX.lower()):
             await globals.bot.process_commands(message)
         else:
             await xp.process_xp(message)

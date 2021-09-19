@@ -1,7 +1,11 @@
 from discord.ext import commands
+import asyncio
+import time
 
 # Local imports
 from modules import db, globals, utils
+
+cooldowns = dict()
 
 
 class Requests(commands.Cog,
@@ -21,6 +25,13 @@ class Requests(commands.Cog,
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+            return
+
+        if ctx.author.id in cooldowns:
+            await ctx.message.delete()
+            await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                           title="💢 You're on cooldown!",
+                                                           description="You can only post one request every 10 minutes!"))
             return
 
         if not description:
@@ -51,6 +62,7 @@ class Requests(commands.Cog,
         await db.add_request_message_info(req_id, req_msg)
         await ctx.message.add_reaction('👌')
         await ctx.message.delete()
+        cooldowns[ctx.author.id] = time.time() + globals.REQUESTS_COOLDOWN
 
     @commands.command(name="edit",
                       description="Edit a mod request",
@@ -433,3 +445,17 @@ class Requests(commands.Cog,
 
 def setup(bot):
     bot.add_cog(Requests(bot))
+
+
+async def tick_cooldowns():
+    while True:
+        await asyncio.sleep(5)
+        to_remove = []
+        for user_id in cooldowns:
+            if cooldowns[user_id] < time.time():
+                to_remove.append(user_id)
+        for user_id in to_remove:
+            del cooldowns[user_id]
+
+
+asyncio.get_event_loop().create_task(tick_cooldowns())

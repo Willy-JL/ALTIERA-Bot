@@ -28,6 +28,7 @@ NO_PERM_ICON             = None
 REP_CRED_AMOUNT          = None
 REP_ICON                 = None
 REQUESTS_CHANNEL_IDS     = None
+REQUESTS_COOLDOWN        = None
 REQUESTS_ICONS           = None
 STAFF_ROLE_IDS           = None
 TROPHY_ROLES             = None
