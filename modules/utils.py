@@ -262,8 +262,9 @@ async def imgur_image_upload(img: bytes):
                                    data = {
                                        'image': img
                                    }) as req:
-                resp = await req.json()
-        print(resp)
+                if not req.ok:
+                    resp = await req.json()
+                    print(resp)
         return resp["data"]["link"]
     except Exception:
         return None
