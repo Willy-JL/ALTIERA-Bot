@@ -299,3 +299,27 @@ async def unrelease_request(req_id, modder_id):
                                      modder_id = ?
                                  WHERE id=?
                              """, ("WIP", "", modder_id, req_id,))
+
+
+async def link_request(req_id, modder_id, link):
+    await ensure_database()
+    await globals.db.execute("""
+                                 UPDATE requests
+                                 SET
+                                     status    = ?,
+                                     link      = ?,
+                                     modder_id = ?
+                                 WHERE id=?
+                             """, ("Already Exists", link, modder_id, req_id,))
+
+
+async def unlink_request(req_id):
+    await ensure_database()
+    await globals.db.execute("""
+                                 UPDATE requests
+                                 SET
+                                     status    = ?,
+                                     link      = ?,
+                                     modder_id = ?
+                                 WHERE id=?
+                             """, ("Waiting", "", 0, req_id,))
