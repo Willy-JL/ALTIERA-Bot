@@ -122,7 +122,7 @@ if __name__ == '__main__':
             return
         if isinstance(error, commands.errors.NotOwner):
             await utils.embed_reply(ctx,
-                                    title=f"💢 Yea, that's not happening buddy!",
+                                    title="💢 Yea, that's not happening buddy!",
                                     thumbnail=globals.NO_PERM_ICON)
             return
         raise error
@@ -136,10 +136,10 @@ if __name__ == '__main__':
                                embed=utils.custom_embed(member.guild,
                                                         title="👋 Welcome!",
                                                         description=f"Welcome <@!{member.id}> to Night City!\n"
-                                                                    f"\n" +
+                                                                    "\n" +
                                                                     (f"Make sure you have read through <#{globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]['rules_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]["rules_channel_id"] else "") +
                                                                     (f"You can pick your poisons in <#{globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]['selfrole_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]["selfrole_channel_id"] else "") +
-                                                                    f"Enjoy your stay!",
+                                                                    "Enjoy your stay!",
                                                         thumbnail=member.avatar_url))
 
     # Message handler and callback dispatcher
@@ -173,7 +173,7 @@ if __name__ == '__main__':
     @tasks.loop(seconds=15)
     async def update_presence_loop():
         if globals.cur_presence == 0:
-            await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name=f'Cyberspace'), status=discord.Status.dnd)
+            await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name='Cyberspace'),     status=discord.Status.dnd)
             globals.cur_presence = 1
         elif globals.cur_presence == 1:
             count = 0
@@ -182,7 +182,7 @@ if __name__ == '__main__':
             await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{count} users'), status=discord.Status.dnd)
             globals.cur_presence = 2
         elif globals.cur_presence == 2:
-            await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'the Blackwall'), status=discord.Status.dnd)
+            await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,  name='the Blackwall'),  status=discord.Status.dnd)
             globals.cur_presence = 0
 
     # Actually run the bot

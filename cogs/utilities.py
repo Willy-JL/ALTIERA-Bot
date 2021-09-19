@@ -25,7 +25,7 @@ class Utilities(commands.Cog,
                 max = int(arg1)
             except (ValueError, TypeError):
                 await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide a valid number!")
+                                        title="💢 Please provide a valid number!")
                 return
         else:
             max = 6
@@ -36,7 +36,7 @@ class Utilities(commands.Cog,
                 max = int(arg2)
             except (ValueError, TypeError):
                 await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide valid numbers!")
+                                        title="💢 Please provide valid numbers!")
                 return
         else:
             throws = 1
@@ -46,7 +46,7 @@ class Utilities(commands.Cog,
                 mod = int(arg3)
             except (ValueError, TypeError):
                 await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide valid numbers!")
+                                        title="💢 Please provide valid numbers!")
                 return
         else:
             mod = 0
@@ -81,11 +81,11 @@ class Utilities(commands.Cog,
             rolls.append(str(roll))
         result += mod
         await utils.embed_reply(ctx,
-                                title=f"🎲 Dice roll!",
+                                title="🎲 Dice roll!",
                                 description=f'Throws: {throws}{" (adjusted)" if throws_adjusted else ""}\n'
                                             f'Max: {max}{" (adjusted)" if max_adjusted else ""}\n'
                                             f'Modifier: {mod:+}{" (adjusted)" if mod_adjusted else ""}\n'
-                                            f'\n'
+                                            '\n'
                                             f'Result:  __**{str(result)}**__ ( `{", ".join(rolls)}{f", {mod:+}" if mod != 0 else ""}` )',
                                 add_timestamp=False)
 

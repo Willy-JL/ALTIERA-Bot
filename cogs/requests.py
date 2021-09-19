@@ -67,8 +67,8 @@ class Requests(commands.Cog,
                                                                   description=description,
                                                                   fields=[
                                                                       ["Requester:", f"<@!{ctx.author.id}>", True],
-                                                                      ["Status:",    f"Waiting",             True],
-                                                                      ["Modder:",    f"TBD",                 True]
+                                                                      ["Status:",    "Waiting",             True],
+                                                                      ["Modder:",    "TBD",                 True]
                                                                   ],
                                                                   thumbnail=globals.REQUESTS_ICONS["Waiting"],
                                                                   image=image))
@@ -127,11 +127,11 @@ class Requests(commands.Cog,
                 await ctx.message.delete()
                 try:
                     await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                   title=f"💢 You cannot edit someone else's request!"))
+                                                                   title="💢 You cannot edit someone else's request!"))
                 except Exception:
                     await ctx.channel.send(content=f"<@!{ctx.author.id}>",
                                            embed=utils.custom_embed(ctx.guild,
-                                                                    title=f"💢 You cannot edit someone else's request!"),
+                                                                    title="💢 You cannot edit someone else's request!"),
                                            delete_after=5)
                 return
 
@@ -139,11 +139,11 @@ class Requests(commands.Cog,
                 await ctx.message.delete()
                 try:
                     await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                   title=f"💢 You cannot edit a request that has been claimed!"))
+                                                                   title="💢 You cannot edit a request that has been claimed!"))
                 except Exception:
                     await ctx.channel.send(content=f"<@!{ctx.author.id}>",
                                            embed=utils.custom_embed(ctx.guild,
-                                                                    title=f"💢 You cannot edit a request that has been claimed!"),
+                                                                    title="💢 You cannot edit a request that has been claimed!"),
                                            delete_after=5)
                 return
 
@@ -236,11 +236,11 @@ class Requests(commands.Cog,
                 await ctx.message.delete()
                 try:
                     await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                   title=f"💢 You cannot delete someone else's request!"))
+                                                                   title="💢 You cannot delete someone else's request!"))
                 except Exception:
                     await ctx.channel.send(content=f"<@!{ctx.author.id}>",
                                            embed=utils.custom_embed(ctx.guild,
-                                                                    title=f"💢 You cannot delete someone else's request!"),
+                                                                    title="💢 You cannot delete someone else's request!"),
                                            delete_after=5)
                 return
 
@@ -248,11 +248,11 @@ class Requests(commands.Cog,
                 await ctx.message.delete()
                 try:
                     await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                   title=f"💢 You cannot delete a request that has been claimed!"))
+                                                                   title="💢 You cannot delete a request that has been claimed!"))
                 except Exception:
                     await ctx.channel.send(content=f"<@!{ctx.author.id}>",
                                            embed=utils.custom_embed(ctx.guild,
-                                                                    title=f"💢 You cannot delete a request that has been claimed!"),
+                                                                    title="💢 You cannot delete a request that has been claimed!"),
                                            delete_after=5)
                 return
 
@@ -312,11 +312,11 @@ class Requests(commands.Cog,
                 await ctx.message.delete()
                 try:
                     await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                                   title=f"💢 Only users with Modder role can claim requests!"))
+                                                                   title="💢 Only users with Modder role can claim requests!"))
                 except Exception:
                     await ctx.channel.send(content=f"<@!{ctx.author.id}>",
                                            embed=utils.custom_embed(ctx.guild,
-                                                                    title=f"💢 Only users with Modder role can claim requests!"),
+                                                                    title="💢 Only users with Modder role can claim requests!"),
                                            delete_after=5)
                 return
 

@@ -74,7 +74,7 @@ class Bot(commands.Cog,
         desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n"
         desc += f"\n**A.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
         await utils.embed_reply(ctx,
-                                title=f"⁉️   A.L.T.I.E.R.A. Help",
+                                title="⁉️   A.L.T.I.E.R.A. Help",
                                 description=desc)
         return
 
@@ -93,7 +93,7 @@ class Bot(commands.Cog,
                                     ["📟 CPU Usage",        f"{psutil.cpu_percent()}%",                                                                                                                                            True],
                                     ["💾 RAM Usage",        f"{utils.pretty_size(psutil.Process(os.getpid()).memory_info().rss)}/{'512MB' if os.environ.get('DYNO') else utils.pretty_size(psutil.virtual_memory().total)}",       True],
                                     ["🚀 Last Update",      f"{datetime.datetime.fromisoformat(os.environ.get('HEROKU_RELEASE_CREATED_AT')[:-1]).strftime('%d/%m/%Y') if os.environ.get('HEROKU_RELEASE_CREATED_AT') else 'N/A'}", True],
-                                    ["👨‍💻 Developer",        f"[WillyJL](https://linktr.ee/WillyJL)",                                                                                                                               True],
+                                    ["👨‍💻 Developer",        "[WillyJL](https://linktr.ee/WillyJL)",                                                                                                                               True],
                                     ["📚 Library",          f"discord.py v{discord.__version__}",                                                                                                                                  True],
                                     ["📦 Version",          f"{os.environ.get('HEROKU_RELEASE_VERSION') if os.environ.get('HEROKU_RELEASE_VERSION') else 'N/A'}",                                                                  True],
                                 ],

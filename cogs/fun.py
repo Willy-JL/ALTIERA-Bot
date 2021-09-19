@@ -30,26 +30,26 @@ class Fun(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
             return
         # Actual command
         if target.id != ctx.author.id:
             await utils.embed_reply(ctx,
                                     content=f"<@!{target.id}>",
-                                    title=f"🍪 CyberCookie!",
+                                    title="🍪 CyberCookie!",
                                     description=f"<@!{ctx.author.id}> just gave you a delicious Cyber🤖Cookie🍪!\n"
-                                                f"Eat it before it vaporizes you!",
+                                                "Eat it before it vaporizes you!",
                                     thumbnail="https://cdn.discordapp.com/emojis/766054797673496596.png")
         else:
             await utils.embed_reply(ctx,
-                                    title=f"🍪 CyberCookie!",
+                                    title="🍪 CyberCookie!",
                                     description=f"<@!{ctx.author.id}> doesn't have any friends yet so they treated themselves to a delicious Cyber🤖Cookie🍪!\n"
-                                                f"Time to eagerly eat it in complete silence!",
+                                                "Time to eagerly eat it in complete silence!",
                                     thumbnail="https://cdn.discordapp.com/emojis/766054797673496596.png")
 
     @commands.command(name="burrito",
@@ -71,26 +71,26 @@ class Fun(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
             return
         # Actual command
         if target.id != ctx.author.id:
             await utils.embed_reply(ctx,
                                     content=f"<@!{target.id}>",
-                                    title=f"🌯 SpaceBurrito!",
+                                    title="🌯 SpaceBurrito!",
                                     description=f"<@!{ctx.author.id}> just delivered you a delicious Space🌌Burrito🌯!\n"
-                                                f"Eat it before it gets cold!",
+                                                "Eat it before it gets cold!",
                                     thumbnail="https://cdn.discordapp.com/emojis/779465397903949825.png")
         else:
             await utils.embed_reply(ctx,
-                                    title=f"🌯 SpaceBurrito!",
+                                    title="🌯 SpaceBurrito!",
                                     description=f"<@!{ctx.author.id}> doesn't have any friends yet so they bought themselves a delicious Space🌌Burrito🌯!\n"
-                                                f"Time to eagerly enjoy it in complete silence!",
+                                                "Time to eagerly enjoy it in complete silence!",
                                     thumbnail="https://cdn.discordapp.com/emojis/779465397903949825.png")
 
 

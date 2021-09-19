@@ -71,7 +71,7 @@ async def restart():
             async with client.delete(f'https://api.heroku.com/apps/{os.environ.get("HEROKU_APP_NAME")}/dynos/{os.environ["DYNO"]}',
                                      headers={
                                          'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
-                                         'Accept':        f'application/vnd.heroku+json; version=3'
+                                         'Accept':        'application/vnd.heroku+json; version=3'
                                      }) as req:
                 response = await req.text()
                 if not req.ok:

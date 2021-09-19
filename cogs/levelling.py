@@ -41,11 +41,11 @@ class Levelling(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
 
         # Actual command
@@ -110,36 +110,36 @@ class Levelling(commands.Cog,
 
         # Draw single level values
         if target.id == globals.ADMIN_ID:
-            utils.draw_text(draw, globals.font16, f"LVL:",            "#090D18", (275, 425), 999)
+            utils.draw_text(draw, globals.font16, "LVL:",             "#090D18", (275, 425), 999)
             utils.draw_text(draw, globals.font24, f"{level[0]}",      "#090D18", (308, 423), 999)
         else:
-            utils.draw_text(draw, globals.font16, f"LVL:",            "#FFFFFF", (275, 425), 999)
+            utils.draw_text(draw, globals.font16, "LVL:",             "#FFFFFF", (275, 425), 999)
             utils.draw_text(draw, globals.font24, f"{level[0]}",      "#FFFFFF", (308, 423), 999)
-        utils.draw_text    (draw, globals.font16, f"LVL:",            "#FFFFFF", (275, 518), 999)
+        utils.draw_text    (draw, globals.font16, "LVL:",             "#FFFFFF", (275, 518), 999)
         utils.draw_text    (draw, globals.font24, f"{cred[0]}",       "#FFFFFF", (308, 516), 999)
         if target.id == globals.ADMIN_ID:
-            utils.draw_text(draw, globals.font16, f"LVL:",            "#009EDF", (275, 619), 999)
+            utils.draw_text(draw, globals.font16, "LVL:",             "#009EDF", (275, 619), 999)
             utils.draw_text(draw, globals.font24, f"{assistance[0]}", "#009EDF", (308, 617), 999)
         else:
-            utils.draw_text(draw, globals.font16, f"LVL:",            "#F06B02", (275, 619), 999)
+            utils.draw_text(draw, globals.font16, "LVL:",             "#F06B02", (275, 619), 999)
             utils.draw_text(draw, globals.font24, f"{assistance[0]}", "#F06B02", (308, 617), 999)
 
         # Draw single percentage values
         if level_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",               "#090D18", (579-globals.font30.getsize(f"MAX")[0],               398), 999)
+            utils.draw_text(draw, globals.font30, "MAX",                "#090D18", (579-globals.font30.getsize("MAX")[0],                398), 999)
         else:
             utils.draw_text(draw, globals.font30, f"{level_next}",      "#090D18", (565-globals.font30.getsize(f"{level_next}")[0],      398), 999)
-            utils.draw_text(draw, globals.font20, f"%",                 "#090D18", (565,                                                 407), 999)
+            utils.draw_text(draw, globals.font20, "%",                  "#090D18", (565,                                                 407), 999)
         if cred_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",               "#090D18", (579-globals.font30.getsize(f"MAX")[0],               491), 999)
+            utils.draw_text(draw, globals.font30, "MAX",                "#090D18", (579-globals.font30.getsize("MAX")[0],                491), 999)
         else:
             utils.draw_text(draw, globals.font30, f"{cred_next}",       "#090D18", (565-globals.font30.getsize(f"{cred_next}")[0],       491), 999)
-            utils.draw_text(draw, globals.font20, f"%",                 "#090D18", (565,                                                 500), 999)
+            utils.draw_text(draw, globals.font20, "%",                  "#090D18", (565,                                                 500), 999)
         if assistance_next >= 100:
-            utils.draw_text(draw, globals.font30, f"MAX",               "#090D18", (579-globals.font30.getsize(f"MAX")[0],               593), 999)
+            utils.draw_text(draw, globals.font30, "MAX",                "#090D18", (579-globals.font30.getsize("MAX")[0],                593), 999)
         else:
             utils.draw_text(draw, globals.font30, f"{assistance_next}", "#090D18", (565-globals.font30.getsize(f"{assistance_next}")[0], 593), 999)
-            utils.draw_text(draw, globals.font20, f"%",                 "#090D18", (565,                                                 602), 999)
+            utils.draw_text(draw, globals.font20, "%",                  "#090D18", (565,                                                 602), 999)
 
         # Overlay percentage bars
         if target.id == globals.ADMIN_ID:
@@ -179,11 +179,11 @@ class Levelling(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
 
         # Actual command
@@ -206,7 +206,7 @@ class Levelling(commands.Cog,
     async def top(self, ctx):
         if ctx.invoked_subcommand is None:
             await utils.embed_reply(ctx,
-                                    title=f"🏆 Leaderboard Categories:",
+                                    title="🏆 Leaderboard Categories:",
                                     description=f"{globals.BOT_PREFIX.lower()}top **level**: Top 10 members for Server Level\n"
                                                 f"{globals.BOT_PREFIX.lower()}top **cred**: Top 10 members for Server Cred\n"
                                                 f"{globals.BOT_PREFIX.lower()}top **assistance**: Top 10 member for Assistance")
@@ -231,8 +231,8 @@ class Levelling(commands.Cog,
             line = left + spacing + level
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
-                                title=f"🏆 Server Level Leaderboard:",
-                                description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
+                                title="🏆 Server Level Leaderboard:",
+                                description="```asciidoc\n" + "\n".join(lines) + "\n```")
 
     @top.command(name="cred",
                  aliases=[])
@@ -254,8 +254,8 @@ class Levelling(commands.Cog,
             line = left + spacing + cred
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
-                                title=f"🏆 Server Cred Leaderboard:",
-                                description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
+                                title="🏆 Server Cred Leaderboard:",
+                                description="```asciidoc\n" + "\n".join(lines) + "\n```")
 
     @top.command(name="assistance",
                  aliases=["assist"])
@@ -277,8 +277,8 @@ class Levelling(commands.Cog,
             line = left + spacing + assistance
             lines.append(("+ " if i % 2 else "= ") + line)
         await utils.embed_reply(ctx,
-                                title=f"🏆 Server Assistance Leaderboard:",
-                                description=f"```asciidoc\n" + "\n".join(lines) + "\n```")
+                                title="🏆 Server Assistance Leaderboard:",
+                                description="```asciidoc\n" + "\n".join(lines) + "\n```")
 
     @commands.command(name="rep",
                       description="Gift a cool person some reputation (500 cred XP)\n"
@@ -291,7 +291,7 @@ class Levelling(commands.Cog,
             # Convert target input to discord.Member
             if not target:
                 await utils.embed_reply(ctx,
-                                        title=f"💢 Please provide a user to give reputation to!")
+                                        title="💢 Please provide a user to give reputation to!")
                 return
             if isinstance(target, int):
                 target = ctx.guild.get_member(target)
@@ -303,28 +303,28 @@ class Levelling(commands.Cog,
                 pass
             else:
                 await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
+                                        title="💢 That is not a valid user!")
                 return
             if not target:
                 await utils.embed_reply(ctx,
-                                        title=f"💢 That is not a valid user!")
+                                        title="💢 That is not a valid user!")
                 return
             if target.id == ctx.author.id:
                 await utils.embed_reply(ctx,
-                                        title=f"💢 Thats low even by your standards...")
+                                        title="💢 Thats low even by your standards...")
                 return
             # Actual command
             await db.add_user_xp(target.id, cred=globals.REP_CRED_AMOUNT)
             rep_cooldown_users.add(str(ctx.author.id))
             await utils.embed_reply(ctx,
                                     content=f"<@!{target.id}>",
-                                    title=f"💌 You got some reputation!",
+                                    title="💌 You got some reputation!",
                                     description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
                                     thumbnail=globals.REP_ICON)
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 You're on cooldown!",
-                                    description=f"You can only use that command once every **24 hours**!\n"
+                                    title="💢 You're on cooldown!",
+                                    description="You can only use that command once every **24 hours**!\n"
                                                 f"You'll be able to use it again in roughly **{utils.time_to_restart()}**")
 
     @commands.command(name="daily",
@@ -338,13 +338,13 @@ class Levelling(commands.Cog,
             await db.add_user_xp(ctx.author.id, level=globals.DAILY_LEVEL_AMOUNT)
             daily_cooldown_users.add(str(ctx.author.id))
             await utils.embed_reply(ctx,
-                                    title=f"📅 Daily reward claimed!",
+                                    title="📅 Daily reward claimed!",
                                     description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!\n"
                                                 f"Come back in roughly **{utils.time_to_restart()}** for more!",
                                     thumbnail=ctx.author.avatar_url)
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 It's called \"daily\" for a reason!",
+                                    title="💢 It's called \"daily\" for a reason!",
                                     description=f"Come back in roughly **{utils.time_to_restart()}** for your next daily reward")
 
 

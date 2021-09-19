@@ -22,7 +22,7 @@ class Staff(commands.Cog,
 
         if not await utils.save_db():
             await utils.embed_reply(ctx,
-                                    title=f"💢 Failed to save remote config!")
+                                    title="💢 Failed to save remote database!")
         else:
             await ctx.message.add_reaction('👌')
         await ctx.reply(file=discord.File('db.sqlite3'))
@@ -49,7 +49,7 @@ class Staff(commands.Cog,
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 Please provide a valid user!")
+                                    title="💢 Please provide a valid user!")
             return
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
@@ -61,11 +61,11 @@ class Staff(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         # Actual command
         level_xp, _, _ = await db.add_user_xp(target.id, level=amount)
@@ -82,7 +82,7 @@ class Staff(commands.Cog,
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 Please provide a valid user!")
+                                    title="💢 Please provide a valid user!")
             return
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
@@ -94,11 +94,11 @@ class Staff(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         # Actual command
         _, cred_xp, _ = await db.add_user_xp(target.id, cred=amount)
@@ -115,7 +115,7 @@ class Staff(commands.Cog,
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 Please provide a valid user!")
+                                    title="💢 Please provide a valid user!")
             return
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
@@ -127,11 +127,11 @@ class Staff(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         # Actual command
         _, _, assistance_xp = await db.add_user_xp(target.id, assistance=amount)
@@ -160,7 +160,7 @@ class Staff(commands.Cog,
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 Please provide a valid user!")
+                                    title="💢 Please provide a valid user!")
             return
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
@@ -172,11 +172,11 @@ class Staff(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         # Actual command
         level_xp, _, _ = await db.set_user_xp(target.id, level=amount)
@@ -193,7 +193,7 @@ class Staff(commands.Cog,
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 Please provide a valid user!")
+                                    title="💢 Please provide a valid user!")
             return
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
@@ -205,11 +205,11 @@ class Staff(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         # Actual command
         _, cred_xp, _ = await db.set_user_xp(target.id, cred=amount)
@@ -226,7 +226,7 @@ class Staff(commands.Cog,
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 Please provide a valid user!")
+                                    title="💢 Please provide a valid user!")
             return
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
@@ -238,11 +238,11 @@ class Staff(commands.Cog,
             pass
         else:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         if not target:
             await utils.embed_reply(ctx,
-                                    title=f"💢 That is not a valid user!")
+                                    title="💢 That is not a valid user!")
             return
         # Actual command
         _, _, assistance_xp = await db.set_user_xp(target.id, assistance=amount)
@@ -260,7 +260,7 @@ class Staff(commands.Cog,
             return
 
         await utils.embed_reply(ctx,
-                                title=f"👌 Restarting...")
+                                title="👌 Restarting...")
         await utils.restart()
 
 
