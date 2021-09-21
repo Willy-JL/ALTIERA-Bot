@@ -90,29 +90,30 @@ async def restart():
 
 # Setup persistent image components
 def setup_persistent_components():
+    # Fonts
     globals.font47 = ImageFont.truetype("assets/square.ttf", 47)
     globals.font35 = ImageFont.truetype("assets/square.ttf", 35)
     globals.font30 = ImageFont.truetype("assets/square.ttf", 30)
     globals.font24 = ImageFont.truetype("assets/square.ttf", 24)
     globals.font20 = ImageFont.truetype("assets/square.ttf", 20)
     globals.font16 = ImageFont.truetype("assets/square.ttf", 16)
-
+    # Avatars
     globals.default_avatar = Image.open('assets/default_avatar.png').resize((200, 200))
-
+    # Overlays
     globals.overlays_default = Image.open('assets/overlays/default.png')
     globals.overlays_staff   = Image.open('assets/overlays/staff.png'  )
     globals.overlays_admin   = Image.open('assets/overlays/admin.png'  )
-
+    # Shards
     globals.shards_orange = Image.open("assets/shards/orange.png").resize((33, 28))
     globals.shards_white  = Image.open("assets/shards/white.png" ).resize((33, 28))
     globals.shards_teal   = Image.open("assets/shards/teal.png"  ).resize((33, 28))
-
+    # Bars
     globals.bars = {}
     for color in ["blue_white", "orange_white", "teal_white", "white_blue", "white_orange"]:
         globals.bars[color] = []
         for i in range(11):
             globals.bars[color].append(Image.open(f"assets/bars/{color}/{i}.png"))
-
+    # Levelups
     globals.levelups = {}
     for xp_type in ["level", "cred", "assistance"]:
         globals.levelups[xp_type] = {}
@@ -254,7 +255,6 @@ async def imgur_image_upload(img: bytes):
     maximum = 10000000
     if size > maximum:
         raise errors.FileTooBig(size=size, maximum=maximum)
-
     try:
         resp = None
         async with aiohttp.ClientSession() as client:

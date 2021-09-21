@@ -87,7 +87,7 @@ if __name__ == '__main__':
     async def on_ready():
         print(f'Logged in as {globals.bot.user}!')
         update_presence_loop.start()
-
+        # Compute next restart time
         now = datetime.datetime.utcnow()
         midnight = datetime.time(0, 0)
         next_midnight = datetime.datetime.combine(now, midnight)
@@ -95,7 +95,7 @@ if __name__ == '__main__':
             next_midnight += datetime.timedelta(days=1)
         globals.start_dt = now
         globals.restart_dt = next_midnight
-
+        # Exit after saving DB
         async def graceful_exit():
             print("Saving DB...")
             update_presence_loop.stop()
@@ -107,12 +107,12 @@ if __name__ == '__main__':
             print("Exiting...")
             globals.loop.stop()
             os._exit(os.EX_OK)
-
+        # Schedule graceful exit for kill signals
         for signame in ['SIGINT', 'SIGTERM']:
             globals.loop.add_signal_handler(getattr(signal, signame), lambda: globals.loop.create_task(graceful_exit()))
-
+        # Wait until restart time
         await discord.utils.sleep_until(globals.restart_dt)
-
+        # Force restart
         await utils.restart()
 
     # Ignore command not found errors

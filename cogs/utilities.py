@@ -20,6 +20,7 @@ class Utilities(commands.Cog,
                            "modifier: number to add or subtract from result, default 0, max +100/-100 (optional)",
                       aliases=["diceroll", "rolldice", "roll"])
     async def dice(self, ctx, arg1: str = None, arg2: str = None, arg3: str = None):
+        # Arg1
         if arg1 is not None:
             try:
                 max = int(arg1)
@@ -29,7 +30,7 @@ class Utilities(commands.Cog,
                 return
         else:
             max = 6
-
+        # Arg2
         if arg2 is not None:
             throws = max
             try:
@@ -40,7 +41,7 @@ class Utilities(commands.Cog,
                 return
         else:
             throws = 1
-
+        # Arg3
         if arg3 is not None:
             try:
                 mod = int(arg3)
@@ -50,7 +51,7 @@ class Utilities(commands.Cog,
                 return
         else:
             mod = 0
-
+        # Adjustments
         throws_adjusted = False
         max_adjusted = False
         mod_adjusted = False
@@ -72,7 +73,7 @@ class Utilities(commands.Cog,
         if mod < -100:
             mod = -100
             mod_adjusted = True
-
+        # Actual command
         result = 0
         rolls = []
         for _ in range(throws):

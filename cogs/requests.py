@@ -30,7 +30,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Cooldown
         if ctx.author.id in cooldowns:
             await ctx.message.delete()
             try:
@@ -44,7 +44,7 @@ class Requests(commands.Cog,
                                                                 description="You can only post one request every 10 minutes!"),
                                        delete_after=5)
             return
-
+        # Missing arguments
         if not description:
             await ctx.message.delete()
             try:
@@ -56,7 +56,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a description of your request!"),
                                        delete_after=5)
             return
-
+        # Image stuff
         description = str(description)
         image = ""
         for attachment in ctx.message.attachments:
@@ -95,7 +95,7 @@ class Requests(commands.Cog,
                                                delete_after=5,
                                                file=discord.File(fp, filename="error_info.txt"))
                 break
-
+        # Actual command
         req_id = await db.create_request(ctx.author.id, description, image)
         req_msg = await ctx.channel.send(embed=utils.custom_embed(ctx.guild,
                                                                   title=f"Request #`{req_id}`",
@@ -127,7 +127,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Handle arguments
         try:
             req_id = int(req_id)
         except (TypeError, ValueError,):
@@ -141,7 +141,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a valid request id!"),
                                        delete_after=5)
             return
-
+        # Database stuff
         try:
             requester_id, modder_id, status, link, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "link", "image", "channel_id", "message_id")
         except FileNotFoundError:
@@ -155,9 +155,8 @@ class Requests(commands.Cog,
                                                                 title=f"💢 There is no request with id `{req_id}`!"),
                                        delete_after=5)
             return
-
+        # Permission checks
         if not utils.is_staff(ctx.author):
-
             if ctx.author.id not in (requester_id, modder_id,):
                 await ctx.message.delete()
                 try:
@@ -169,7 +168,6 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot edit someone else's request!"),
                                            delete_after=5)
                 return
-
             if status in ("Already Exists", "Released", "WIP",) and ctx.author.id == requester_id:
                 await ctx.message.delete()
                 try:
@@ -181,7 +179,7 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot edit a request that has been claimed!"),
                                            delete_after=5)
                 return
-
+        # Missing arguments
         if not description:
             await ctx.message.delete()
             try:
@@ -193,9 +191,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a new description for the request!"),
                                        delete_after=5)
             return
-
-        # Actual command
-
+        # Image stuff
         description = str(description)
         new_image = ""
         for attachment in ctx.message.attachments:
@@ -238,7 +234,7 @@ class Requests(commands.Cog,
             description = description.replace("REMOVE IMAGE", "")
         else:
             new_image = new_image or image
-
+        # Actual command
         await db.edit_request(req_id, description, new_image)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.edit(embed=utils.custom_embed(ctx.guild,
@@ -267,7 +263,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Handle arguments
         try:
             req_id = int(req_id)
         except (TypeError, ValueError,):
@@ -281,7 +277,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a valid request id!"),
                                        delete_after=5)
             return
-
+        # Database stuff
         try:
             requester_id, status, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "channel_id", "message_id")
         except FileNotFoundError:
@@ -295,9 +291,8 @@ class Requests(commands.Cog,
                                                                 title=f"💢 There is no request with id `{req_id}`!"),
                                        delete_after=5)
             return
-
+        # Permission checks
         if not utils.is_staff(ctx.author):
-
             if ctx.author.id != requester_id:
                 await ctx.message.delete()
                 try:
@@ -309,7 +304,6 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot delete someone else's request!"),
                                            delete_after=5)
                 return
-
             if status in ("Already Exists", "Released", "WIP",):
                 await ctx.message.delete()
                 try:
@@ -321,9 +315,7 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot delete a request that has been claimed!"),
                                            delete_after=5)
                 return
-
         # Actual command
-
         await db.delete_request(req_id=req_id)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.delete()
@@ -343,7 +335,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Handle arguments
         try:
             req_id = int(req_id)
         except (TypeError, ValueError,):
@@ -357,7 +349,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a valid request id!"),
                                        delete_after=5)
             return
-
+        # Database stuff
         try:
             requester_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
@@ -371,9 +363,8 @@ class Requests(commands.Cog,
                                                                 title=f"💢 There is no request with id `{req_id}`!"),
                                        delete_after=5)
             return
-
+        # Permission checks
         if not utils.is_staff(ctx.author):
-
             if not utils.user_has_a_role(ctx.author, globals.MODDER_ROLE_IDS):
                 await ctx.message.delete()
                 try:
@@ -385,7 +376,6 @@ class Requests(commands.Cog,
                                                                     title="💢 Only users with Modder role can claim requests!"),
                                            delete_after=5)
                 return
-
             if status in ("Already Exists", "Released", "WIP",):
                 await ctx.message.delete()
                 try:
@@ -397,9 +387,7 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot claim a request that has already been claimed!"),
                                            delete_after=5)
                 return
-
         # Actual command
-
         await db.claim_request(req_id, ctx.author.id)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.edit(embed=utils.custom_embed(ctx.guild,
@@ -428,7 +416,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Handle arguments
         try:
             req_id = int(req_id)
         except (TypeError, ValueError,):
@@ -442,7 +430,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a valid request id!"),
                                        delete_after=5)
             return
-
+        # Database stuff
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
@@ -456,9 +444,8 @@ class Requests(commands.Cog,
                                                                 title=f"💢 There is no request with id `{req_id}`!"),
                                        delete_after=5)
             return
-
+        # Permission checks
         if not utils.is_staff(ctx.author):
-
             if ctx.author.id != modder_id:
                 await ctx.message.delete()
                 try:
@@ -470,7 +457,6 @@ class Requests(commands.Cog,
                                                                     title="💢 Only the modder assigned to this request can unclaim it!"),
                                            delete_after=5)
                 return
-
             if status in ("Released", "Already Exists",):
                 await ctx.message.delete()
                 try:
@@ -482,9 +468,7 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot unclaim a request that has been released!"),
                                            delete_after=5)
                 return
-
         # Actual command
-
         await db.unclaim_request(req_id)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.edit(embed=utils.custom_embed(ctx.guild,
@@ -514,7 +498,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Handle arguments
         try:
             req_id = int(req_id)
         except (TypeError, ValueError,):
@@ -528,7 +512,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a valid request id!"),
                                        delete_after=5)
             return
-
+        # Database stuff
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
@@ -542,9 +526,8 @@ class Requests(commands.Cog,
                                                                 title=f"💢 There is no request with id `{req_id}`!"),
                                        delete_after=5)
             return
-
+        # Permission checks
         if not utils.is_staff(ctx.author):
-
             if ctx.author.id != modder_id:
                 await ctx.message.delete()
                 try:
@@ -556,7 +539,6 @@ class Requests(commands.Cog,
                                                                     title="💢 Only the modder assigned to this request can release it!"),
                                            delete_after=5)
                 return
-
             if status in ("Already Exists",):
                 await ctx.message.delete()
                 try:
@@ -568,7 +550,7 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot release a request that has been linked!"),
                                            delete_after=5)
                 return
-
+        # Missing arguments
         if not link:
             await ctx.message.delete()
             try:
@@ -580,9 +562,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a link for the mod!"),
                                        delete_after=5)
             return
-
         # Actual command
-
         await db.release_request(req_id, ctx.author.id, link)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.edit(embed=utils.custom_embed(ctx.guild,
@@ -611,7 +591,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Handle arguments
         try:
             req_id = int(req_id)
         except (TypeError, ValueError,):
@@ -625,7 +605,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a valid request id!"),
                                        delete_after=5)
             return
-
+        # Database stuff
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
@@ -639,9 +619,8 @@ class Requests(commands.Cog,
                                                                 title=f"💢 There is no request with id `{req_id}`!"),
                                        delete_after=5)
             return
-
+        # Permission checks
         if not utils.is_staff(ctx.author):
-
             if ctx.author.id != modder_id:
                 await ctx.message.delete()
                 try:
@@ -653,7 +632,6 @@ class Requests(commands.Cog,
                                                                     title="💢 Only the modder assigned to this request can unrelease it!"),
                                            delete_after=5)
                 return
-
             if status in ("WIP", "Already Released",):
                 await ctx.message.delete()
                 try:
@@ -665,9 +643,7 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot unrelease a request that has not been released!"),
                                            delete_after=5)
                 return
-
         # Actual command
-
         await db.unrelease_request(req_id, ctx.author.id)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.edit(embed=utils.custom_embed(ctx.guild,
@@ -697,7 +673,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Handle arguments
         try:
             req_id = int(req_id)
         except (TypeError, ValueError,):
@@ -711,7 +687,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a valid request id!"),
                                        delete_after=5)
             return
-
+        # Database stuff
         try:
             requester_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
@@ -725,9 +701,8 @@ class Requests(commands.Cog,
                                                                 title=f"💢 There is no request with id `{req_id}`!"),
                                        delete_after=5)
             return
-
+        # Permission checks
         if not utils.is_staff(ctx.author):
-
             if not utils.user_has_a_role(ctx.author, globals.MODDER_ROLE_IDS):
                 await ctx.message.delete()
                 try:
@@ -739,19 +714,18 @@ class Requests(commands.Cog,
                                                                     title="💢 Only users with Modder role can link requests!"),
                                            delete_after=5)
                 return
-
-        if status in ("Already Exists", "Released", "WIP",):
-            await ctx.message.delete()
-            try:
-                await ctx.author.send(embed=utils.custom_embed(ctx.guild,
-                                                               title="💢 You cannot link a request that has already been claimed!"))
-            except Exception:
-                await ctx.channel.send(content=f"<@!{ctx.author.id}>",
-                                       embed=utils.custom_embed(ctx.guild,
-                                                                title="💢 You cannot link a request that has already been claimed!"),
-                                       delete_after=5)
-            return
-
+            if status in ("Already Exists", "Released", "WIP",):
+                await ctx.message.delete()
+                try:
+                    await ctx.author.send(embed=utils.custom_embed(ctx.guild,
+                                                                   title="💢 You cannot link a request that has already been claimed!"))
+                except Exception:
+                    await ctx.channel.send(content=f"<@!{ctx.author.id}>",
+                                           embed=utils.custom_embed(ctx.guild,
+                                                                    title="💢 You cannot link a request that has already been claimed!"),
+                                           delete_after=5)
+                return
+        # Missing arguments
         if not link:
             await ctx.message.delete()
             try:
@@ -763,9 +737,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a link for the mod!"),
                                        delete_after=5)
             return
-
         # Actual command
-
         await db.link_request(req_id, ctx.author.id, link)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.edit(embed=utils.custom_embed(ctx.guild,
@@ -794,7 +766,7 @@ class Requests(commands.Cog,
                                     title="💢 No requests here!",
                                     description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
             return
-
+        # Handle arguments
         try:
             req_id = int(req_id)
         except (TypeError, ValueError,):
@@ -808,7 +780,7 @@ class Requests(commands.Cog,
                                                                 title="💢 Please provide a valid request id!"),
                                        delete_after=5)
             return
-
+        # Database stuff
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
         except FileNotFoundError:
@@ -822,9 +794,8 @@ class Requests(commands.Cog,
                                                                 title=f"💢 There is no request with id `{req_id}`!"),
                                        delete_after=5)
             return
-
+        # Permission checks
         if not utils.is_staff(ctx.author):
-
             if ctx.author.id != modder_id:
                 await ctx.message.delete()
                 try:
@@ -836,7 +807,6 @@ class Requests(commands.Cog,
                                                                     title="💢 Only the modder assigned to this request can unlink it!"),
                                            delete_after=5)
                 return
-
             if status in ("Released", "WIP",):
                 await ctx.message.delete()
                 try:
@@ -848,9 +818,7 @@ class Requests(commands.Cog,
                                                                     title="💢 You cannot unlink a request that has not been linked!"),
                                            delete_after=5)
                 return
-
         # Actual command
-
         await db.unlink_request(req_id)
         req_msg = await globals.bot.get_channel(channel_id).fetch_message(message_id)
         await req_msg.edit(embed=utils.custom_embed(ctx.guild,

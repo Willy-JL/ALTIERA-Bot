@@ -36,7 +36,6 @@ class Fun(commands.Cog,
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
             return
-            return
         # Actual command
         if target.id != ctx.author.id:
             await utils.embed_reply(ctx,
@@ -77,7 +76,6 @@ class Fun(commands.Cog,
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
             return
-            return
         # Actual command
         if target.id != ctx.author.id:
             await utils.embed_reply(ctx,
@@ -117,7 +115,6 @@ class Fun(commands.Cog,
         if not target:
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
-            return
             return
         # Actual command
         if target.id != ctx.author.id:

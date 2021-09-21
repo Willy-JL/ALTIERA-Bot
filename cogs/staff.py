@@ -19,7 +19,6 @@ class Staff(commands.Cog,
     async def save(self, ctx):
         if not utils.is_staff(ctx.author):
             return
-
         if not await utils.save_db():
             await utils.embed_reply(ctx,
                                     title="💢 Failed to save remote database!")
@@ -45,7 +44,6 @@ class Staff(commands.Cog,
     async def gibxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
             return
-
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
@@ -78,7 +76,6 @@ class Staff(commands.Cog,
     async def gibxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
             return
-
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
@@ -111,7 +108,6 @@ class Staff(commands.Cog,
     async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
             return
-
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
@@ -156,7 +152,6 @@ class Staff(commands.Cog,
     async def setxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
             return
-
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
@@ -189,7 +184,6 @@ class Staff(commands.Cog,
     async def setxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
             return
-
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
@@ -222,7 +216,6 @@ class Staff(commands.Cog,
     async def setxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
         if not utils.is_staff(ctx.author):
             return
-
         # Convert target input to discord.Member
         if not target:
             await utils.embed_reply(ctx,
@@ -258,7 +251,6 @@ class Staff(commands.Cog,
     async def restart(self, ctx):
         if not utils.is_staff(ctx.author):
             return
-
         await utils.embed_reply(ctx,
                                 title="👌 Restarting...")
         await utils.restart()

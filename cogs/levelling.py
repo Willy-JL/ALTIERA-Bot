@@ -47,9 +47,7 @@ class Levelling(commands.Cog,
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
             return
-
         # Actual command
-
         level_xp, cred_xp, assistance_xp = await db.get_user_xp(target.id)
         level      = xp.xp_to_lvl(level_xp )
         cred       = xp.xp_to_lvl(cred_xp  )
@@ -57,7 +55,6 @@ class Levelling(commands.Cog,
         level_next      = math.floor((level [2] - level [1]) * 100 / level [2])
         cred_next       = math.floor((cred  [2] - cred  [1]) * 100 / cred  [2])
         assistance_next = math.floor((assistance[2] - assistance[1]) * 100 / assistance[2])
-
         # Setup image foundation
         if target.id == globals.ADMIN_ID:
             img = Image.open("assets/backgrounds/admin.png"  )
@@ -66,7 +63,6 @@ class Levelling(commands.Cog,
         else:
             img = Image.open("assets/backgrounds/default.png")
         draw = ImageDraw.Draw(img)
-
         # Draw user avatar
         if str(target.avatar_url).startswith("https://cdn.discordapp.com/embed/avatars"):
             avatar = globals.default_avatar
@@ -76,7 +72,6 @@ class Levelling(commands.Cog,
             img.paste(avatar, (24, 18,), avatar)
         except ValueError:
             img.paste(avatar, (24, 18,))
-
         # Apply base overlay
         if target.id == globals.ADMIN_ID:
             img.paste(globals.overlays_admin,   (0, 0,), globals.overlays_admin  )
@@ -84,18 +79,15 @@ class Levelling(commands.Cog,
             img.paste(globals.overlays_staff,   (0, 0,), globals.overlays_staff  )
         else:
             img.paste(globals.overlays_default, (0, 0,), globals.overlays_default)
-
         # Draw username
         username = target.name.encode('ascii', 'replace').decode('ascii')  # Remove non-ascii glyphs
         utils.draw_text(draw, globals.font35, username, "#FFFFFF", (268, 85,), 298)
-
         # Draw main level and cred values
         utils.draw_text    (draw, globals.font47, f"LV:{level[0]}", "#009EDF", (277, 141,), 999)
         if target.id == globals.ADMIN_ID:
             utils.draw_text(draw, globals.font47, f"SC:{cred[0]}",  "#16F2D6", (434, 141,), 999)
         else:
             utils.draw_text(draw, globals.font47, f"SC:{cred[0]}",  "#F06B02", (434, 141,), 999)
-
         # Draw trophy shards
         x = 267
         for i in range(utils.get_trophy_amount(target)):
@@ -107,7 +99,6 @@ class Levelling(commands.Cog,
                 else:
                     img.paste(globals.shards_orange, (x, 194,), globals.shards_orange)
             x += 24
-
         # Draw single level values
         if target.id == globals.ADMIN_ID:
             utils.draw_text(draw, globals.font16, "LVL:",             "#090D18", (275, 425,), 999)
@@ -123,7 +114,6 @@ class Levelling(commands.Cog,
         else:
             utils.draw_text(draw, globals.font16, "LVL:",             "#F06B02", (275, 619,), 999)
             utils.draw_text(draw, globals.font24, f"{assistance[0]}", "#F06B02", (308, 617,), 999)
-
         # Draw single percentage values
         if level_next >= 100:
             utils.draw_text(draw, globals.font30, "MAX",                "#090D18", (579-globals.font30.getsize("MAX")[0],                398,), 999)
@@ -140,7 +130,6 @@ class Levelling(commands.Cog,
         else:
             utils.draw_text(draw, globals.font30, f"{assistance_next}", "#090D18", (565-globals.font30.getsize(f"{assistance_next}")[0], 593,), 999)
             utils.draw_text(draw, globals.font20, "%",                  "#090D18", (565,                                                 602,), 999)
-
         # Overlay percentage bars
         if target.id == globals.ADMIN_ID:
             level_bar      = globals.bars[ "teal_white" ][utils.get_bar_index_from_lvl_percent(level_next     )]
@@ -153,7 +142,7 @@ class Levelling(commands.Cog,
         img.paste(level_bar,      (218, 457,), level_bar     )
         img.paste(cred_bar,       (218, 550,), cred_bar      )
         img.paste(assistance_bar, (218, 650,), assistance_bar)
-
+        # Send the image
         binary = io.BytesIO()
         img.save(binary, format="PNG")
         binary.seek(0)
@@ -185,7 +174,6 @@ class Levelling(commands.Cog,
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
             return
-
         # Actual command
         level_xp, cred_xp, assistance_xp = await db.get_user_xp(target.id)
         await utils.embed_reply(ctx,

@@ -7,7 +7,7 @@ import io
 # Local imports
 from modules import globals, db, utils
 
-cooldowns = {}
+cooldowns         = {}
 contrib_cooldowns = {}
 
 
@@ -40,7 +40,6 @@ async def process_xp(message):
     level      = xp_to_lvl(level_xp     )[0]
     cred       = xp_to_lvl(cred_xp      )[0]
     assistance = xp_to_lvl(assistance_xp)[0]
-
     # Regular XP
     level_xp_to_add      = 0
     cred_xp_to_add       = 0
@@ -58,7 +57,6 @@ async def process_xp(message):
             assistance_xp_to_add += globals.XP_AMOUNT  # Assistance if assistance categories
         level_xp, cred_xp, assistance_xp = await db.add_user_xp(message.author.id, level=level_xp_to_add, cred=cred_xp_to_add, assistance=assistance_xp_to_add)
         cooldowns[message.author.id] = time.time() + globals.XP_COOLDOWN
-
     # Contrib xp (e.g. tutorial, resource, mod release...)
     added_contrib_boost = False
     level_xp_to_add  = 0
@@ -72,7 +70,6 @@ async def process_xp(message):
             level_xp, cred_xp, assistance_xp = await db.add_user_xp(message.author.id, level=level_xp_to_add, cred=cred_xp_to_add, assistance=assistance_xp_to_add)
             contrib_cooldowns[message.author.id] = time.time() + globals.CONTRIB_COOLDOWN
             added_contrib_boost = True
-
     # Notify levelups
     new_level      = xp_to_lvl(level_xp     )[0]
     new_cred       = xp_to_lvl(cred_xp      )[0]
@@ -83,7 +80,6 @@ async def process_xp(message):
         await notify_level_up(message, "cred",       cred,       new_cred      )
     if new_assistance > assistance:
         await notify_level_up(message, "assistance", assistance, new_assistance)
-
     # Revert contrib boost if message is deleted
     if added_contrib_boost:
         try:
@@ -117,7 +113,7 @@ async def notify_level_up(message, xp_type, old_lvl, new_lvl):
         # Draw old and new level values
         utils.draw_text(draw, globals.font47, f"{old_lvl}", globals.levelups[xp_type]["color"], (344, 56,), 999)
         utils.draw_text(draw, globals.font47, f"{new_lvl}", globals.levelups[xp_type]["color"], (530, 56,), 999)
-
+        # Send image
         binary = io.BytesIO()
         img.save(binary, format="PNG")
         binary.seek(0)
