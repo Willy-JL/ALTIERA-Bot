@@ -45,6 +45,7 @@ class Requests(commands.Cog,
                                        delete_after=5)
             return
         # Missing arguments
+        description = utils.strip_argument(description)
         if not description:
             await ctx.message.delete()
             try:
@@ -57,7 +58,6 @@ class Requests(commands.Cog,
                                        delete_after=5)
             return
         # Image stuff
-        description = str(description)
         image = ""
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
@@ -129,7 +129,7 @@ class Requests(commands.Cog,
             return
         # Handle arguments
         try:
-            req_id = int(req_id)
+            req_id = int(utils.strip_argument(req_id))
         except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
@@ -180,6 +180,7 @@ class Requests(commands.Cog,
                                            delete_after=5)
                 return
         # Missing arguments
+        description = utils.strip_argument(description)
         if not description:
             await ctx.message.delete()
             try:
@@ -192,7 +193,6 @@ class Requests(commands.Cog,
                                        delete_after=5)
             return
         # Image stuff
-        description = str(description)
         new_image = ""
         for attachment in ctx.message.attachments:
             if "image" in str(attachment.content_type):
@@ -265,7 +265,7 @@ class Requests(commands.Cog,
             return
         # Handle arguments
         try:
-            req_id = int(req_id)
+            req_id = int(utils.strip_argument(req_id))
         except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
@@ -337,7 +337,7 @@ class Requests(commands.Cog,
             return
         # Handle arguments
         try:
-            req_id = int(req_id)
+            req_id = int(utils.strip_argument(req_id))
         except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
@@ -418,7 +418,7 @@ class Requests(commands.Cog,
             return
         # Handle arguments
         try:
-            req_id = int(req_id)
+            req_id = int(utils.strip_argument(req_id))
         except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
@@ -500,7 +500,7 @@ class Requests(commands.Cog,
             return
         # Handle arguments
         try:
-            req_id = int(req_id)
+            req_id = int(utils.strip_argument(req_id))
         except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
@@ -551,6 +551,7 @@ class Requests(commands.Cog,
                                            delete_after=5)
                 return
         # Missing arguments
+        link = utils.strip_argument(link)
         if not link:
             await ctx.message.delete()
             try:
@@ -593,7 +594,7 @@ class Requests(commands.Cog,
             return
         # Handle arguments
         try:
-            req_id = int(req_id)
+            req_id = int(utils.strip_argument(req_id))
         except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
@@ -675,7 +676,7 @@ class Requests(commands.Cog,
             return
         # Handle arguments
         try:
-            req_id = int(req_id)
+            req_id = int(utils.strip_argument(req_id))
         except (TypeError, ValueError,):
             await ctx.message.delete()
             try:
@@ -726,6 +727,7 @@ class Requests(commands.Cog,
                                            delete_after=5)
                 return
         # Missing arguments
+        link = utils.strip_argument(link)
         if not link:
             await ctx.message.delete()
             try:
@@ -768,7 +770,7 @@ class Requests(commands.Cog,
             return
         # Handle arguments
         try:
-            req_id = int(req_id)
+            req_id = int(utils.strip_argument(req_id))
         except (TypeError, ValueError,):
             await ctx.message.delete()
             try:

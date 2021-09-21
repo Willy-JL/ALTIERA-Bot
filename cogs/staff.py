@@ -52,6 +52,7 @@ class Staff(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
@@ -64,6 +65,13 @@ class Staff(commands.Cog,
         if not target:
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
+            return
+        # Handle amount
+        try:
+            amount = int(utils.strip_argument(amount))
+        except (TypeError, ValueError,):
+            await utils.embed_reply(ctx,
+                                    title="💢 That is not a valid amount!")
             return
         # Actual command
         level_xp, _, _ = await db.add_user_xp(target.id, level=amount)
@@ -84,6 +92,7 @@ class Staff(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
@@ -96,6 +105,13 @@ class Staff(commands.Cog,
         if not target:
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
+            return
+        # Handle amount
+        try:
+            amount = int(utils.strip_argument(amount))
+        except (TypeError, ValueError,):
+            await utils.embed_reply(ctx,
+                                    title="💢 That is not a valid amount!")
             return
         # Actual command
         _, cred_xp, _ = await db.add_user_xp(target.id, cred=amount)
@@ -116,6 +132,7 @@ class Staff(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
@@ -128,6 +145,13 @@ class Staff(commands.Cog,
         if not target:
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
+            return
+        # Handle amount
+        try:
+            amount = int(utils.strip_argument(amount))
+        except (TypeError, ValueError,):
+            await utils.embed_reply(ctx,
+                                    title="💢 That is not a valid amount!")
             return
         # Actual command
         _, _, assistance_xp = await db.add_user_xp(target.id, assistance=amount)
@@ -160,6 +184,7 @@ class Staff(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
@@ -172,6 +197,13 @@ class Staff(commands.Cog,
         if not target:
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
+            return
+        # Handle amount
+        try:
+            amount = int(utils.strip_argument(amount))
+        except (TypeError, ValueError,):
+            await utils.embed_reply(ctx,
+                                    title="💢 That is not a valid amount!")
             return
         # Actual command
         level_xp, _, _ = await db.set_user_xp(target.id, level=amount)
@@ -192,6 +224,7 @@ class Staff(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
@@ -204,6 +237,13 @@ class Staff(commands.Cog,
         if not target:
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
+            return
+        # Handle amount
+        try:
+            amount = int(utils.strip_argument(amount))
+        except (TypeError, ValueError,):
+            await utils.embed_reply(ctx,
+                                    title="💢 That is not a valid amount!")
             return
         # Actual command
         _, cred_xp, _ = await db.set_user_xp(target.id, cred=amount)
@@ -224,6 +264,7 @@ class Staff(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
@@ -236,6 +277,13 @@ class Staff(commands.Cog,
         if not target:
             await utils.embed_reply(ctx,
                                     title="💢 That is not a valid user!")
+            return
+        # Handle amount
+        try:
+            amount = int(utils.strip_argument(amount))
+        except (TypeError, ValueError,):
+            await utils.embed_reply(ctx,
+                                    title="💢 That is not a valid amount!")
             return
         # Actual command
         _, _, assistance_xp = await db.set_user_xp(target.id, assistance=amount)

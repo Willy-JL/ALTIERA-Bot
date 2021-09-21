@@ -23,6 +23,7 @@ class Fun(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
@@ -63,6 +64,7 @@ class Fun(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)
@@ -103,6 +105,7 @@ class Fun(commands.Cog,
         if isinstance(target, int):
             target = ctx.guild.get_member(target)
         elif isinstance(target, str):
+            target = utils.strip_argument(target)
             target = await utils.get_best_member_match(ctx, target)
         elif isinstance(target, discord.User):
             target = ctx.guild.get_member(target.id)

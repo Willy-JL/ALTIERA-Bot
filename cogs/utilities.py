@@ -23,7 +23,7 @@ class Utilities(commands.Cog,
         # Arg1
         if arg1 is not None:
             try:
-                max = int(arg1)
+                max = int(utils.strip_argument(arg1))
             except (ValueError, TypeError,):
                 await utils.embed_reply(ctx,
                                         title="💢 Please provide a valid number!")
@@ -34,7 +34,7 @@ class Utilities(commands.Cog,
         if arg2 is not None:
             throws = max
             try:
-                max = int(arg2)
+                max = int(utils.strip_argument(arg2))
             except (ValueError, TypeError,):
                 await utils.embed_reply(ctx,
                                         title="💢 Please provide valid numbers!")
@@ -44,7 +44,7 @@ class Utilities(commands.Cog,
         # Arg3
         if arg3 is not None:
             try:
-                mod = int(arg3)
+                mod = int(utils.strip_argument(arg3))
             except (ValueError, TypeError,):
                 await utils.embed_reply(ctx,
                                         title="💢 Please provide valid numbers!")

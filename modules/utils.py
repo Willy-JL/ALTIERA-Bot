@@ -305,3 +305,7 @@ def is_requests_command(content):
         if content.startswith(command):
             return True
     return False
+
+
+def strip_argument(arg):
+    return str(arg).strip(" \n\t[]")
