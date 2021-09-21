@@ -1,3 +1,4 @@
+from aiohttp.client import request
 from discord.ext import commands, tasks
 import datetime
 import discord
@@ -33,7 +34,7 @@ globals.MODDER_ROLE_IDS          = json.loads(os.environ["MODDER_ROLE_IDS"])    
 globals.NO_PERM_ICON             = str       (os.environ["NO_PERM_ICON"])             if os.environ.get("NO_PERM_ICON")             else "https://cdn.discordapp.com/emojis/778028443417313290.png"
 globals.REP_CRED_AMOUNT          = int       (os.environ["REP_CRED_AMOUNT"])          if os.environ.get("REP_CRED_AMOUNT")          else 500
 globals.REP_ICON                 = str       (os.environ["REP_ICON"])                 if os.environ.get("REP_ICON")                 else "https://cdn.discordapp.com/emojis/766042961929699358.png"
-globals.REQUESTS_CHANNEL_IDS     = json.loads(os.environ["REQUESTS_CHANNEL_IDS"])     if os.environ.get("REQUESTS_CHANNEL_IDS")     else []
+globals.REQUESTS_CHANNEL_IDS     = json.loads(os.environ["REQUESTS_CHANNEL_IDS"])     if os.environ.get("REQUESTS_CHANNEL_IDS")     else {}
 globals.REQUESTS_COOLDOWN        = int       (os.environ["REQUESTS_COOLDOWN"])        if os.environ.get("REQUESTS_COOLDOWN")        else 600
 globals.REQUESTS_ICONS           = json.loads(os.environ["REQUESTS_ICONS"])           if os.environ.get("REQUESTS_ICONS")           else {"Waiting": "https://cdn.discordapp.com/emojis/889210410899746897.png", "WIP": "https://cdn.discordapp.com/emojis/889210383523536896.png", "Released": "https://cdn.discordapp.com/emojis/889210365362184272.png", "Already Exists": "https://cdn.discordapp.com/emojis/889210365362184272.png"}
 globals.STAFF_ROLE_IDS           = json.loads(os.environ["STAFF_ROLE_IDS"])           if os.environ.get("STAFF_ROLE_IDS")           else []
@@ -147,7 +148,8 @@ if __name__ == '__main__':
     async def on_message(message):
         if not message.guild:
             return
-        if message.channel.id == globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)):
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)) or ()
+        if message.channel.id in req_channels:
             if message.content and utils.is_requests_command(message.content):
                 await globals.bot.process_commands(message)
             elif not utils.is_staff(message.author):
@@ -166,7 +168,8 @@ if __name__ == '__main__':
     # Handle deleting requests by staff
     @globals.bot.event
     async def on_raw_message_delete(payload):
-        if payload.channel_id == globals.REQUESTS_CHANNEL_IDS.get(str(payload.guild_id)):
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(payload.guild_id)) or ()
+        if payload.channel_id in req_channels:
             await db.delete_request(msg=payload)
 
     # Change status every 15 seconds

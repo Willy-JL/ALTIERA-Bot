@@ -25,10 +25,11 @@ class Requests(commands.Cog,
     async def new(self, ctx, *, description: str = None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Cooldown
         if ctx.author.id in cooldowns:
@@ -122,10 +123,11 @@ class Requests(commands.Cog,
     async def edit(self, ctx, req_id=None, *, description: str = None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Handle arguments
         try:
@@ -258,10 +260,11 @@ class Requests(commands.Cog,
     async def delete(self, ctx, req_id=None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Handle arguments
         try:
@@ -330,10 +333,11 @@ class Requests(commands.Cog,
     async def claim(self, ctx, req_id=None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Handle arguments
         try:
@@ -411,10 +415,11 @@ class Requests(commands.Cog,
     async def unclaim(self, ctx, req_id=None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Handle arguments
         try:
@@ -493,10 +498,11 @@ class Requests(commands.Cog,
     async def release(self, ctx, req_id=None, link=None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Handle arguments
         try:
@@ -587,10 +593,11 @@ class Requests(commands.Cog,
     async def unrelease(self, ctx, req_id=None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Handle arguments
         try:
@@ -669,10 +676,11 @@ class Requests(commands.Cog,
     async def link(self, ctx, req_id=None, link=None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Handle arguments
         try:
@@ -763,10 +771,11 @@ class Requests(commands.Cog,
     async def unlink(self, ctx, req_id=None):
         if str(ctx.guild.id) not in globals.REQUESTS_CHANNEL_IDS:
             return
-        if ctx.channel.id != globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]:
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or ()
+        if ctx.channel.id not in req_channels:
             await utils.embed_reply(ctx,
                                     title="💢 No requests here!",
-                                    description=f"You can use request related commands in <#{globals.REQUESTS_CHANNEL_IDS[str(ctx.guild.id)]}>")
+                                    description=f"You can use request related commands in <#{'>, <#'.join([str(chan) for chan in req_channels])}>")
             return
         # Handle arguments
         try:
