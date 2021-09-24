@@ -263,10 +263,11 @@ def custom_embed(guild, *, title="", description="", fields=[], thumbnail=None, 
 # Upload image to imgur and retrieve link
 async def imgur_image_upload(img: bytes):
     # Convert to jpeg
-    img_buffer = io.BytesIO()
-    Image.open(img).convert().save(img_buffer, "jpeg")
-    img_buffer.seek(0)
-    img = img_buffer.read()
+    img_buffer = io.BytesIO(img)
+    conv_buffer = io.BytesIO()
+    Image.open(img_buffer).convert().save(conv_buffer, "jpeg")
+    conv_buffer.seek(0)
+    img = conv_buffer.read()
     # Handle large files
     size = len(img)
     maximum = 10000000
