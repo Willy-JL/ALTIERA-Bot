@@ -80,7 +80,7 @@ class Requests(commands.Cog,
                     exc_str = "".join(traceback.format_exception(*exc.exc_info))
                     resp_str = json.dumps(exc.resp, indent=4)
                     fp = io.BytesIO()
-                    fp.write(bytes(exc_str + "\n\nResponse:\n" + resp_str))
+                    fp.write(bytes(exc_str + "\n\nResponse:\n" + resp_str, encoding="utf-8"))
                     try:
                         fp.seek(0)
                         await ctx.author.send(embed=utils.custom_embed(ctx.guild,
@@ -216,7 +216,7 @@ class Requests(commands.Cog,
                     exc_str = "".join(traceback.format_exception(*exc.exc_info))
                     resp_str = json.dumps(exc.resp, indent=4)
                     fp = io.BytesIO()
-                    fp.write(bytes(exc_str + "\n\nResponse:\n" + resp_str))
+                    fp.write(bytes(exc_str + "\n\nResponse:\n" + resp_str, encoding="utf-8"))
                     try:
                         fp.seek(0)
                         await ctx.author.send(embed=utils.custom_embed(ctx.guild,
