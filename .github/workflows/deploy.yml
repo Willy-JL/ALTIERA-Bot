@@ -6,9 +6,9 @@ on:
 
 jobs:
 
-  Deploy:
+  DeployTrue:
 
-    name: Deploy
+    name: DeployTrue
     runs-on: ubuntu-latest
     if: "contains(github.event.head_commit.message, '+ DEPLOY')"
 
@@ -17,3 +17,15 @@ jobs:
       - name: Mark as successful run
         run: |
           true
+
+  DeployFalse:
+
+    name: DeployFalse
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '+ DEPLOY')"
+
+    steps:
+
+      - name: Mark as failed run
+        run: |
+          false
