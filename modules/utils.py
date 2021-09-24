@@ -265,7 +265,7 @@ async def imgur_image_upload(img: bytes):
     # Convert to jpeg
     img_buffer = io.BytesIO(img)
     conv_buffer = io.BytesIO()
-    Image.open(img_buffer).convert().save(conv_buffer, "jpeg")
+    Image.open(img_buffer).convert().save(conv_buffer, "png")
     conv_buffer.seek(0)
     img = conv_buffer.read()
     # Handle large files
