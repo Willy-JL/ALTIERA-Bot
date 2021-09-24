@@ -182,6 +182,9 @@ class Requests(commands.Cog,
                                            delete_after=5)
                 return
         # Missing arguments
+        remove_image = "REMOVE IMAGE" in description
+        if remove_image:
+            description = description.replace("REMOVE IMAGE", "")
         description = utils.strip_argument(description)
         if not description:
             await ctx.message.delete()
@@ -232,9 +235,7 @@ class Requests(commands.Cog,
                                                delete_after=5,
                                                file=discord.File(fp, filename="error_info.txt"))
                 break
-        if "REMOVE IMAGE" in description:
-            description = description.replace("REMOVE IMAGE", "")
-        else:
+        if not remove_image:
             new_image = new_image or image
         # Actual command
         await db.edit_request(req_id, description, new_image)
