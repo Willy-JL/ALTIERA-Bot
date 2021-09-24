@@ -281,7 +281,7 @@ async def imgur_image_upload(img: bytes):
                     print(resp)
         return resp["data"]["link"]
     except Exception:
-        raise errors.ImgurError(exc_info=sys.exc_info, resp=resp)
+        raise errors.ImgurError(exc_info=sys.exc_info(), resp=resp)
 
 
 # Cleaner reply function
