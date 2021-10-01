@@ -37,8 +37,9 @@ class Staff(commands.Cog,
             return
         db_bytes = None
         for attachment in ctx.message.attachments:
-            if str(attachment.filename) == "db.sqlite3":
-                db_bytes = await attachment.read(use_cached=True)
+            if attachment.filename == "db.sqlite3":
+                async with globals.http.get(attachment.url) as req:
+                    db_bytes = await req.read()
                 break
         if not db_bytes:
             await utils.embed_reply(ctx,
