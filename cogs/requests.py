@@ -111,7 +111,8 @@ class Requests(commands.Cog,
         await db.add_request_message_info(req_id, req_msg)
         await ctx.message.add_reaction('👌')
         await ctx.message.delete()
-        cooldowns[ctx.author.id] = time.time() + globals.REQUESTS_COOLDOWN
+        if not utils.is_staff(ctx.author) and not utils.user_has_a_role(ctx.author, globals.MODDER_ROLE_IDS):
+            cooldowns[ctx.author.id] = time.time() + globals.REQUESTS_COOLDOWN
 
     @commands.command(name="edit",
                       description="Edit a mod request",
