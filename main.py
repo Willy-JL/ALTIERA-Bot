@@ -71,13 +71,14 @@ if __name__ == '__main__':
     async def database_loop():
         while True:
             await asyncio.sleep(900)
-            await utils.save_db()
+            await db.save_to_disk()
             if globals.bot.user:  # Check if logged in
                 admin = globals.bot.get_user(globals.ADMIN_ID)
                 if admin:
                     await admin.send(file=discord.File('db.sqlite3'))
                 else:
                     print("Couldn't DM database backup!")
+            await utils.save_db()
     globals.loop.create_task(database_loop())
 
     # Enable intents
@@ -111,13 +112,14 @@ if __name__ == '__main__':
         # Exit after saving DB
         async def graceful_exit():
             print("Saving DB...")
-            update_presence_loop.stop()
-            await utils.save_db()
-            await globals.db.close()
+            await db.save_to_disk()
             admin = globals.bot.get_user(globals.ADMIN_ID)
             if admin:
                 await admin.send(file=discord.File('db.sqlite3'))
+            await utils.save_db()
+            await globals.db.close()
             print("Exiting...")
+            update_presence_loop.stop()
             globals.loop.stop()
             os._exit(os.EX_OK)
         # Schedule graceful exit for kill signals
