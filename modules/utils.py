@@ -4,7 +4,6 @@ import itertools
 import datetime
 import aiofiles
 import discord
-import aiohttp
 import base64
 import zlib
 import json
@@ -18,24 +17,23 @@ from modules import globals, db, errors
 
 # Get database
 async def get_db():
-    async with aiohttp.ClientSession() as client:
-        async with client.post('https://write.as/api/auth/login',
-                               headers={
-                                   'Content-Type': 'application/json'
-                               },
-                               data=json.dumps({
-                                   "alias": globals.WRITE_AS_USER,
-                                   "pass": globals.WRITE_AS_PASS
-                               })) as req:
-            globals.write_as_token = (await req.json())["data"]["access_token"]
-        async with client.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt") as req:
-            db_data = await req.text()
-        decoded = base64.b85decode(db_data.encode("utf-8"))
-        decompressed = zlib.decompress(decoded)
-        async with aiofiles.open('db.sqlite3', 'wb') as f:
-            await f.write(decompressed)
-        await db.init_db()
-        print("Fetched DB!")
+    async with globals.http.post('https://write.as/api/auth/login',
+                                 headers={
+                                     'Content-Type': 'application/json'
+                                 },
+                                 data=json.dumps({
+                                     "alias": globals.WRITE_AS_USER,
+                                     "pass": globals.WRITE_AS_PASS
+                                 })) as req:
+        globals.write_as_token = (await req.json())["data"]["access_token"]
+    async with globals.http.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt") as req:
+        db_data = await req.text()
+    decoded = base64.b85decode(db_data.encode("utf-8"))
+    decompressed = zlib.decompress(decoded)
+    async with aiofiles.open('db.sqlite3', 'wb') as f:
+        await f.write(decompressed)
+    await db.init_db()
+    print("Fetched DB!")
 
 
 # Save database
@@ -48,41 +46,39 @@ async def save_db():
         compressed = zlib.compress(raw, zlib.Z_BEST_COMPRESSION)
         encoded = base64.b85encode(compressed)
         db_data = encoded.decode("utf-8")
-        async with aiohttp.ClientSession() as client:
-            async with client.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
-                                   headers={
-                                       'Authorization': f'Token {globals.write_as_token}',
-                                       'Content-Type': 'application/json'
-                                   },
-                                   data=json.dumps({
-                                       "body": db_data,
-                                       "font": "code"
-                                   })) as req:
-                if not req.ok:
-                    print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
-                    return False
-                return True
+        async with globals.http.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
+                                     headers={
+                                         'Authorization': f'Token {globals.write_as_token}',
+                                         'Content-Type': 'application/json'
+                                     },
+                                     data=json.dumps({
+                                         "body": db_data,
+                                         "font": "code"
+                                     })) as req:
+            if not req.ok:
+                print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
+                return False
+            return True
 
 
 # Restart the bot, dyno restart on heroku
 async def restart():
     if os.environ.get("DYNO"):
-        async with aiohttp.ClientSession() as client:
-            async with client.delete(f'https://api.heroku.com/apps/{os.environ.get("HEROKU_APP_NAME")}/dynos/{os.environ["DYNO"]}',
-                                     headers={
-                                         'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
-                                         'Accept':        'application/vnd.heroku+json; version=3'
-                                     }) as req:
-                response = await req.text()
-                if not req.ok:
-                    admin = globals.bot.get_user(globals.ADMIN_ID)
-                    if admin:
-                        await admin.send(embed=custom_embed(list(globals.bot.guilds)[0],
-                                                            title="Failed to Restart!",
-                                                            description=response,
-                                                            fields=[
-                                                                ["Status:", f"{req.status}", True]
-                                                            ]))
+        async with globals.http.delete(f'https://api.heroku.com/apps/{os.environ.get("HEROKU_APP_NAME")}/dynos/{os.environ["DYNO"]}',
+                                       headers={
+                                           'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
+                                           'Accept':        'application/vnd.heroku+json; version=3'
+                                       }) as req:
+            response = await req.text()
+            if not req.ok:
+                admin = globals.bot.get_user(globals.ADMIN_ID)
+                if admin:
+                    await admin.send(embed=custom_embed(list(globals.bot.guilds)[0],
+                                                        title="Failed to Restart!",
+                                                        description=response,
+                                                        fields=[
+                                                            ["Status:", f"{req.status}", True]
+                                                        ]))
     else:
         import main  # I know, I know, please Lord forgive me
         os.execl(sys.executable, 'python', main.__file__, *sys.argv[1:])
@@ -132,9 +128,8 @@ def bytes_to_binary_object(bytes_arr):
 # Save link image into an image object for use with pillow
 async def pil_img_from_link(link):
     link = link[:link.rfind(".")] + ".png?size=256"
-    async with aiohttp.ClientSession() as client:
-        async with client.get(link) as req:
-            img_bytes = await req.read()
+    async with globals.http.get(link) as req:
+        img_bytes = await req.read()
     img = Image.open(bytes_to_binary_object(img_bytes))
     return img
 
@@ -276,17 +271,16 @@ async def imgur_image_upload(img: bytes):
     # Actual request
     try:
         resp = None
-        async with aiohttp.ClientSession() as client:
-            async with client.post("https://api.imgur.com/3/image",
-                                   headers={
-                                       "Authorization": f"Client-ID {globals.IMGUR_CLIENT_ID}"
-                                   },
-                                   data = {
-                                       'image': img
-                                   }) as req:
-                resp = await req.json()
-                if not req.ok:
-                    print(resp)
+        async with globals.http.post("https://api.imgur.com/3/image",
+                                     headers={
+                                         "Authorization": f"Client-ID {globals.IMGUR_CLIENT_ID}"
+                                     },
+                                     data = {
+                                         'image': img
+                                     }) as req:
+            resp = await req.json()
+            if not req.ok:
+                print(resp)
         return resp["data"]["link"]
     except Exception:
         raise errors.ImgurError(exc_info=sys.exc_info(), resp=resp)

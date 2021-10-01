@@ -1,5 +1,4 @@
 from discord.ext import commands, tasks
-from aiohttp.client import request
 import datetime
 import discord
 import aiohttp
@@ -55,6 +54,10 @@ if __name__ == '__main__':
 
     # Make persistent image components
     utils.setup_persistent_components()
+
+    # Create persistent aiohttp session
+    async def make_aiohttp_session(): globals.http = aiohttp.ClientSession()
+    globals.loop.run_until_complete(make_aiohttp_session())
 
     # Fetch database
     globals.loop.run_until_complete(utils.get_db())
@@ -212,4 +215,6 @@ if __name__ == '__main__':
             globals.loop.run_until_complete(globals.bot.close())
             break
         globals.loop.run_until_complete(globals.bot.http.close())
+        globals.loop.run_until_complete(globals.http.close())
         time.sleep(10)
+        globals.loop.run_until_complete(make_aiohttp_session())

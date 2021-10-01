@@ -1,12 +1,13 @@
 # System stuff
 bot                      = None
-db                       = None
-loop                     = None
 cur_presence             = None
-write_as_token           = None
-ticking_cooldowns        = None
-start_dt                 = None
+db                       = None
+http                     = None
+loop                     = None
 restart_dt               = None
+start_dt                 = None
+ticking_cooldowns        = None
+write_as_token           = None
 
 # User configurable vars, Heroku's "Config Vars" are suggested
 ADMIN_ID                 = None
