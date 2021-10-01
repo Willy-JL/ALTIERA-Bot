@@ -1,13 +1,17 @@
-from aiohttp.client import request
 from discord.ext import commands, tasks
+from aiohttp.client import request
 import datetime
 import discord
 import aiohttp
 import asyncio
 import signal
+import uvloop
 import json
 import time
 import os
+
+# Asyncio drop-in replacement, 2-4x faster
+uvloop.install()
 
 # Local imports
 from modules import globals, db, utils, xp
