@@ -17,17 +17,23 @@ from modules import globals, db, errors
 
 # Get database
 async def get_db():
-    async with globals.http.post('https://write.as/api/auth/login',
-                                 headers={
-                                     'Content-Type': 'application/json'
-                                 },
-                                 data=json.dumps({
-                                     "alias": globals.WRITE_AS_USER,
-                                     "pass": globals.WRITE_AS_PASS
-                                 })) as req:
-        globals.write_as_token = (await req.json())["data"]["access_token"]
-    async with globals.http.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt") as req:
-        db_data = await req.text()
+    if globals.DB_HOST_TYPE == "github":
+        async with globals.http.get(f'https://gist.githubusercontent.com/{globals.GITHUB_GIST_USER}/{globals.GITHUB_GIST_ID}/raw') as req:
+            db_data = await req.text()
+    elif globals.DB_HOST_TYPE == "writeas":
+        async with globals.http.post('https://write.as/api/auth/login',
+                                     headers={
+                                         'Content-Type': 'application/json'
+                                     },
+                                     data=json.dumps({
+                                         "alias": globals.WRITE_AS_USER,
+                                         "pass": globals.WRITE_AS_PASS
+                                     })) as req:
+            globals.write_as_token = (await req.json())["data"]["access_token"]
+        async with globals.http.get(f"https://write.as/{globals.WRITE_AS_USER}/{globals.WRITE_AS_POST_ID}.txt") as req:
+            db_data = await req.text()
+    else:
+        raise Exception("No valid DB type specified!")
     decoded = base64.b85decode(db_data.encode("utf-8"))
     decompressed = zlib.decompress(decoded)
     async with aiofiles.open('db.sqlite3', 'wb') as f:
@@ -46,19 +52,39 @@ async def save_db():
         compressed = zlib.compress(raw, zlib.Z_BEST_COMPRESSION)
         encoded = base64.b85encode(compressed)
         db_data = encoded.decode("utf-8")
-        async with globals.http.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
-                                     headers={
-                                         'Authorization': f'Token {globals.write_as_token}',
-                                         'Content-Type': 'application/json'
-                                     },
-                                     data=json.dumps({
-                                         "body": db_data,
-                                         "font": "code"
-                                     })) as req:
-            if not req.ok:
-                print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
-                return False
-            return True
+        if globals.DB_HOST_TYPE == "github":
+            async with globals.http.patch(f'https://api.github.com/gists/{globals.GITHUB_GIST_ID}',
+                                          headers={
+                                              'Accept': 'application/vnd.github.v3+json',
+                                              'Authorization': f'Token {globals.GITHUB_GIST_TOKEN}'
+                                          },
+                                          data=json.dumps({
+                                              "files": {
+                                                  f"{globals.GITHUB_GIST_FILENAME}": {
+                                                      "content": db_data
+                                                  }
+                                              }
+                                          })) as req:
+                if not req.ok:
+                    print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
+                    return False
+                return True
+        elif globals.DB_HOST_TYPE == "writeas":
+            async with globals.http.post(f'https://write.as/api/collections/{globals.WRITE_AS_USER}/posts/{globals.WRITE_AS_POST_ID}',
+                                         headers={
+                                             'Authorization': f'Token {globals.write_as_token}',
+                                             'Content-Type': 'application/json'
+                                         },
+                                         data=json.dumps({
+                                             "body": db_data,
+                                             "font": "code"
+                                         })) as req:
+                if not req.ok:
+                    print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
+                    return False
+                return True
+        else:
+            raise Exception("No valid DB type specified!")
 
 
 # Restart the bot, dyno restart on heroku
