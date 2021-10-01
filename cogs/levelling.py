@@ -215,7 +215,7 @@ class Levelling(commands.Cog,
             if user:
                 name = str(user.name)
             else:
-                name = id
+                name = str(id)
             left = name if len(name) <= (max_line_length-(len(level)+1)) else name[:(max_line_length-(len(level)+1))-3] + "..."
             spacing = "".join([" " for _ in range(max_line_length-len(left)-len(level))])
             line = left + spacing + level
@@ -238,7 +238,7 @@ class Levelling(commands.Cog,
             if user:
                 name = str(user.name)
             else:
-                name = id
+                name = str(id)
             left = name if len(name) <= (max_line_length-(len(cred)+1)) else name[:(max_line_length-(len(cred)+1))-3] + "..."
             spacing = "".join([" " for _ in range(max_line_length-len(left)-len(cred))])
             line = left + spacing + cred
@@ -261,7 +261,7 @@ class Levelling(commands.Cog,
             if user:
                 name = str(user.name)
             else:
-                name = id
+                name = str(id)
             left = name if len(name) <= (max_line_length-(len(assistance)+1)) else name[:(max_line_length-(len(assistance)+1))-3] + "..."
             spacing = "".join([" " for _ in range(max_line_length-len(left)-len(assistance))])
             line = left + spacing + assistance
