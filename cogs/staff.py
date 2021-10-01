@@ -27,6 +27,34 @@ class Staff(commands.Cog,
         await ctx.reply(file=discord.File('db.sqlite3'))
         await ctx.author.send(file=discord.File('db.sqlite3'))
 
+    @commands.command(name="restore",
+                      description="Restore the bot's database from a backup",
+                      usage="{prfx}restore",
+                      help="",
+                      aliases=["restorebackup"])
+    async def restore(self, ctx):
+        if not utils.is_staff(ctx.author):
+            return
+        db_bytes = None
+        for attachment in ctx.message.attachments:
+            if str(attachment.filename) == "db.sqlite3":
+                db_bytes = await attachment.read(use_cached=True)
+                break
+        if not db_bytes:
+            await utils.embed_reply(ctx,
+                                    title='💢 Please attach a "db.sqlite3"!')
+            return
+        await globals.db.commit()
+        await globals.db.close()
+        async with aiofiles.open('db.sqlite3', 'wb') as f:
+            await f.write(db_bytes)
+        await db.init_db()
+        if not await utils.save_db():
+            await utils.embed_reply(ctx,
+                                    title="💢 Failed to save remote database!")
+        else:
+            await ctx.message.add_reaction('👌')
+
     @commands.group(name="gibxp",
                     description="Give a user some xp",
                     usage="{prfx}gibxp [ type ] [ user ] [ amount ]",
