@@ -18,7 +18,10 @@ from modules import globals, db, errors
 # Get database
 async def get_db():
     if globals.DB_HOST_TYPE == "github":
-        async with globals.http.get(f'https://gist.githubusercontent.com/{globals.GITHUB_GIST_USER}/{globals.GITHUB_GIST_ID}/raw') as req:
+        async with globals.http.get(f'https://gist.githubusercontent.com/{globals.GITHUB_GIST_USER}/{globals.GITHUB_GIST_ID}/raw',
+                                    headers={
+                                        'Authorization': f'Token {globals.GITHUB_GIST_TOKEN}'
+                                    }) as req:
             db_data = await req.text()
     elif globals.DB_HOST_TYPE == "writeas":
         async with globals.http.post('https://write.as/api/auth/login',
