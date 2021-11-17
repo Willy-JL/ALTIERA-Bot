@@ -372,7 +372,7 @@ async def manage_icon_role_for_user(user: discord.Member):
                     break
                 user_level -= 1
             if icon_role_id not in user_role_ids:
-                user.add_roles(discord.Object(icon_role_id))
+                await user.add_roles(discord.Object(icon_role_id))
             icon_roles_to_remove = []
             for icon_set_ in icon_sets:
                 for value in icon_set_.values():
@@ -381,5 +381,5 @@ async def manage_icon_role_for_user(user: discord.Member):
                             continue
                         icon_roles_to_remove.append(discord.Object(value))
             if icon_roles_to_remove:
-                user.remove_roles(*icon_roles_to_remove)
+                await user.remove_roles(*icon_roles_to_remove)
             return
