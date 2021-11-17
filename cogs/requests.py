@@ -856,8 +856,8 @@ async def tick_cooldowns():
     while True:
         await asyncio.sleep(5)
         to_remove = []
-        for user_id in cooldowns:
-            if cooldowns[user_id] < time.time():
+        for user_id, user_cooldown in cooldowns.items():
+            if user_cooldown < time.time():
                 to_remove.append(user_id)
         for user_id in to_remove:
             del cooldowns[user_id]

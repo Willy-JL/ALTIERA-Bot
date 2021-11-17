@@ -123,13 +123,13 @@ class Fun(commands.Cog,
         if target.id != ctx.author.id:
             await utils.embed_reply(ctx,
                                     content=f"<@!{target.id}>",
-                                    title="<a:PatPatPat:836341685952184388> \*PatPat\*",
+                                    title="<a:PatPatPat:836341685952184388> \\*PatPat\\*",
                                     description=f"<@!{ctx.author.id}> just delivered you a truckload of heartfelt pats!\n"
                                                 "Cheer up pal, you're a wonderful person!",
                                     thumbnail="https://cdn.discordapp.com/emojis/889187488915128421.gif")
         else:
             await utils.embed_reply(ctx,
-                                    title="<a:PatPatPat:836341685952184388> \*PatPat\*",
+                                    title="<a:PatPatPat:836341685952184388> \\*PatPat\\*",
                                     description=f"<@!{ctx.author.id}> doesn't have any friends yet so they tried consoling themselves with a few pats!\n"
                                                 "Cheer up pal, life gets better!",
                                     thumbnail="https://cdn.discordapp.com/emojis/889190978001465476.gif")
