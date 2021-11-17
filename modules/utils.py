@@ -364,7 +364,7 @@ async def manage_icon_role_for_user(user: discord.Member):
             if not role_req_id in user_role_ids:
                 continue
             user_level_xp, _, _ = await db.get_user_xp(user.id)
-            user_level = xp.xp_to_lvl(user_level_xp)
+            user_level = xp.xp_to_lvl(user_level_xp)[0]
             icon_role_id = None
             while user_level > 0:
                 icon_role_id = icon_set.get(str(user_level))
