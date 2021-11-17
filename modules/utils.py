@@ -12,7 +12,7 @@ import io
 import os
 
 # Local imports
-from modules import globals, db, errors
+from modules import globals, db, errors, xp
 
 
 # Get database
@@ -351,3 +351,35 @@ def is_requests_command(content):
 
 def strip_argument(arg):
     return str(arg).strip(" \n\t[]")
+
+
+async def manage_icon_role_for_user(user: discord.Member):
+    icon_sets = globals.ICON_ROLE_IDS.get(str(user.guild.id))
+    if not icon_sets:
+        return
+
+    user_role_ids = [role.id for role in user.roles]
+    for icon_set in icon_sets:
+        for role_req_id in icon_set["roles"]:
+            if not role_req_id in user_role_ids:
+                continue
+            user_level_xp, _, _ = await db.get_user_xp(user.id)
+            user_level = xp.xp_to_lvl(user_level_xp)
+            icon_role_id = None
+            while user_level > 0:
+                icon_role_id = icon_set.get(str(user_level))
+                if icon_role_id:
+                    break
+                user_level -= 1
+            if icon_role_id not in user_role_ids:
+                user.add_roles(discord.Object(icon_role_id))
+            icon_roles_to_remove = []
+            for icon_set_ in icon_sets:
+                for value in icon_set_.values():
+                    if isinstance(value, int):
+                        if value not in user_role_ids or value == icon_role_id:
+                            continue
+                        icon_roles_to_remove.append(discord.Object(value))
+            if icon_roles_to_remove:
+                user.remove_roles(*icon_roles_to_remove)
+            return

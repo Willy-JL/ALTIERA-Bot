@@ -33,6 +33,7 @@ GITHUB_GIST_ID           : str               = None
 GITHUB_GIST_TOKEN        : str               = None
 GITHUB_GIST_USER         : str               = None
 HEROKU_TOKEN             : str               = None
+ICON_ROLE_IDS            : dict              = None
 IMGUR_CLIENT_ID          : str               = None
 JOIN_LOG_CHANNEL_IDS     : dict              = None
 LEVEL_NOTIF_CHANNEL_IDS  : dict              = None
