@@ -236,6 +236,17 @@ async def get_best_member_match(ctx, target):
     return ctx.guild.get_member_named(sort_helper[0][1])
 
 
+# Fuzzy string match for commands
+def get_best_command_match(name):
+    cmd_list = []
+    for cmd in globals.bot.commands:
+        cmd_list.append(cmd.name.lower())
+        for alias in cmd.aliases:
+            cmd_list.append(alias.lower())
+    results = [result[0] for result in process.extract(name, cmd_list, scorer=fuzz.ratio, limit=1)]
+    return results[0]
+
+
 # Format time elapsed from bot start
 def time_from_start():
     now = datetime.datetime.utcnow()

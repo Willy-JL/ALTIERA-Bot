@@ -137,6 +137,9 @@ if __name__ == '__main__':
     @globals.bot.event
     async def on_command_error(ctx, error):
         if isinstance(error, commands.errors.CommandNotFound):
+            await utils.embed_reply(ctx,
+                                    title=f'💢 Unknown command "{ctx.invoked_with}"!',
+                                    description=f"Did you mean **`{globals.BOT_PREFIX.lower()}{utils.get_best_command_match(ctx.invoked_with)}`**?")
             return
         if isinstance(error, commands.errors.NotOwner):
             await utils.embed_reply(ctx,
