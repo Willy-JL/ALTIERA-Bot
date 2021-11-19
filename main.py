@@ -86,8 +86,10 @@ if __name__ == '__main__':
     intents = discord.Intents.default()
     intents.members = True
     intents.presences = True
+    # Avoid unwanted chaos
+    allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
     # Create bot
-    globals.bot = commands.Bot(command_prefix=utils.case_insensitive(globals.BOT_PREFIX), intents=intents, case_insensitive=True)
+    globals.bot = commands.Bot(command_prefix=utils.case_insensitive(globals.BOT_PREFIX), case_insensitive=True, intents=intents, allowed_mentions=allowed_mentions)
     globals.bot.remove_command('help')
     globals.bot.load_extension('cogs.bot')
     globals.bot.load_extension('cogs.fun')
