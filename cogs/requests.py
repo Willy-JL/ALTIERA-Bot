@@ -15,10 +15,10 @@ cooldowns = dict()
 class Requests(commands.Cog,
                description="Mod requests / ideas management\n"
                            "These commands can only be used in the dedicated mod requests channels\n"
-                           "When you post a request you can add a single image, there is a 10 minute cooldown\n"
+                           "There is a 10 minute cooldown on new requests, you can add 1 image per request\n"
                            "If you are a modder and wish to work on a request, claim it with `a/claim [ id ]`\n"
                            "When it is complete, release it with `a/release [ id ] [ link ]`\n"
-                           "If instead a request already exists in a published mod, link it with `a/link [ id ] [ link ]`"):
+                           "If a request already exists in a mod, link it with `a/link [ id ] [ link ]`"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -771,7 +771,7 @@ class Requests(commands.Cog,
         await ctx.message.delete()
 
     @commands.command(name="unlink",
-                      description="Unlink a mod request, remove Already Exists status",
+                      description="Unlink a mod request, remove Already Exists status and link",
                       usage="{prfx}unlink [ id ]",
                       help="id: the id of the request to unlink (required)",
                       aliases=[])
