@@ -1,4 +1,5 @@
 from discord.ext import commands, tasks
+import functools
 import datetime
 import discord
 import aiohttp
@@ -8,6 +9,9 @@ import uvloop
 import json
 import time
 import os
+
+# Flush on every print so logs work properly
+print = functools.partial(print, flush=True)
 
 # Asyncio drop-in replacement, 2-4x faster
 uvloop.install()
