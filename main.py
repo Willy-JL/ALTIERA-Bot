@@ -111,7 +111,8 @@ if __name__ == '__main__':
     @globals.bot.event
     async def on_ready():
         print(f'Logged in as {globals.bot.user}!')
-        update_presence_loop.start()
+        if not update_presence_loop.is_running():
+            update_presence_loop.start()
         # Compute next restart time
         now = datetime.datetime.utcnow()
         midnight = datetime.time(0, 0)
