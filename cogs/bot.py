@@ -99,7 +99,7 @@ class Bot(commands.Cog,
                                     ["📚 Library",          f"discord.py v{discord.__version__}",                                                                                                                                  True],
                                     ["📦 Version",          f"{os.environ.get('HEROKU_RELEASE_VERSION') if os.environ.get('HEROKU_RELEASE_VERSION') else 'N/A'}",                                                                  True],
                                 ],
-                                thumbnail=globals.bot.user.avatar.url)
+                                thumbnail=globals.bot.user.display_avatar.url)
 
 
 async def setup(bot):

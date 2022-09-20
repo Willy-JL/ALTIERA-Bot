@@ -67,10 +67,10 @@ class Levelling(commands.Cog,
             img = Image.open("assets/backgrounds/default.png")
         draw = ImageDraw.Draw(img)
         # Draw user avatar
-        if str(target.avatar.url).startswith("https://cdn.discordapp.com/embed/avatars"):
+        if str(target.display_avatar.url).startswith("https://cdn.discordapp.com/embed/avatars"):
             avatar = globals.default_avatar
         else:
-            avatar = (await utils.pil_img_from_link(str(target.avatar.url))).resize((200, 200,))
+            avatar = (await utils.pil_img_from_link(str(target.display_avatar.url))).resize((200, 200,))
         try:
             img.paste(avatar, (24, 18,), avatar)
         except ValueError:
@@ -187,7 +187,7 @@ class Levelling(commands.Cog,
                                     ["Cred",       f"{cred_xp}",       True],
                                     ["Assistance", f"{assistance_xp}", True]
                                 ],
-                                thumbnail=target.avatar.url)
+                                thumbnail=target.display_avatar.url)
 
     @commands.group(name="top",
                     description="List top ten users per XP type",
@@ -334,7 +334,7 @@ class Levelling(commands.Cog,
                                     title="📅 Daily reward claimed!",
                                     description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!\n"
                                                 f"Come back in roughly **{utils.time_to_restart()}** for more!",
-                                    thumbnail=ctx.author.avatar.url)
+                                    thumbnail=ctx.author.display_avatar.url)
         else:
             await utils.embed_reply(ctx,
                                     title="💢 It's called \"daily\" for a reason!",

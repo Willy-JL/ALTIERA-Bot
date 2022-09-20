@@ -178,7 +178,7 @@ async def main():
                                                                     (f"Make sure you have read through <#{globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]['rules_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]["rules_channel_id"] else "") +
                                                                     (f"You can pick your poisons in <#{globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]['selfrole_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]["selfrole_channel_id"] else "") +
                                                                     "Enjoy your stay!",
-                                                        thumbnail=member.avatar.url))
+                                                        thumbnail=member.display_avatar.url))
 
     # Message handler and callback dispatcher
     @globals.bot.event
