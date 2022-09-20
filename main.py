@@ -106,20 +106,19 @@ async def main():
         allowed_mentions=discord.AllowedMentions(everyone=False, roles=False),
     )
     globals.bot.remove_command('help')
+    await globals.bot.load_extension('cogs.bot')
+    await globals.bot.load_extension('cogs.fun')
+    await globals.bot.load_extension('cogs.levelling')
+    await globals.bot.load_extension('cogs.requests')
+    await globals.bot.load_extension('cogs.utilities')
+    await globals.bot.load_extension('cogs.staff')
+    await globals.bot.load_extension('jishaku')
+    globals.log.info('Loaded cogs!')
 
     # On ready, fires when fully connected to Discord
     @globals.bot.event
     async def on_ready():
         globals.log.info(f"Logged in as: {globals.bot.user}")
-        if not globals.bot.extensions:
-            await globals.bot.load_extension('cogs.bot')
-            await globals.bot.load_extension('cogs.fun')
-            await globals.bot.load_extension('cogs.levelling')
-            await globals.bot.load_extension('cogs.requests')
-            await globals.bot.load_extension('cogs.utilities')
-            await globals.bot.load_extension('cogs.staff')
-            await globals.bot.load_extension('jishaku')
-            globals.log.info('Loaded cogs!')
         if not update_presence_loop.is_running():
             update_presence_loop.start()
         # Compute next restart time
