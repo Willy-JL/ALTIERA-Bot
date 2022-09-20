@@ -62,7 +62,11 @@ async def process_xp(message):
     level_xp_to_add  = 0
     cred_xp_to_add   = 0
     assistance_xp_to_add = 0
-    if message.channel.id in globals.CONTRIB_CHANNELS_IDS:
+    if hasattr(message.channel, "parent") and isinstance(message.channel.parent, discord.ForumChannel) and message.id == message.channel.id:  # Forum post channel has same id as its starter message
+        contrib_test_channel = message.channel.parent
+    else:
+        contrib_test_channel = message.channel
+    if contrib_test_channel.id in globals.CONTRIB_CHANNELS_IDS:
         try:
             contrib_cooldowns[message.author.id]
         except KeyError:
