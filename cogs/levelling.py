@@ -18,7 +18,8 @@ class Levelling(commands.Cog,
                             "You earn level from chatting anywhere (except in bot commands channels)\n"
                             "Cred is only earned by users with modder role and only in modding channels\n"
                             "Assistance XP is generated in the hospital and support channels, everyone earns, modders earn 2x\n"
-                            "There are cooldowns, spamming won't get you far"):
+                            "When you post a contribution, for example a discord exclusive mod, you gain 1000 cred\n"
+                            "There are cooldowns on all this, spamming won't get you far"):
     def __init__(self, bot):
         self.bot = bot
 
