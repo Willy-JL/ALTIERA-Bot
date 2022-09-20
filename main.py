@@ -146,7 +146,7 @@ async def main():
         for signame in ['SIGINT', 'SIGTERM']:
             asyncio.get_event_loop().add_signal_handler(getattr(signal, signame), lambda: asyncio.get_event_loop().create_task(graceful_exit()))
         # Wait until restart time
-        await discord.utils.sleep_until(globals.restart_dt)
+        await asyncio.sleep(max((next_midnight - now).total_seconds(), 0))
         # Force restart
         await utils.restart()
 
