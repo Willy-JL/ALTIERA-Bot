@@ -102,7 +102,13 @@ if __name__ == '__main__':
     # Avoid unwanted chaos
     allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
     # Create bot
-    globals.bot = commands.Bot(command_prefix=utils.case_insensitive(globals.BOT_PREFIX), case_insensitive=True, intents=intents, allowed_mentions=allowed_mentions)
+    globals.bot = commands.Bot(
+        command_prefix=utils.case_insensitive(globals.BOT_PREFIX),
+        case_insensitive=True,
+        description="Custom Discord bot for the Cyberpunk 2077 Modding Servers",
+        intents=discord.Intents.default() | discord.Intents(discord.Intents.message_content.flag) | discord.Intents(discord.Intents.members.flag) | discord.Intents(discord.Intents.presences.flag),
+        allowed_mentions=discord.AllowedMentions(everyone=False, roles=False),
+    )
     globals.bot.remove_command('help')
     loaded_cogs = False
 
