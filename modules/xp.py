@@ -107,10 +107,10 @@ async def notify_level_up(message, xp_type, old_lvl, new_lvl):
         img = Image.open(f"assets/levelup/{xp_type}_bg.png")
         draw = ImageDraw.Draw(img)
         # Draw user avatar
-        if str(message.author.avatar_url).startswith("https://cdn.discordapp.com/embed/avatars"):
+        if str(message.author.avatar.url).startswith("https://cdn.discordapp.com/embed/avatars"):
             avatar = globals.default_avatar.resize((84, 84))
         else:
-            avatar = (await utils.pil_img_from_link(str(message.author.avatar_url))).resize((84, 84,))
+            avatar = (await utils.pil_img_from_link(str(message.author.avatar.url))).resize((84, 84,))
         try:
             img.paste(avatar, (5, 5,), avatar)
         except ValueError:
