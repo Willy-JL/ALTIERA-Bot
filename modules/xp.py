@@ -62,7 +62,8 @@ async def process_xp(message):
     level_xp_to_add  = 0
     cred_xp_to_add   = 0
     assistance_xp_to_add = 0
-    if hasattr(message.channel, "parent") and isinstance(message.channel.parent, discord.ForumChannel) and message.id == message.channel.id:  # Forum post channel has same id as its starter message
+    is_forum_chat = hasattr(message.channel, "parent") and isinstance(message.channel.parent, discord.ForumChannel)
+    if is_forum_chat and message.id == message.channel.id:  # Forum post channel has same id as its starter message
         contrib_test_channel = message.channel.parent
     else:
         contrib_test_channel = message.channel
@@ -88,8 +89,9 @@ async def process_xp(message):
     await utils.manage_icon_role_for_user(message.author)
     # Revert contrib boost if message is deleted
     if added_contrib_boost:
+        watch_event = 'thread_delete' if is_forum_chat else 'message_delete'
         try:
-            await globals.bot.wait_for('message_delete', check=lambda msg: message == msg, timeout=600)
+            await globals.bot.wait_for(watch_event, check=lambda obj: message.id == obj.id, timeout=600)
             # Message was deleted, remove boost
             await db.add_user_xp(message.author.id, level=-level_xp_to_add, cred=-cred_xp_to_add, assistance=-assistance_xp_to_add)
             while globals.ticking_cooldowns:
