@@ -340,5 +340,5 @@ class Levelling(commands.Cog,
                                     description=f"Come back in roughly **{utils.time_to_restart()}** for your next daily reward")
 
 
-def setup(bot):
-    bot.add_cog(Levelling(bot))
+async def setup(bot):
+    await bot.add_cog(Levelling(bot))

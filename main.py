@@ -16,16 +16,18 @@ print = functools.partial(print, flush=True)
 # Asyncio drop-in replacement, 2-4x faster
 uvloop.install()
 
-# Local imports
-from modules import globals, db, utils, xp
-
 # Setup globals
-globals.loop = asyncio.get_event_loop()
+from modules import globals
+globals.loop = asyncio.new_event_loop()
+asyncio.set_event_loop(globals.loop)
 globals.cur_presence = 0
 if os.path.exists("config.json"):
     with open("config.json", "rb") as f:
         config = json.load(f)
         os.environ.update(config)
+
+# Local imports
+from modules import db, utils, xp
 
 globals.ADMIN_ID                 = int       (os.environ.get("ADMIN_ID")                 or 0)
 globals.ASSISTANCE_CATEGORY_IDS  = json.loads(os.environ.get("ASSISTANCE_CATEGORY_IDS")  or "[]")
@@ -99,18 +101,20 @@ if __name__ == '__main__':
     # Create bot
     globals.bot = commands.Bot(command_prefix=utils.case_insensitive(globals.BOT_PREFIX), case_insensitive=True, intents=intents, allowed_mentions=allowed_mentions)
     globals.bot.remove_command('help')
-    globals.bot.load_extension('cogs.bot')
-    globals.bot.load_extension('cogs.fun')
-    globals.bot.load_extension('cogs.levelling')
-    globals.bot.load_extension('cogs.requests')
-    globals.bot.load_extension('cogs.utilities')
-    globals.bot.load_extension('cogs.staff')
-    globals.bot.load_extension('jishaku')
+    loaded_cogs = False
 
     # On ready, fires when fully connected to Discord
     @globals.bot.event
     async def on_ready():
         print(f'Logged in as {globals.bot.user}!')
+        if not loaded_cogs:
+            await globals.bot.load_extension('cogs.bot')
+            await globals.bot.load_extension('cogs.fun')
+            await globals.bot.load_extension('cogs.levelling')
+            await globals.bot.load_extension('cogs.requests')
+            await globals.bot.load_extension('cogs.utilities')
+            await globals.bot.load_extension('cogs.staff')
+            await globals.bot.load_extension('jishaku')
         if not update_presence_loop.is_running():
             update_presence_loop.start()
         # Compute next restart time

@@ -102,5 +102,5 @@ class Bot(commands.Cog,
                                 thumbnail=globals.bot.user.avatar_url)
 
 
-def setup(bot):
-    bot.add_cog(Bot(bot))
+async def setup(bot):
+    await bot.add_cog(Bot(bot))

@@ -135,5 +135,5 @@ class Fun(commands.Cog,
                                     thumbnail="https://cdn.discordapp.com/emojis/889190978001465476.gif")
 
 
-def setup(bot):
-    bot.add_cog(Fun(bot))
+async def setup(bot):
+    await bot.add_cog(Fun(bot))

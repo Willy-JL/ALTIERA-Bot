@@ -334,5 +334,5 @@ class Staff(commands.Cog,
         await utils.restart()
 
 
-def setup(bot):
-    bot.add_cog(Staff(bot))
+async def setup(bot):
+    await bot.add_cog(Staff(bot))
