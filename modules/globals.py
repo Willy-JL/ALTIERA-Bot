@@ -4,6 +4,7 @@ from aiohttp import ClientSession
 from aiosqlite import Connection
 from PIL import ImageFont, Image
 from datetime import datetime
+import logging
 
 
 # System stuff
@@ -11,6 +12,7 @@ bot                      : Bot               = None
 cur_presence             : int               = None
 db                       : Connection        = None
 http                     : ClientSession     = None
+log                      : logging.Logger    = None
 loop                     : AbstractEventLoop = None
 restart_dt               : datetime          = None
 start_dt                 : datetime          = None

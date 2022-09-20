@@ -1,23 +1,25 @@
 from discord.ext import commands, tasks
-import functools
 import datetime
 import discord
 import aiohttp
 import asyncio
+import logging
 import signal
 import uvloop
 import json
-import time
 import os
-
-# Flush on every print so logs work properly
-print = functools.partial(print, flush=True)
 
 # Asyncio drop-in replacement, 2-4x faster
 uvloop.install()
 
-# Setup globals
+# Setup globals and logging
 from modules import globals
+_log = logging.getLogger()
+_log.setLevel(logging.INFO)
+_handler = logging.StreamHandler()
+_handler.setFormatter(discord.utils._ColourFormatter())
+_log.addHandler(_handler)
+globals.log = logging.getLogger(__name__.strip("_"))
 globals.loop = asyncio.new_event_loop()
 asyncio.set_event_loop(globals.loop)
 globals.cur_presence = 0
@@ -25,6 +27,7 @@ if os.path.exists("config.json"):
     with open("config.json", "rb") as f:
         config = json.load(f)
         os.environ.update(config)
+        globals.log.info("Loaded custom config")
 
 # Local imports
 from modules import db, utils, xp
@@ -88,7 +91,7 @@ if __name__ == '__main__':
                 if admin:
                     await admin.send(file=discord.File('db.sqlite3'))
                 else:
-                    print("Couldn't DM database backup!")
+                    globals.log.warn("Couldn't DM database backup!")
             await utils.save_db()
     globals.loop.create_task(database_loop())
 
@@ -106,7 +109,8 @@ if __name__ == '__main__':
     # On ready, fires when fully connected to Discord
     @globals.bot.event
     async def on_ready():
-        print(f'Logged in as {globals.bot.user}!')
+        global loaded_cogs
+        globals.log.info(f"Logged in as: {globals.bot.user}")
         if not loaded_cogs:
             await globals.bot.load_extension('cogs.bot')
             await globals.bot.load_extension('cogs.fun')
@@ -115,6 +119,8 @@ if __name__ == '__main__':
             await globals.bot.load_extension('cogs.utilities')
             await globals.bot.load_extension('cogs.staff')
             await globals.bot.load_extension('jishaku')
+            loaded_cogs = True
+            globals.log.info('Loaded cogs!')
         if not update_presence_loop.is_running():
             update_presence_loop.start()
         # Compute next restart time
@@ -127,14 +133,14 @@ if __name__ == '__main__':
         globals.restart_dt = next_midnight
         # Exit after saving DB
         async def graceful_exit():
-            print("Saving DB...")
+            globals.log.info("Saving DB...")
             await db.save_to_disk()
             admin = globals.bot.get_user(globals.ADMIN_ID)
             if admin:
                 await admin.send(file=discord.File('db.sqlite3'))
             await utils.save_db()
             await globals.db.close()
-            print("Exiting...")
+            globals.log.info("Exiting...")
             update_presence_loop.stop()
             globals.loop.stop()
             os._exit(os.EX_OK)
@@ -222,25 +228,4 @@ if __name__ == '__main__':
             globals.cur_presence = 0
 
     # Actually run the bot
-    while True:
-        try:
-            globals.loop.run_until_complete(globals.bot.start(globals.DISCORD_TOKEN))
-        except discord.LoginFailure:
-            # Invalid token
-            print("BAD TOKEN!")
-            globals.loop.run_until_complete(globals.bot.http.close())
-            break
-        except aiohttp.ClientConnectorError:
-            # Connection to Discord failed
-            print("CONNECTION ERROR! Sleeping 60 seconds...")
-            globals.loop.run_until_complete(globals.bot.http.close())
-            time.sleep(60)
-            continue
-        except KeyboardInterrupt:
-            print("INTERRUPTED BY USER! Exiting...")
-            globals.loop.run_until_complete(globals.bot.close())
-            break
-        globals.loop.run_until_complete(globals.bot.http.close())
-        globals.loop.run_until_complete(globals.http.close())
-        time.sleep(10)
-        globals.loop.run_until_complete(make_aiohttp_session())
+    globals.bot.run(globals.DISCORD_TOKEN, log_handler=None)

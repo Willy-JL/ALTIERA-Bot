@@ -43,7 +43,7 @@ async def get_db():
         async with aiofiles.open('db.sqlite3', 'wb') as f:
             await f.write(decompressed)
     await db.init_db()
-    print("Initialized DB!")
+    globals.log.info("Initialized DB!")
 
 
 # Save database
@@ -70,7 +70,7 @@ async def save_db():
                                               }
                                           })) as req:
                 if not req.ok:
-                    print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
+                    globals.log.error(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
                     return False
                 return True
         elif globals.DB_HOST_TYPE == "writeas":
@@ -84,7 +84,7 @@ async def save_db():
                                              "font": "code"
                                          })) as req:
                 if not req.ok:
-                    print(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
+                    globals.log.error(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
                     return False
                 return True
         else:
@@ -93,14 +93,14 @@ async def save_db():
 
 # Restart the bot, dyno restart on heroku
 async def restart():
-    print("Saving DB...")
+    globals.log.info("Saving DB...")
     await db.save_to_disk()
     admin = globals.bot.get_user(globals.ADMIN_ID)
     if admin:
         await admin.send(file=discord.File('db.sqlite3'))
     await save_db()
     await globals.db.close()
-    print("Restarting...")
+    globals.log.info("Restarting...")
     if os.environ.get("DYNO"):
         async with globals.http.delete(f'https://api.heroku.com/apps/{os.environ.get("HEROKU_APP_NAME")}/dynos/{os.environ["DYNO"]}',
                                        headers={
@@ -329,7 +329,7 @@ async def imgur_image_upload(img: bytes):
                                      }) as req:
             resp = await req.json()
             if not req.ok:
-                print(resp)
+                globals.log.error(resp)
         return resp["data"]["link"]
     except Exception as exc:
         raise errors.ImgurError(exc_info=sys.exc_info(), resp=resp) from exc
