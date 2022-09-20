@@ -145,6 +145,3 @@ async def tick_cooldowns():
         for user_id in to_remove:
             del contrib_cooldowns[user_id]
         globals.ticking_cooldowns = False
-
-
-asyncio.get_event_loop().create_task(tick_cooldowns())

@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw
 from discord.ext import commands
 from typing import Union
+import asyncio
 import discord
 import math
 import io
@@ -341,4 +342,5 @@ class Levelling(commands.Cog,
 
 
 async def setup(bot):
+    asyncio.get_event_loop().create_task(xp.tick_cooldowns())
     await bot.add_cog(Levelling(bot))

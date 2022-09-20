@@ -20,8 +20,6 @@ _handler = logging.StreamHandler()
 _handler.setFormatter(discord.utils._ColourFormatter())
 _log.addHandler(_handler)
 globals.log = logging.getLogger(__name__.strip("_"))
-globals.loop = asyncio.new_event_loop()
-asyncio.set_event_loop(globals.loop)
 globals.cur_presence = 0
 if os.path.exists("config.json"):
     with open("config.json", "rb") as f:
@@ -68,18 +66,16 @@ globals.XP_AMOUNT                = int       (os.environ.get("XP_AMOUNT")       
 globals.XP_COOLDOWN              = int       (os.environ.get("XP_COOLDOWN")              or 30)
 
 
-# Only start bot if running as main and not import
-if __name__ == '__main__':
+async def main():
 
     # Make persistent image components
     utils.setup_persistent_components()
 
     # Create persistent aiohttp session
-    async def make_aiohttp_session(): globals.http = aiohttp.ClientSession()
-    globals.loop.run_until_complete(make_aiohttp_session())
+    globals.http = aiohttp.ClientSession()
 
     # Fetch database
-    globals.loop.run_until_complete(utils.get_db())
+    await utils.get_db()
 
     # Periodically save database
     async def database_loop():
@@ -93,7 +89,7 @@ if __name__ == '__main__':
                 else:
                     globals.log.warn("Couldn't DM database backup!")
             await utils.save_db()
-    globals.loop.create_task(database_loop())
+    asyncio.get_event_loop().create_task(database_loop())
 
     # Enable intents
     intents = discord.Intents.default()
@@ -110,14 +106,12 @@ if __name__ == '__main__':
         allowed_mentions=discord.AllowedMentions(everyone=False, roles=False),
     )
     globals.bot.remove_command('help')
-    loaded_cogs = False
 
     # On ready, fires when fully connected to Discord
     @globals.bot.event
     async def on_ready():
-        global loaded_cogs
         globals.log.info(f"Logged in as: {globals.bot.user}")
-        if not loaded_cogs:
+        if not globals.bot.extensions:
             await globals.bot.load_extension('cogs.bot')
             await globals.bot.load_extension('cogs.fun')
             await globals.bot.load_extension('cogs.levelling')
@@ -125,7 +119,6 @@ if __name__ == '__main__':
             await globals.bot.load_extension('cogs.utilities')
             await globals.bot.load_extension('cogs.staff')
             await globals.bot.load_extension('jishaku')
-            loaded_cogs = True
             globals.log.info('Loaded cogs!')
         if not update_presence_loop.is_running():
             update_presence_loop.start()
@@ -148,11 +141,11 @@ if __name__ == '__main__':
             await globals.db.close()
             globals.log.info("Exiting...")
             update_presence_loop.stop()
-            globals.loop.stop()
+            asyncio.get_event_loop().stop()
             os._exit(os.EX_OK)
         # Schedule graceful exit for kill signals
         for signame in ['SIGINT', 'SIGTERM']:
-            globals.loop.add_signal_handler(getattr(signal, signame), lambda: globals.loop.create_task(graceful_exit()))
+            asyncio.get_event_loop().add_signal_handler(getattr(signal, signame), lambda: asyncio.get_event_loop().create_task(graceful_exit()))
         # Wait until restart time
         await discord.utils.sleep_until(globals.restart_dt)
         # Force restart
@@ -234,4 +227,8 @@ if __name__ == '__main__':
             globals.cur_presence = 0
 
     # Actually run the bot
-    globals.bot.run(globals.DISCORD_TOKEN, log_handler=None)
+    await globals.bot.start(globals.DISCORD_TOKEN)
+
+# Only start bot if running as main and not import
+if __name__ == '__main__':
+    asyncio.run(main())

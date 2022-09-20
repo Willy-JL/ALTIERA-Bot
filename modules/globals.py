@@ -1,4 +1,3 @@
-from asyncio import AbstractEventLoop
 from discord.ext.commands import Bot
 from aiohttp import ClientSession
 from aiosqlite import Connection
@@ -13,7 +12,6 @@ cur_presence             : int               = None
 db                       : Connection        = None
 http                     : ClientSession     = None
 log                      : logging.Logger    = None
-loop                     : AbstractEventLoop = None
 restart_dt               : datetime          = None
 start_dt                 : datetime          = None
 ticking_cooldowns        : bool              = None

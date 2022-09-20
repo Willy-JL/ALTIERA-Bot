@@ -854,6 +854,7 @@ class Requests(commands.Cog,
 
 
 async def setup(bot):
+    asyncio.get_event_loop().create_task(tick_cooldowns())
     await bot.add_cog(Requests(bot))
 
 
@@ -866,6 +867,3 @@ async def tick_cooldowns():
                 to_remove.append(user_id)
         for user_id in to_remove:
             del cooldowns[user_id]
-
-
-asyncio.get_event_loop().create_task(tick_cooldowns())
