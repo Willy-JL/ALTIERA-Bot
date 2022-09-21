@@ -320,7 +320,8 @@ class Levelling(commands.Cog,
                                     description="You can only use that command once every **24 hours**!\n"
                                                 f"You'll be able to use it again in roughly **{utils.time_to_restart()}**")
 
-    @commands.command(name="daily",
+    @utils.hybcommand(globals.bot,
+                      name="daily",
                       description="Claim your daily reward (500 level XP)\n"
                                   "Only once every 24 hours (or sooner if the bot restarts)",
                       usage="{prfx}daily",

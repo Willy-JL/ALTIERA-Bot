@@ -81,7 +81,8 @@ class Bot(commands.Cog,
                                 description=desc)
         return
 
-    @commands.command(name="info",
+    @utils.hybcommand(globals.bot,
+                      name="info",
                       description="Show info and details about the bot",
                       usage="{prfx}info",
                       help="",
