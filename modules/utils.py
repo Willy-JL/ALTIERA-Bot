@@ -2,6 +2,7 @@ from fuzzywuzzy import process, fuzz
 from PIL import Image, ImageFont
 from discord.ext import commands
 import itertools
+import traceback
 import datetime
 import aiofiles
 import discord
@@ -164,6 +165,14 @@ def bytes_to_binary_object(bytes_arr):
     binary.write(bytes_arr)
     binary.seek(0)
     return binary
+
+
+# Dump traceback as string
+def get_traceback(*exc_info: list):
+    exc_info = exc_info or sys.exc_info()
+    tb_lines = traceback.format_exception(*exc_info)
+    tb = "".join(tb_lines)
+    return tb
 
 
 # Save link image into an image object for use with pillow
@@ -382,7 +391,7 @@ async def imgur_image_upload(img: bytes):
 
 
 # Cleaner reply function
-async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True):
+async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True, **kwargs):
     embed_to_send = custom_embed(ctx.guild,
                                  title=title,
                                  description=description,
@@ -391,7 +400,8 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
                                  image=image,
                                  add_timestamp=add_timestamp)
     await ctx.reply(content,
-                    embed=embed_to_send)
+                    embed=embed_to_send,
+                    **kwargs)
 
 
 # Get all possible case variations for a string

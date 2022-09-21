@@ -11,36 +11,16 @@ class Fun(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="cookie",
+    @utils.hybcommand(globals.bot,
+                      name="cookie",
                       description="Treat someone to a CyberCookie (cosmetic, no rewards)",
                       usage="{prfx}cookie [ user ]",
                       help="user: the user to give a cookie to (ping, name, id) (optional)",
                       aliases=["cybcookie", "cybercookie"])
-    async def cookie(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
-        # Convert target input to discord.Member
-        if not target:
-            target = ctx.author
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
+    async def cookie(self, ctx, user: discord.Member = None):
+        if user:
             await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Actual command
-        if target.id != ctx.author.id:
-            await utils.embed_reply(ctx,
-                                    content=f"<@!{target.id}>",
+                                    content=f"<@!{user.id}>",
                                     title="🍪 CyberCookie!",
                                     description=f"<@!{ctx.author.id}> just gave you a delicious Cyber🤖Cookie🍪!\n"
                                                 "Eat it before it vaporizes you!",
@@ -52,36 +32,16 @@ class Fun(commands.Cog,
                                                 "Time to eagerly eat it in complete silence!",
                                     thumbnail="https://cdn.discordapp.com/emojis/766054797673496596.png")
 
-    @commands.command(name="burrito",
+    @utils.hybcommand(globals.bot,
+                      name="burrito",
                       description="Deliver someone a SpaceBurrito (cosmetic, no rewards)",
                       usage="{prfx}burrito [ user ]",
                       help="user: the user to give a burrito to (ping, name, id) (optional)",
                       aliases=["spaceburrito", "galacticburrito"])
-    async def burrito(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
-        # Convert target input to discord.Member
-        if not target:
-            target = ctx.author
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
+    async def burrito(self, ctx, user: discord.Member = None):
+        if user:
             await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Actual command
-        if target.id != ctx.author.id:
-            await utils.embed_reply(ctx,
-                                    content=f"<@!{target.id}>",
+                                    content=f"<@!{user.id}>",
                                     title="🌯 SpaceBurrito!",
                                     description=f"<@!{ctx.author.id}> just delivered you a delicious Space🌌Burrito🌯!\n"
                                                 "Eat it before it gets cold!",
@@ -93,36 +53,16 @@ class Fun(commands.Cog,
                                                 "Time to eagerly enjoy it in complete silence!",
                                     thumbnail="https://cdn.discordapp.com/emojis/779465397903949825.png")
 
-    @commands.command(name="pat",
+    @utils.hybcommand(globals.bot,
+                      name="pat",
                       description="Pat someone (cosmetic, no rewards)",
                       usage="{prfx}pat [ user ]",
                       help="user: the user to pat (ping, name, id) (optional)",
                       aliases=["pet", "patpat", "patpatpat"])
-    async def pat(self, ctx, target: Union[discord.Member, discord.User, int, str] = None):
-        # Convert target input to discord.Member
-        if not target:
-            target = ctx.author
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
+    async def pat(self, ctx, user: discord.Member = None):
+        if user:
             await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Actual command
-        if target.id != ctx.author.id:
-            await utils.embed_reply(ctx,
-                                    content=f"<@!{target.id}>",
+                                    content=f"<@!{user.id}>",
                                     title="<a:PatPatPat:836341685952184388> \\*PatPat\\*",
                                     description=f"<@!{ctx.author.id}> just delivered you a truckload of heartfelt pats!\n"
                                                 "Cheer up pal, you're a wonderful person!",

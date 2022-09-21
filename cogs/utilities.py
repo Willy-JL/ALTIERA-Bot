@@ -1,4 +1,5 @@
 from discord.ext import commands
+import builtins
 import random
 
 # Local imports
@@ -10,69 +11,29 @@ class Utilities(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="dice",
+    @utils.hybcommand(globals.bot,
+                      name="dice",
                       description="Roll some dice",
-                      usage="{prfx}dice [ max ]`\n**Usage**: `"
-                            "{prfx}dice [ throws ] [ max ]`\n**Usage**: `"
-                            "{prfx}dice [ throws ] [ max ] [ modifier ]",
-                      help="throws: number of dice throws, default 1, max 10 (optional)\n"
-                           "max: number of faces (aka max per dice), default 6 max 100 (optional)\n"
+                      usage="{prfx}dice [ max ] [ throws ] [ modifier ]",
+                      help="max: number of faces (aka max per dice), default 6 max 100 (optional)\n"
+                           "throws: number of dice throws, default 1, max 10 (optional)\n"
                            "modifier: number to add or subtract from result, default 0, max +100/-100 (optional)",
                       aliases=["diceroll", "rolldice", "roll"])
-    async def dice(self, ctx, arg1: str = None, arg2: str = None, arg3: str = None):
-        # Arg1
-        if arg1 is not None:
-            try:
-                max = int(utils.strip_argument(arg1))
-            except (ValueError, TypeError,):
-                await utils.embed_reply(ctx,
-                                        title="💢 Please provide a valid number!")
-                return
-        else:
-            max = 6
-        # Arg2
-        if arg2 is not None:
-            throws = max
-            try:
-                max = int(utils.strip_argument(arg2))
-            except (ValueError, TypeError,):
-                await utils.embed_reply(ctx,
-                                        title="💢 Please provide valid numbers!")
-                return
-        else:
-            throws = 1
-        # Arg3
-        if arg3 is not None:
-            try:
-                mod = int(utils.strip_argument(arg3))
-            except (ValueError, TypeError,):
-                await utils.embed_reply(ctx,
-                                        title="💢 Please provide valid numbers!")
-                return
-        else:
-            mod = 0
+    async def dice(self, ctx, max: int = None, throws: int = None, modifier: int = None):
+        # Defaults
+        max = max if max is not None else 6
+        throws = throws if throws is not None else 1
+        modifier = modifier if modifier is not None else 0
         # Adjustments
-        throws_adjusted = False
-        max_adjusted = False
-        mod_adjusted = False
-        if throws > 10:
-            throws = 10
-            throws_adjusted = True
-        if throws < 1:
-            throws = 1
-            throws_adjusted = True
-        if max > 100:
-            max = 100
-            max_adjusted = True
-        if max < 2:
-            max = 2
-            max_adjusted = True
-        if mod > 100:
-            mod = 100
-            mod_adjusted = True
-        if mod < -100:
-            mod = -100
-            mod_adjusted = True
+        _max = builtins.min(builtins.max(max, 2), 100)
+        _throws = builtins.min(builtins.max(throws, 1), 10)
+        _modifier = builtins.min(builtins.max(modifier, -100), 100)
+        max_adjusted = _max != max
+        throws_adjusted = _throws != throws
+        modifier_adjusted = _modifier != modifier
+        max = _max
+        throws = _throws
+        modifier = _modifier
         # Actual command
         result = 0
         rolls = []
@@ -80,14 +41,14 @@ class Utilities(commands.Cog,
             roll = random.randint(1, max)
             result += roll
             rolls.append(str(roll))
-        result += mod
+        result += modifier
         await utils.embed_reply(ctx,
                                 title="🎲 Dice roll!",
-                                description=f'Throws: {throws}{" (adjusted)" if throws_adjusted else ""}\n'
-                                            f'Max: {max}{" (adjusted)" if max_adjusted else ""}\n'
-                                            f'Modifier: {mod:+}{" (adjusted)" if mod_adjusted else ""}\n'
+                                description=f'Max: {max}{" (adjusted)" if max_adjusted else ""}\n'
+                                            f'Throws: {throws}{" (adjusted)" if throws_adjusted else ""}\n'
+                                            f'Modifier: {modifier:+}{" (adjusted)" if modifier_adjusted else ""}\n'
                                             '\n'
-                                            f'Result:  __**{str(result)}**__ ( `{", ".join(rolls)}{f", {mod:+}" if mod != 0 else ""}` )',
+                                            f'Result:  __**{str(result)}**__ ( `{", ".join(rolls)}{f", {modifier:+}" if modifier != 0 else ""}` )',
                                 add_timestamp=False)
 
 

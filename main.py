@@ -7,6 +7,7 @@ import logging
 import signal
 import uvloop
 import json
+import io
 import os
 
 # Asyncio drop-in replacement, 2-4x faster
@@ -155,17 +156,38 @@ async def main():
     # Ignore command not found errors
     @globals.bot.event
     async def on_command_error(ctx, error):
-        if isinstance(error, commands.errors.CommandNotFound):
+        is_ = lambda e_type: isinstance(error, e_type)
+        e = commands.errors
+        if is_(e.CommandNotFound) or is_(e.DisabledCommand):
             await utils.embed_reply(ctx,
-                                    title=f'💢 Unknown command "{ctx.invoked_with}"!',
+                                    title=f'💢 Unknown command "a/{ctx.invoked_with}"!',
                                     description=f"Did you mean **`{globals.BOT_PREFIX.lower()}{utils.get_best_command_match(ctx.invoked_with)}`**?")
-            return
-        if isinstance(error, commands.errors.NotOwner):
+        elif is_(e.NotOwner) or is_(e.CheckFailure) or is_(e.CheckAnyFailure):
             await utils.embed_reply(ctx,
                                     title="💢 Yea, that's not happening buddy!",
                                     thumbnail=globals.NO_PERM_ICON)
-            return
-        raise error
+        elif is_(e.BadArgument) or is_(e.BadUnionArgument) or is_(e.BadLiteralArgument) or is_(e.ConversionError):
+            await utils.embed_reply(ctx,
+                                    title=f"💢 Bad argument for '{ctx.current_parameter.name}'!",
+                                    description=f"**Your input**: {ctx.current_argument}\n" +
+                                                str(error))
+        elif is_(e.MissingRequiredArgument) or is_(e.MissingRequiredAttachment):
+            await utils.embed_reply(ctx,
+                                    title=f"💢 Missing argument for '{ctx.current_parameter.name}'!",
+                                    description=f"**Usage**: `{ctx.command.usage.format(prfx=globals.BOT_PREFIX.lower())}`\n" +
+                                                ctx.command.help)
+        elif is_(e.CommandInvokeError):
+            await utils.embed_reply(ctx,
+                                    title=f"💢 Error executing command!",
+                                    description="Check the **attached text file** for a full traceback.",
+                                    file=discord.File(io.StringIO(utils.get_traceback(error)), filename="traceback.txt", spoiler=True))
+        elif is_(e.ArgumentParsingError):
+            await utils.embed_reply(ctx,
+                                    title=f"💢 Failed parsing command input!",
+                                    description=f"**Usage**: `{ctx.command.usage.format(prfx=globals.BOT_PREFIX.lower())}`\n" +
+                                                ctx.command.help)
+        else:
+            raise error
 
     # Greet user when they join
     @globals.bot.event
