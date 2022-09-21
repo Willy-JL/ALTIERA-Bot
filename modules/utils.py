@@ -43,7 +43,7 @@ async def get_db():
         async with aiofiles.open('db.sqlite3', 'wb') as f:
             await f.write(decompressed)
     await db.init_db()
-    globals.log.info("Initialized DB!")
+    globals.log.info("Initialized DB")
 
 
 # Save database
@@ -70,7 +70,7 @@ async def save_db():
                                               }
                                           })) as req:
                 if not req.ok:
-                    globals.log.error(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
+                    globals.log.error(f"Failed to save config, code: {req.status}, message: {await req.text()}")
                     return False
                 return True
         elif globals.DB_HOST_TYPE == "writeas":
@@ -84,7 +84,7 @@ async def save_db():
                                              "font": "code"
                                          })) as req:
                 if not req.ok:
-                    globals.log.error(f"Failed to save config! Code: {req.status}, Message: {await req.text()}")
+                    globals.log.error(f"Failed to save config, code: {req.status}, message: {await req.text()}")
                     return False
                 return True
         else:

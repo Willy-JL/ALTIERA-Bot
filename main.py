@@ -87,7 +87,7 @@ async def main():
                 if admin:
                     await admin.send(file=discord.File('db.sqlite3'))
                 else:
-                    globals.log.warn("Couldn't DM database backup!")
+                    globals.log.warn("Couldn't DM database backup")
             await utils.save_db()
     asyncio.get_event_loop().create_task(database_loop())
 
@@ -113,7 +113,7 @@ async def main():
     await globals.bot.load_extension('cogs.utilities')
     await globals.bot.load_extension('cogs.staff')
     await globals.bot.load_extension('jishaku')
-    globals.log.info('Loaded cogs!')
+    globals.log.info('Loaded cogs')
 
     # On ready, fires when fully connected to Discord
     @globals.bot.event
