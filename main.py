@@ -119,6 +119,8 @@ async def main():
     @globals.bot.event
     async def on_ready():
         globals.log.info(f"Logged in as: {globals.bot.user}")
+        await globals.bot.tree.sync()
+        globals.log.info("Synced slash commands")
         if not update_presence_loop.is_running():
             update_presence_loop.start()
         # Compute next restart time

@@ -13,14 +13,15 @@ class Bot(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="help",
+    @utils.hybcommand(globals.bot,
+                      name="help",
                       description="Think real hard and guess what this does\n"
                                   "Why are you like this?\n"
                                   "Ugh, I guess I'll explain this one too...",
                       usage="{prfx}help [ subcommand ]",
                       help="subcommand: the submenu/command to look up (optional)",
                       aliases=[])
-    async def help(self, ctx, subcommand=None):
+    async def help(self, ctx, subcommand: str = None):
         prfx = globals.BOT_PREFIX.lower()
         if subcommand:
             subcommand = utils.strip_argument(subcommand)

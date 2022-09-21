@@ -1,13 +1,16 @@
 from fuzzywuzzy import process, fuzz
 from PIL import Image, ImageFont
+from discord.ext import commands
 import itertools
 import datetime
 import aiofiles
 import discord
+import inspect
 import base64
 import zlib
 import json
 import sys
+import ast
 import io
 import os
 
@@ -278,6 +281,49 @@ def pretty_size(size, precision=0):
         suffix_index += 1
         size = size / 1000
     return "%.*f%s" % (precision, size, suffixes[suffix_index])
+
+
+# Hybrid command decorator that also adds the aliases as slashcommands
+def hybcommand(bot, **kwargs):
+    def decorator(func):
+        result = commands.command(**kwargs)(func)
+        short_desc = kwargs.get("description", "").split("\n")[0][:99] or discord.utils.MISSING
+        for alias in [kwargs.get("name", discord.utils.MISSING)] + kwargs.get("aliases", []):
+            # Get source and remove decorator(s)
+            lines = inspect.getsourcelines(func)[0]
+            for i, line in enumerate(lines):
+                stripped = line.lstrip()
+                if stripped.startswith("def ") or stripped.startswith("async def "):
+                    lines = lines[i:]
+                    break
+            # Remove indentation
+            while all(line.startswith(" ") for line in lines):
+                for i in range(len(lines)):
+                    lines[i] = lines[i][1:]
+            source = "".join(lines)
+            # Parse and manipulate
+            ast_tree = ast.parse(source)
+            fn = ast_tree.body[0]
+            fn.args.args.pop(0)  # Remove "self"
+            convert = ast.parse("ctx = await commands.Context.from_interaction(ctx)").body[0]
+            fn.body.insert(0, convert)  # Interaction to Context
+            # Rename
+            if alias is discord.utils.MISSING:
+                alias = fn.name
+            fn.name = f"_{result.name}_{alias}"
+            # Reassemble
+            code = compile(ast_tree,"<string>", mode='exec')
+            env = func.__globals__  # Imports and other shenanigans
+            exec(code, env)
+            new_func = env[fn.name]
+            # Create command
+            if alias == result.name:
+                desc = short_desc
+            else:
+                desc = f"Alias for /{result.name}"
+            bot.tree.command(name=alias, description=desc)(new_func)
+        return result
+    return decorator
 
 
 # Streamlined embeds
