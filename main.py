@@ -45,7 +45,6 @@ globals.GITHUB_GIST_FILENAME     = str       (os.environ.get("GITHUB_GIST_FILENA
 globals.GITHUB_GIST_ID           = str       (os.environ.get("GITHUB_GIST_ID")           or "")
 globals.GITHUB_GIST_TOKEN        = str       (os.environ.get("GITHUB_GIST_TOKEN")        or "")
 globals.GITHUB_GIST_USER         = str       (os.environ.get("GITHUB_GIST_USER")         or "")
-globals.HEROKU_TOKEN             = str       (os.environ.get("HEROKU_TOKEN")             or "")
 globals.ICON_ROLE_IDS            = json.loads(os.environ.get("ICON_ROLE_IDS")            or "{}")
 globals.IMGUR_CLIENT_ID          = str       (os.environ.get("IMGUR_CLIENT_ID")          or "")
 globals.JOIN_LOG_CHANNEL_IDS     = json.loads(os.environ.get("JOIN_LOG_CHANNEL_IDS")     or "{}")
@@ -88,7 +87,7 @@ async def main():
                 if admin:
                     await admin.send(file=discord.File('db.sqlite3'))
                 else:
-                    globals.log.warn("Couldn't DM database backup")
+                    globals.log.error("Failed to DM database backup")
             await utils.save_db()
     asyncio.get_event_loop().create_task(database_loop())
 
@@ -124,34 +123,8 @@ async def main():
         globals.log.info("Synced slash commands")
         if not update_presence_loop.is_running():
             update_presence_loop.start()
-        # Compute next restart time
-        now = datetime.datetime.utcnow()
-        midnight = datetime.time(0, 0)
-        next_midnight = datetime.datetime.combine(now, midnight)
-        if next_midnight < now:
-            next_midnight += datetime.timedelta(days=1)
-        globals.start_dt = now
-        globals.restart_dt = next_midnight
-        # Exit after saving DB
-        async def graceful_exit():
-            globals.log.info("Saving DB...")
-            await db.save_to_disk()
-            admin = globals.bot.get_user(globals.ADMIN_ID)
-            if admin:
-                await admin.send(file=discord.File('db.sqlite3'))
-            await utils.save_db()
-            await globals.db.close()
-            globals.log.info("Exiting...")
-            update_presence_loop.stop()
-            asyncio.get_event_loop().stop()
-            os._exit(os.EX_OK)
-        # Schedule graceful exit for kill signals
-        for signame in ['SIGINT', 'SIGTERM']:
-            asyncio.get_event_loop().add_signal_handler(getattr(signal, signame), lambda: asyncio.get_event_loop().create_task(graceful_exit()))
-        # Wait until restart time
-        await asyncio.sleep(max((next_midnight - now).total_seconds(), 0))
-        # Force restart
-        await utils.restart()
+        globals.log.info("Started status loop")
+        globals.start_dt = datetime.datetime.utcnow()
 
     # Ignore command not found errors
     @globals.bot.event
@@ -274,6 +247,29 @@ async def main():
         elif globals.cur_presence == 2:
             await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,  name='the Blackwall'),  status=discord.Status.dnd)
             globals.cur_presence = 0
+
+    # Exit after saving DB
+    async def graceful_exit():
+        globals.log.info("Saving DB...")
+        await db.save_to_disk()
+        try:
+            await utils.save_db()
+        except Exception:
+            globals.log.error("Failed to save remote DB")
+        try:
+            admin = globals.bot.get_user(globals.ADMIN_ID)
+            if admin:
+                await admin.send(file=discord.File('db.sqlite3'))
+        except Exception:
+            globals.log.error("Failed to DM database backup")
+        await globals.db.close()
+        globals.log.info("Exiting...")
+        update_presence_loop.stop()
+        asyncio.get_event_loop().stop()
+        os._exit(os.EX_OK)
+    # Schedule graceful exit for kill signals
+    for signame in ['SIGINT', 'SIGTERM']:
+        asyncio.get_event_loop().add_signal_handler(getattr(signal, signame), lambda: asyncio.get_event_loop().create_task(graceful_exit()))
 
     # Actually run the bot
     await globals.bot.start(globals.DISCORD_TOKEN)

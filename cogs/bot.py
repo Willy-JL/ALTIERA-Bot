@@ -41,7 +41,7 @@ class Bot(commands.Cog,
                     for command in sorted(cog.get_commands(), key=lambda x: x.name):
                         desc += f'{prfx}**{command.name}**: ' + (command.description[:command.description.find("\n")] if "\n" in command.description else command.description) + '\n'
                     desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n"
-                    desc += f"**\nA.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
+                    desc += f"**\nA.L.T.I.E.R.A. Bot**, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
                     await utils.embed_reply(ctx,
                                             title=f"⁉️   A.L.T.I.E.R.A. Help  >  {cog_name}",
                                             description=desc)
@@ -61,7 +61,7 @@ class Bot(commands.Cog,
                         desc += command.help + "\n"
                     if aliases:
                         desc += f"\n**Aliases**: `{prfx}" + f"`, `{prfx}".join(aliases) + "`\n"
-                    desc += f"**\nA.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
+                    desc += f"**\nA.L.T.I.E.R.A. Bot**, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
                     await utils.embed_reply(ctx,
                                             title=f"⁉️   A.L.T.I.E.R.A. Help  >  {cog_name}  >  {prfx}{command.name}",
                                             description=desc)
@@ -75,7 +75,7 @@ class Bot(commands.Cog,
             cog = globals.bot.get_cog(cog_name)
             desc += f"{prfx}help **{cog_name.lower()}**: " + (cog.description[:cog.description.find('\n')] if '\n' in cog.description else cog.description) + "\n"
         desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n"
-        desc += f"\n**A.L.T.I.E.R.A. Bot**{(' `' + os.environ.get('HEROKU_RELEASE_VERSION') + '`') if os.environ.get('HEROKU_RELEASE_VERSION') else ''}, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
+        desc += f"\n**A.L.T.I.E.R.A. Bot**, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"
         await utils.embed_reply(ctx,
                                 title="⁉️   A.L.T.I.E.R.A. Help",
                                 description=desc)
@@ -91,15 +91,12 @@ class Bot(commands.Cog,
         await utils.embed_reply(ctx,
                                 title="📊 Bot Info",
                                 fields=[
-                                    ["♾️ Uptime:",          f"{utils.time_from_start()}",                                                                                                                                          True],
-                                    ["☯️ Next Restart In:", f"{utils.time_to_restart()}",                                                                                                                                          True],
-                                    ["⏳ Ping:",            f"{int(globals.bot.latency * 1000)}ms",                                                                                                                                True],
-                                    ["📟 CPU Usage",        f"{psutil.cpu_percent()}%",                                                                                                                                            True],
-                                    ["💾 RAM Usage",        f"{utils.pretty_size(psutil.Process(os.getpid()).memory_info().rss)}/{'512MB' if os.environ.get('DYNO') else utils.pretty_size(psutil.virtual_memory().total)}",       True],
-                                    ["🚀 Last Update",      f"{datetime.datetime.fromisoformat(os.environ.get('HEROKU_RELEASE_CREATED_AT')[:-1]).strftime('%d/%m/%Y') if os.environ.get('HEROKU_RELEASE_CREATED_AT') else 'N/A'}", True],
-                                    ["👨‍💻 Developer",        "[WillyJL](https://linktr.ee/WillyJL)",                                                                                                                               True],
-                                    ["📚 Library",          f"discord.py v{discord.__version__}",                                                                                                                                  True],
-                                    ["📦 Version",          f"{os.environ.get('HEROKU_RELEASE_VERSION') if os.environ.get('HEROKU_RELEASE_VERSION') else 'N/A'}",                                                                  True],
+                                    ["♾️ Uptime:",   f"{utils.time_from_start()}",                                                                                             True],
+                                    ["⏳ Ping:",     f"{int(globals.bot.latency * 1000)}ms",                                                                                   True],
+                                    ["📟 CPU Usage", f"{psutil.cpu_percent()}%",                                                                                               True],
+                                    ["💾 RAM Usage", f"{utils.pretty_size(psutil.Process(os.getpid()).memory_info().rss)}/{utils.pretty_size(psutil.virtual_memory().total)}", True],
+                                    ["👨‍💻 Developer", "[WillyJL](https://linktr.ee/WillyJL)",                                                                                   True],
+                                    ["📚 Library",   f"discord.py v{discord.__version__}",                                                                                     True],
                                 ],
                                 thumbnail=globals.bot.user.display_avatar.url)
 

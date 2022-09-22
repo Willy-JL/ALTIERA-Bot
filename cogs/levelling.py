@@ -269,7 +269,7 @@ class Levelling(commands.Cog,
         await utils.embed_reply(ctx,
                                 title="📅 Daily reward claimed!",
                                 description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!\n"
-                                            f"Come back in roughly **{utils.time_to_restart()}** for more!",
+                                            f"Come back **tomorrow** for more!",
                                 thumbnail=ctx.author.display_avatar.url)
 
 

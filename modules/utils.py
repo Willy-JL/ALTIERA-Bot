@@ -97,7 +97,7 @@ async def save_db():
             raise Exception("No valid DB type specified!")
 
 
-# Restart the bot, dyno restart on heroku
+# Restart the bot
 async def restart():
     globals.log.info("Saving DB...")
     await db.save_to_disk()
@@ -107,25 +107,8 @@ async def restart():
     await save_db()
     await globals.db.close()
     globals.log.info("Restarting...")
-    if os.environ.get("DYNO"):
-        async with globals.http.delete(f'https://api.heroku.com/apps/{os.environ.get("HEROKU_APP_NAME")}/dynos/{os.environ["DYNO"]}',
-                                       headers={
-                                           'Authorization': f'Bearer {globals.HEROKU_TOKEN}',
-                                           'Accept':        'application/vnd.heroku+json; version=3'
-                                       }) as req:
-            response = await req.text()
-            if not req.ok:
-                admin = globals.bot.get_user(globals.ADMIN_ID)
-                if admin:
-                    await admin.send(embed=custom_embed(list(globals.bot.guilds)[0],
-                                                        title="Failed to Restart!",
-                                                        description=response,
-                                                        fields=[
-                                                            ["Status:", f"{req.status}", True]
-                                                        ]))
-    else:
-        import main  # I know, I know, please Lord forgive me
-        os.execl(sys.executable, 'python', main.__file__, *sys.argv[1:])
+    import main  # I know, I know, please Lord forgive me
+    os.execl(sys.executable, 'python', main.__file__, *sys.argv[1:])
 
 
 # Setup persistent image components
@@ -275,13 +258,6 @@ def time_from_start():
     now = datetime.datetime.utcnow()
     elapsed_seconds = (now - globals.start_dt).total_seconds()
     return str(datetime.timedelta(seconds=int(elapsed_seconds)))
-
-
-# Format time until next bot restart
-def time_to_restart():
-    now = datetime.datetime.utcnow()
-    missing_seconds = (globals.restart_dt - now).total_seconds()
-    return str(datetime.timedelta(seconds=int(missing_seconds)))
 
 
 # Convert byte size amount into human readable format

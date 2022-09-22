@@ -12,12 +12,11 @@ cur_presence             : int           = None
 db                       : Connection    = None
 http                     : ClientSession = None
 log                      : Logger        = None
-restart_dt               : datetime      = None
 start_dt                 : datetime      = None
 ticking_cooldowns        : bool          = None
 write_as_token           : str           = None
 
-# User configurable vars, Heroku's "Config Vars" are suggested
+# User configurable vars, available via config.json
 ADMIN_ID                 : int           = None
 ASSISTANCE_CATEGORY_IDS  : list          = None
 BLACKLISTED_CHANNELS_IDS : list          = None
@@ -32,7 +31,6 @@ GITHUB_GIST_FILENAME     : str           = None
 GITHUB_GIST_ID           : str           = None
 GITHUB_GIST_TOKEN        : str           = None
 GITHUB_GIST_USER         : str           = None
-HEROKU_TOKEN             : str           = None
 ICON_ROLE_IDS            : dict          = None
 IMGUR_CLIENT_ID          : str           = None
 JOIN_LOG_CHANNEL_IDS     : dict          = None
