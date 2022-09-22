@@ -289,7 +289,8 @@ def hybgroup(bot, **kwargs):
                 desc = short_desc
             else:
                 desc = f"Alias for /{group.name}. "
-                desc += short_desc[:99 - len(desc)]
+                if short_desc is not discord.utils.MISSING:
+                    desc += ". " + short_desc[:99 - len(desc)]
             app_group = app_commands.Group(name=alias, description=desc, extras=extras)
             bot.tree.add_command(app_group)
             _app_groups.append(app_group)
@@ -368,8 +369,9 @@ def hybcommand(bot, group=None, check_func=None, cooldown_rate=None, cooldown_ti
             if alias == command.name:
                 desc = short_desc
             else:
-                desc = f"Alias for /{command.name}. "
-                desc += short_desc[:99 - len(desc)]
+                desc = f"Alias for /{command.name}"
+                if short_desc is not discord.utils.MISSING:
+                    desc += ". " + short_desc[:99 - len(desc)]
             if group:
                 for app_group in group.extras.get("_app_groups", []):
                     app_command = app_group.command(name=alias, description=desc, extras=extras)(new_func)
