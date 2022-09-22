@@ -164,8 +164,10 @@ async def main():
                     return True
             return False
         e = commands.errors
-        if not is_(e.CommandOnCooldown) and not ctx.interaction:
-            ctx.command.reset_cooldown(ctx)  # No cooldown for command errors
+        # No cooldown for command errors
+        if not is_(e.CommandOnCooldown) and ctx.command and hasattr(ctx.command, "reset_cooldown"):
+            ctx.command.reset_cooldown(ctx)
+        # Actual error handling
         if is_(e.CommandNotFound) or is_(e.DisabledCommand):
             await utils.embed_reply(ctx,
                                     title=f'💢 Unknown command "a/{ctx.invoked_with}"!',
