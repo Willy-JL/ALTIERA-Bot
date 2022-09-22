@@ -279,6 +279,9 @@ def hybgroup(bot, **kwargs):
             "_app_groups": _app_groups
         })
         group = commands.group(extras=extras, **kwargs)(func)
+        extras.update({
+            "_group": group
+        })
         short_desc = kwargs.get("description", "").split("\n")[0][:99] or discord.utils.MISSING
         for alias in [kwargs.get("name", discord.utils.MISSING)] + kwargs.get("aliases", []):
             # Rename
@@ -299,12 +302,14 @@ def hybgroup(bot, **kwargs):
 
 
 # Hybrid command decorator that syncs aliases, checks and cooldowns with slashcommands
-def hybcommand(bot, group=None, check_func=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, cooldown_title=None, cooldown_desc=None, **kwargs):
+def hybcommand(bot, group=None, check_func=None, check_title=None, check_desc=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, cooldown_title=None, cooldown_desc=None, **kwargs):
     def decorator(func):
         _app_commands = []
         extras = kwargs.pop("extras", {})
         extras.update({
             "_app_commands": _app_commands,
+            "check_title": check_title,
+            "check_desc": check_desc,
             "cooldown_title": cooldown_title,
             "cooldown_desc": cooldown_desc
         })
@@ -312,6 +317,9 @@ def hybcommand(bot, group=None, check_func=None, cooldown_rate=None, cooldown_ti
             command = group.command(extras=extras, **kwargs)(func)
         else:
             command = commands.command(extras=extras, **kwargs)(func)
+        extras.update({
+            "_command": command
+        })
         if cooldown_rate:
             async def app_cooldown_key(interaction):
                 ctx = await commands.Context.from_interaction(interaction)

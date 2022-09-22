@@ -174,10 +174,17 @@ async def main():
                                     description=f"**Usage**: `{ctx.command.usage.format(prfx=globals.BOT_PREFIX.lower())}`\n" +
                                                 ctx.command.help)
         elif is_(e.NotOwner) or is_(e.CheckFailure) or is_(e.CheckAnyFailure):
-            await utils.embed_reply(ctx,
-                                    title="💢 Yea, that's not happening buddy!",
-                                    description="Nice try kid lmao",
-                                    thumbnail=globals.NO_PERM_ICON)
+            title = ctx.command.extras.get("check_title", None)
+            desc = ctx.command.extras.get("check_desc", None)
+            if title or desc:
+                await utils.embed_reply(ctx,
+                                        title=f"💢 {title}",
+                                        description=desc)
+            else:
+                await utils.embed_reply(ctx,
+                                        title="💢 Yea, that's not happening buddy!",
+                                        description="Nice try kid lmao",
+                                        thumbnail=globals.NO_PERM_ICON)
         elif is_(e.CommandInvokeError):
             globals.log.error(utils.get_traceback(error))
             try:
