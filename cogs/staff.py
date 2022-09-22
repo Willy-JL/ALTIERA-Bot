@@ -23,7 +23,7 @@ class Staff(commands.Cog,
                       aliases=["backup"],
                       check_func=only_staff)
     async def save(self, ctx: commands.Context):
-        await ctx.defer()
+        await utils.defer(ctx)
         if not await utils.save_db():
             title = "💢 Failed to save remote database!"
         else:
@@ -41,7 +41,7 @@ class Staff(commands.Cog,
                       aliases=["restorebackup"],
                       check_func=only_staff)
     async def restore(self, ctx, database: discord.Attachment = None):
-        await ctx.defer()
+        await utils.defer(ctx)
         if not database:
             for attachment in ctx.message.attachments:
                 if attachment.filename == "db.sqlite3":

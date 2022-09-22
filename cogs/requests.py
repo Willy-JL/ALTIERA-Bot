@@ -36,7 +36,7 @@ class Requests(commands.Cog,
                       cooldown_time=datetime.timedelta(minutes=10).total_seconds(),
                       **requests_channel_check)
     async def new(self, ctx, *, description: str, image: discord.Attachment = None):
-        await ctx.defer()
+        await utils.defer(ctx)
         # Image stuff
         attached_image = image
         image = ""
@@ -89,7 +89,7 @@ class Requests(commands.Cog,
                       aliases=["modify"],
                       **requests_channel_check)
     async def edit(self, ctx, id: int, *, description: str, image: discord.Attachment = None):
-        await ctx.defer()
+        await utils.defer(ctx)
         req_id = id
         attached_image = image
         # Database stuff
@@ -164,7 +164,7 @@ class Requests(commands.Cog,
                       aliases=["remove"],
                       **requests_channel_check)
     async def delete(self, ctx, id: int):
-        await ctx.defer()
+        await utils.defer(ctx)
         req_id = id
         # Database stuff
         try:
@@ -201,7 +201,7 @@ class Requests(commands.Cog,
                       aliases=["wip"],
                       **requests_channel_check)
     async def claim(self, ctx, id: int):
-        await ctx.defer()
+        await utils.defer(ctx)
         req_id = id
         # Database stuff
         try:
@@ -247,7 +247,7 @@ class Requests(commands.Cog,
                       aliases=["abandon"],
                       **requests_channel_check)
     async def unclaim(self, ctx, id: int):
-        await ctx.defer()
+        await utils.defer(ctx)
         req_id = id
         # Database stuff
         try:
@@ -294,7 +294,7 @@ class Requests(commands.Cog,
                       aliases=["publish"],
                       **requests_channel_check)
     async def release(self, ctx, id: int, link: str):
-        await ctx.defer()
+        await utils.defer(ctx)
         req_id = id
         # Database stuff
         try:
@@ -340,7 +340,7 @@ class Requests(commands.Cog,
                       aliases=["takedown"],
                       **requests_channel_check)
     async def unrelease(self, ctx, id: int):
-        await ctx.defer()
+        await utils.defer(ctx)
         req_id = id
         # Database stuff
         try:
@@ -387,7 +387,7 @@ class Requests(commands.Cog,
                       aliases=["exists", "alreadyexists"],
                       **requests_channel_check)
     async def link(self, ctx, id: int, link: str):
-        await ctx.defer()
+        await utils.defer(ctx)
         req_id = id
         # Database stuff
         try:
@@ -433,7 +433,7 @@ class Requests(commands.Cog,
                       aliases=["nolongerexists"],
                       **requests_channel_check)
     async def unlink(self, ctx, id: int):
-        await ctx.defer()
+        await utils.defer(ctx)
         req_id = id
         # Database stuff
         try:

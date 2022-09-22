@@ -453,6 +453,16 @@ async def imgur_image_upload(img: bytes):
         raise errors.ImgurError(exc_info=sys.exc_info(), resp=resp) from exc
 
 
+# Defer slash response with ephemeral calculation
+async def defer(ctx, ephemeral=None):
+    if ephemeral is None:
+        if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
+            ephemeral = True
+        else:
+            ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
+    await ctx.defer(ephemeral=ephemeral)
+
+
 # Cleaner reply function
 async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True, ephemeral=None, **kwargs):
     embed_to_send = custom_embed(ctx.guild,
@@ -474,15 +484,16 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
             kwargs["ephemeral"] = True
         else:
             kwargs["delete_after"] = ephemeral
-    await ctx.reply(content,
-                    embed=embed_to_send,
-                    **kwargs)
+    ret = await ctx.reply(content,
+                          embed=embed_to_send,
+                          **kwargs)
     if ephemeral is not bool(ephemeral) and not getattr(ctx, "interaction", None):
         await asyncio.sleep(ephemeral)
         try:
             await ctx.message.delete()
         except Exception:
             pass
+    return ret
 
 
 # Get all possible case variations for a string
