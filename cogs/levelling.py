@@ -242,6 +242,11 @@ class Levelling(commands.Cog,
                       cooldown_key=lambda ctx: ctx.author.id,
                       cooldown_time=datetime.timedelta(days=1).total_seconds())
     async def rep(self, ctx, user: discord.Member):
+        if user.id == ctx.author.id:
+            await utils.embed_reply(ctx,
+                                    title="💢 Thats low even by your standards...",
+                                    description="No more rep for you today lmao")
+            return
         await db.add_user_xp(user.id, cred=globals.REP_CRED_AMOUNT)
         await utils.embed_reply(ctx,
                                 content=f"<@!{user.id}>",

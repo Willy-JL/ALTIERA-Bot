@@ -18,7 +18,7 @@ class Fun(commands.Cog,
                       help="user: the user to give a cookie to (ping, name, id) (optional)",
                       aliases=["cybcookie", "cybercookie"])
     async def cookie(self, ctx, user: discord.Member = None):
-        if user:
+        if user and user.id != ctx.author.id:
             await utils.embed_reply(ctx,
                                     content=f"<@!{user.id}>",
                                     title="🍪 CyberCookie!",
@@ -39,7 +39,7 @@ class Fun(commands.Cog,
                       help="user: the user to give a burrito to (ping, name, id) (optional)",
                       aliases=["spaceburrito", "galacticburrito"])
     async def burrito(self, ctx, user: discord.Member = None):
-        if user:
+        if user and user.id != ctx.author.id:
             await utils.embed_reply(ctx,
                                     content=f"<@!{user.id}>",
                                     title="🌯 SpaceBurrito!",
@@ -60,7 +60,7 @@ class Fun(commands.Cog,
                       help="user: the user to pat (ping, name, id) (optional)",
                       aliases=["pet", "patpat", "patpatpat"])
     async def pat(self, ctx, user: discord.Member = None):
-        if user:
+        if user and user.id != ctx.author.id:
             await utils.embed_reply(ctx,
                                     content=f"<@!{user.id}>",
                                     title="<a:PatPatPat:836341685952184388> \\*PatPat\\*",
