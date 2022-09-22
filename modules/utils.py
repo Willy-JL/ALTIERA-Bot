@@ -280,13 +280,22 @@ def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, coo
         })
         result = commands.command(extras=extras, **kwargs)(func)
         if cooldown_rate:
-            cooldown_timer = app_commands.Cooldown(rate=cooldown_rate, per=cooldown_time)
-            cooldown_factory = lambda _: cooldown_timer
-            cooldown = commands.dynamic_cooldown(cooldown=cooldown_factory, type=cooldown_key)
             async def app_cooldown_key(interaction):
                 ctx = await commands.Context.from_interaction(interaction)
                 return cooldown_key(ctx)
-            app_cooldown = app_commands.checks.dynamic_cooldown(factory=cooldown_factory, key=app_cooldown_key)
+            cooldown_mapping = {}
+            def cooldown_factory(ctx):
+                key = cooldown_key(ctx)
+                if key not in cooldown_mapping:
+                    cooldown_mapping[key] = app_commands.Cooldown(rate=cooldown_rate, per=cooldown_time)
+                return cooldown_mapping[key]
+            async def app_cooldown_factory(interaction):
+                key = await app_cooldown_key(interaction)
+                if key not in cooldown_mapping:
+                    cooldown_mapping[key] = app_commands.Cooldown(rate=cooldown_rate, per=cooldown_time)
+                return cooldown_mapping[key]
+            cooldown = commands.dynamic_cooldown(cooldown=cooldown_factory, type=cooldown_key)
+            app_cooldown = app_commands.checks.dynamic_cooldown(factory=app_cooldown_factory, key=app_cooldown_key)
             cooldown(result)
         if check_func:
             check = commands.check(check_func)
