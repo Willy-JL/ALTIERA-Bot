@@ -19,13 +19,15 @@ class Staff(commands.Cog,
                       help="",
                       aliases=["backup"],
                       check=lambda ctx: utils.is_staff(ctx.author))
-    async def save(self, ctx):
+    async def save(self, ctx: commands.Context):
+        await ctx.defer()
         if not await utils.save_db():
-            await utils.embed_reply(ctx,
-                                    title="💢 Failed to save remote database!")
+            title = "💢 Failed to save remote database!"
         else:
-            await ctx.message.add_reaction('👌')
-        await ctx.reply(file=discord.File('db.sqlite3'))
+            title = "👌 Done!"
+        await utils.embed_reply(ctx,
+                                title=title,
+                                file=discord.File('db.sqlite3'))
         await ctx.author.send(file=discord.File('db.sqlite3'))
 
     @utils.hybcommand(globals.bot,
@@ -36,6 +38,7 @@ class Staff(commands.Cog,
                       aliases=["restorebackup"],
                       check=lambda ctx: utils.is_staff(ctx.author))
     async def restore(self, ctx, database: discord.Attachment = None):
+        await ctx.defer()
         if not database:
             for attachment in ctx.message.attachments:
                 if attachment.filename == "db.sqlite3":
@@ -56,7 +59,8 @@ class Staff(commands.Cog,
             await utils.embed_reply(ctx,
                                     title="💢 Failed to save remote database!")
         else:
-            await ctx.message.add_reaction('👌')
+            await utils.embed_reply(ctx,
+                                    title="👌 Done!")
 
     @commands.group(name="gibxp",
                     description="Give a user some xp",
