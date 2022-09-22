@@ -271,7 +271,7 @@ def pretty_size(size, precision=0):
 
 
 # Hybrid group decorator that syncs aliases with slashcommands
-def hybgroup(bot, **kwargs):
+def hybgroup(bot, slash_aliases=True, **kwargs):
     def decorator(func):
         _app_groups = []
         extras = kwargs.pop("extras", {})
@@ -283,7 +283,7 @@ def hybgroup(bot, **kwargs):
             "_group": group
         })
         short_desc = kwargs.get("description", "").split("\n")[0][:99] or discord.utils.MISSING
-        for alias in [kwargs.get("name", discord.utils.MISSING)] + kwargs.get("aliases", []):
+        for alias in [kwargs.get("name", discord.utils.MISSING)] + (kwargs.get("aliases", []) if slash_aliases else []):
             # Rename
             if alias is discord.utils.MISSING:
                 alias = group.name
@@ -305,7 +305,7 @@ def hybgroup(bot, **kwargs):
 
 
 # Hybrid command decorator that syncs aliases, checks and cooldowns with slashcommands
-def hybcommand(bot, group=None, check_func=None, check_title=None, check_desc=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, cooldown_title=None, cooldown_desc=None, **kwargs):
+def hybcommand(bot, group=None, slash_aliases=True, check_func=None, check_title=None, check_desc=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, cooldown_title=None, cooldown_desc=None, **kwargs):
     def decorator(func):
         _app_commands = []
         extras = kwargs.pop("extras", {})
@@ -361,7 +361,7 @@ def hybcommand(bot, group=None, check_func=None, check_title=None, check_desc=No
             for i in range(len(lines)):
                 lines[i] = lines[i][1:]
         source = "".join(lines)
-        for alias in [kwargs.get("name", discord.utils.MISSING)] + kwargs.get("aliases", []):
+        for alias in [kwargs.get("name", discord.utils.MISSING)] + (kwargs.get("aliases", []) if slash_aliases else []):
             # Parse and manipulate
             ast_tree = ast.parse(source)
             fn = ast_tree.body[0]
