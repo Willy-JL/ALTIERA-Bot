@@ -196,10 +196,14 @@ async def main():
                                     description="Nice try kid lmao",
                                     thumbnail=globals.NO_PERM_ICON)
         elif is_(e.CommandInvokeError):
-            await utils.embed_reply(ctx,
-                                    title=f"💢 Error executing command!",
-                                    description="Check the **attached text file** for a full traceback.",
-                                    file=discord.File(io.StringIO(utils.get_traceback(error)), filename="traceback.txt", spoiler=True))
+            globals.log.error(utils.get_traceback(error))
+            try:
+                await utils.embed_reply(ctx,
+                                        title=f"💢 Error executing command!",
+                                        description="Check the **attached text file** for a full traceback.",
+                                        file=discord.File(io.StringIO(utils.get_traceback(error)), filename="traceback.txt", spoiler=True))
+            except discord.errors.DiscordException:
+                pass
         else:
             raise error
 
