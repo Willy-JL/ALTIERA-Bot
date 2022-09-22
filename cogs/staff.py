@@ -12,14 +12,14 @@ class Staff(commands.Cog,
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="save",
+    @utils.hybcommand(globals.bot,
+                      name="save",
                       description="Save the bot's database and send a copy of it",
                       usage="{prfx}save",
                       help="",
-                      aliases=["backup"])
+                      aliases=["backup"],
+                      check=lambda ctx: utils.is_staff(ctx.author))
     async def save(self, ctx):
-        if not utils.is_staff(ctx.author):
-            return
         if not await utils.save_db():
             await utils.embed_reply(ctx,
                                     title="💢 Failed to save remote database!")
@@ -28,21 +28,22 @@ class Staff(commands.Cog,
         await ctx.reply(file=discord.File('db.sqlite3'))
         await ctx.author.send(file=discord.File('db.sqlite3'))
 
-    @commands.command(name="restore",
+    @utils.hybcommand(globals.bot,
+                      name="restore",
                       description="Restore the bot's database from a backup",
                       usage="{prfx}restore",
                       help="",
-                      aliases=["restorebackup"])
-    async def restore(self, ctx):
-        if not utils.is_staff(ctx.author):
-            return
-        db_bytes = None
-        for attachment in ctx.message.attachments:
-            if attachment.filename == "db.sqlite3":
-                async with globals.http.get(attachment.url) as req:
-                    db_bytes = await req.read()
-                break
-        if not db_bytes:
+                      aliases=["restorebackup"],
+                      check=lambda ctx: utils.is_staff(ctx.author))
+    async def restore(self, ctx, database: discord.Attachment = None):
+        if not database:
+            for attachment in ctx.message.attachments:
+                if attachment.filename == "db.sqlite3":
+                    database = attachment
+                    break
+        if database:
+            db_bytes = await database.read()
+        else:
             await utils.embed_reply(ctx,
                                     title='💢 Please attach a "db.sqlite3"!')
             return
@@ -321,14 +322,14 @@ class Staff(commands.Cog,
                                 description=f"👌 Set <@!{target.id}>'s assistance XP successfully!\n"
                                             f"New assistance XP value: `{assistance_xp}`")
 
-    @commands.command(name="restart",
+    @utils.hybcommand(globals.bot,
+                      name="restart",
                       description="Save DB and restart the bot",
                       usage="{prfx}restart",
                       help="",
-                      aliases=["reboot"])
+                      aliases=["reboot"],
+                      check=lambda ctx: utils.is_staff(ctx.author))
     async def restart(self, ctx):
-        if not utils.is_staff(ctx.author):
-            return
         await utils.embed_reply(ctx,
                                 title="👌 Restarting...")
         await utils.restart()

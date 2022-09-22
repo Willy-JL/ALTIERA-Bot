@@ -1,12 +1,14 @@
 from fuzzywuzzy import process, fuzz
 from PIL import Image, ImageFont
 from discord.ext import commands
+from discord import app_commands
 import itertools
 import traceback
 import datetime
 import aiofiles
 import discord
 import inspect
+import asyncio
 import base64
 import zlib
 import json
@@ -292,10 +294,14 @@ def pretty_size(size, precision=0):
     return "%.*f%s" % (precision, size, suffixes[suffix_index])
 
 
-# Hybrid command decorator that also adds the aliases as slashcommands
-def hybcommand(bot, **kwargs):
+# Hybrid command decorator that syncs aliases, checks and cooldowns with slashcommands
+def hybcommand(bot, check=None, cooldown_rate=None, cooldown_time=None, cooldown_type=None, cooldown_key=None, **kwargs):
     def decorator(func):
         result = commands.command(**kwargs)(func)
+        if cooldown_rate:
+            commands.cooldown(rate=cooldown_rate, per=cooldown_time, type=cooldown_type)(result)
+        if check:
+            commands.check(check)(result)
         short_desc = kwargs.get("description", "").split("\n")[0][:99] or discord.utils.MISSING
         for alias in [kwargs.get("name", discord.utils.MISSING)] + kwargs.get("aliases", []):
             # Get source and remove decorator(s)
@@ -329,8 +335,16 @@ def hybcommand(bot, **kwargs):
             if alias == result.name:
                 desc = short_desc
             else:
-                desc = f"Alias for /{result.name}"
-            bot.tree.command(name=alias, description=desc)(new_func)
+                desc = f"Alias for /{result.name}. "
+                desc += short_desc[:99 - len(desc)]
+            cmd = bot.tree.command(name=alias, description=desc)(new_func)
+            if cooldown_rate:
+                app_commands.checks.cooldown(rate=cooldown_rate, per=cooldown_time, key=cooldown_key)(cmd)
+            if check:
+                async def new_check(interaction):
+                    ctx = await commands.Context.from_interaction(interaction)
+                    return check(ctx)
+                app_commands.check(new_check)(cmd)
         return result
     return decorator
 

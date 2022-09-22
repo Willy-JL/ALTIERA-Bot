@@ -156,38 +156,59 @@ async def main():
     # Ignore command not found errors
     @globals.bot.event
     async def on_command_error(ctx, error):
-        is_ = lambda e_type: isinstance(error, e_type)
+        def is_(e_type):
+            if isinstance(error, e_type):
+                return True
+            for inherit in type(error).__mro__:
+                if inherit.__name__ == e_type.__name__:
+                    return True
+            return False
         e = commands.errors
         if is_(e.CommandNotFound) or is_(e.DisabledCommand):
             await utils.embed_reply(ctx,
                                     title=f'💢 Unknown command "a/{ctx.invoked_with}"!',
                                     description=f"Did you mean **`{globals.BOT_PREFIX.lower()}{utils.get_best_command_match(ctx.invoked_with)}`**?")
-        elif is_(e.NotOwner) or is_(e.CheckFailure) or is_(e.CheckAnyFailure):
+        elif is_(e.CommandOnCooldown):
+            c = error.cooldown
             await utils.embed_reply(ctx,
-                                    title="💢 Yea, that's not happening buddy!",
-                                    thumbnail=globals.NO_PERM_ICON)
-        elif is_(e.BadArgument) or is_(e.BadUnionArgument) or is_(e.BadLiteralArgument) or is_(e.ConversionError):
-            await utils.embed_reply(ctx,
-                                    title=f"💢 Bad argument for '{ctx.current_parameter.name}'!",
-                                    description=f"**Your input**: {ctx.current_argument}\n" +
-                                                str(error))
+                                    title=f"💢 You're on cooldown!",
+                                    description=f"**Retry in**: {datetime.timedelta(seconds=int(error.retry_after))}\n"
+                                                f"You can only do that {'once' if c.rate == 1 else f'{c.rate} times'} every {f'{c.per/3600:.0f} hours' if c.per > 3600 else f'{c.per/60:.0f} minutes' if c.per > 60 else f'{c.per/3600:.0f} seconds'}.",
+                                    delete_after=5)
+            await asyncio.sleep(5)
+            await ctx.message.delete()
         elif is_(e.MissingRequiredArgument) or is_(e.MissingRequiredAttachment):
             await utils.embed_reply(ctx,
                                     title=f"💢 Missing argument for '{ctx.current_parameter.name}'!",
                                     description=f"**Usage**: `{ctx.command.usage.format(prfx=globals.BOT_PREFIX.lower())}`\n" +
                                                 ctx.command.help)
-        elif is_(e.CommandInvokeError):
+        elif is_(e.BadArgument) or is_(e.BadUnionArgument) or is_(e.BadLiteralArgument) or is_(e.ConversionError):
             await utils.embed_reply(ctx,
-                                    title=f"💢 Error executing command!",
-                                    description="Check the **attached text file** for a full traceback.",
-                                    file=discord.File(io.StringIO(utils.get_traceback(error)), filename="traceback.txt", spoiler=True))
+                                    title=f"💢 Bad argument for '{ctx.current_parameter.name}'!",
+                                    description=f"**Your input**: {ctx.current_argument}\n" +
+                                                str(error))
         elif is_(e.ArgumentParsingError):
             await utils.embed_reply(ctx,
                                     title=f"💢 Failed parsing command input!",
                                     description=f"**Usage**: `{ctx.command.usage.format(prfx=globals.BOT_PREFIX.lower())}`\n" +
                                                 ctx.command.help)
+        elif is_(e.NotOwner) or is_(e.CheckFailure) or is_(e.CheckAnyFailure):
+            await utils.embed_reply(ctx,
+                                    title="💢 Yea, that's not happening buddy!",
+                                    description="Nice try kid lmao",
+                                    thumbnail=globals.NO_PERM_ICON)
+        elif is_(e.CommandInvokeError):
+            await utils.embed_reply(ctx,
+                                    title=f"💢 Error executing command!",
+                                    description="Check the **attached text file** for a full traceback.",
+                                    file=discord.File(io.StringIO(utils.get_traceback(error)), filename="traceback.txt", spoiler=True))
         else:
             raise error
+
+    @globals.bot.tree.error
+    async def on_error(interaction, error):
+        ctx = await commands.Context.from_interaction(interaction)
+        return await on_command_error(ctx, error)
 
     # Greet user when they join
     @globals.bot.event
