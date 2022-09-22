@@ -263,7 +263,9 @@ class Levelling(commands.Cog,
                       aliases=["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"],
                       cooldown_rate=1,
                       cooldown_key=lambda ctx: ctx.author.id,
-                      cooldown_time=datetime.timedelta(days=1).total_seconds())
+                      cooldown_time=datetime.timedelta(days=1).total_seconds(),
+                      cooldown_title="It's called 'daily' for a reason!",
+                      cooldown_desc=False)
     async def daily(self, ctx):
         await db.add_user_xp(ctx.author.id, level=globals.DAILY_LEVEL_AMOUNT)
         await utils.embed_reply(ctx,

@@ -271,9 +271,14 @@ def pretty_size(size, precision=0):
 
 
 # Hybrid command decorator that syncs aliases, checks and cooldowns with slashcommands
-def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, **kwargs):
+def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, cooldown_title=None, cooldown_desc=None, **kwargs):
     def decorator(func):
-        result = commands.command(**kwargs)(func)
+        extras = kwargs.pop("extras", {})
+        extras.update({
+            "cooldown_title": cooldown_title,
+            "cooldown_desc": cooldown_desc
+        })
+        result = commands.command(extras=extras, **kwargs)(func)
         if cooldown_rate:
             cooldown_timer = app_commands.Cooldown(rate=cooldown_rate, per=cooldown_time)
             cooldown_factory = lambda _: cooldown_timer
@@ -325,7 +330,7 @@ def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, coo
             else:
                 desc = f"Alias for /{result.name}. "
                 desc += short_desc[:99 - len(desc)]
-            cmd = bot.tree.command(name=alias, description=desc)(new_func)
+            cmd = bot.tree.command(name=alias, description=desc, extras=extras)(new_func)
             if cooldown_rate:
                 app_cooldown(cmd)
             if check_func:

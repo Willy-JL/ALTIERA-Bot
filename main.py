@@ -147,10 +147,17 @@ async def main():
                                     description=f"Did you mean **`{globals.BOT_PREFIX.lower()}{utils.get_best_command_match(ctx.invoked_with)}`**?")
         elif is_(e.CommandOnCooldown):
             c = error.cooldown
+            retry_in = str(datetime.timedelta(seconds=int(error.retry_after)))
+            title = (ctx.command.extras.get("cooldown_title", None) or "You're on cooldown!").format(retry_in=retry_in)
+            desc = ctx.command.extras.get("cooldown_desc", None)
+            if desc is False:
+                desc = ""
+            else:
+                desc = (desc or f"You can only do that {'once' if c.rate == 1 else f'{c.rate} times'} every **{f'{c.per/3600:.0f} hours' if c.per > 3600 else f'{c.per/60:.0f} minutes' if c.per > 60 else f'{c.per/3600:.0f} seconds'}**").format(retry_in=retry_in)
             await utils.embed_reply(ctx,
-                                    title=f"💢 You're on cooldown!",
-                                    description=f"**Retry in**: {datetime.timedelta(seconds=int(error.retry_after))}\n"
-                                                f"You can only do that {'once' if c.rate == 1 else f'{c.rate} times'} every {f'{c.per/3600:.0f} hours' if c.per > 3600 else f'{c.per/60:.0f} minutes' if c.per > 60 else f'{c.per/3600:.0f} seconds'}.")
+                                    title=f"💢 {title}",
+                                    description=desc + "\n"
+                                                f"Come back in **{retry_in}** and try again")
         elif is_(e.MissingRequiredArgument) or is_(e.MissingRequiredAttachment):
             await utils.embed_reply(ctx,
                                     title=f"💢 Missing argument for '{ctx.current_parameter.name}'!",
