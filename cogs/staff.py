@@ -62,7 +62,8 @@ class Staff(commands.Cog,
             await utils.embed_reply(ctx,
                                     title="👌 Done!")
 
-    @commands.group(name="gibxp",
+    @utils.hybgroup(globals.bot,
+                    name="gibxp",
                     description="Give a user some xp",
                     usage="{prfx}gibxp [ type ] [ user ] [ amount ]",
                     help="type: either level, cred or assistance (required)\n"
@@ -74,127 +75,41 @@ class Staff(commands.Cog,
         if ctx.invoked_subcommand is None:
             pass
 
-    @gibxp.command(name="level",
-                   aliases=[])
-    async def gibxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if not utils.is_staff(ctx.author):
-            return
-        # Convert target input to discord.Member
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 Please provide a valid user!")
-            return
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Handle amount
-        try:
-            amount = int(utils.strip_argument(amount))
-        except (TypeError, ValueError,):
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid amount!")
-            return
-        # Actual command
+    @utils.hybcommand(globals.bot,
+                      group=gibxp,
+                      name="level",
+                      aliases=[],
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
+    async def gibxp_level(self, ctx, target: discord.Member, amount: int):
         level_xp, _, _ = await db.add_user_xp(target.id, level=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} level XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!\n") +
                                              f"New level XP value: `{level_xp}`")
 
-    @gibxp.command(name="cred",
-                   aliases=[])
-    async def gibxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if not utils.is_staff(ctx.author):
-            return
-        # Convert target input to discord.Member
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 Please provide a valid user!")
-            return
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Handle amount
-        try:
-            amount = int(utils.strip_argument(amount))
-        except (TypeError, ValueError,):
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid amount!")
-            return
-        # Actual command
+    @utils.hybcommand(globals.bot,
+                      group=gibxp,
+                      name="cred",
+                      aliases=[],
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
+    async def gibxp_cred(self, ctx, target: discord.Member, amount: int):
         _, cred_xp, _ = await db.add_user_xp(target.id, cred=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!\n") +
                                              f"New cred XP value: `{cred_xp}`")
 
-    @gibxp.command(name="assistance",
-                   aliases=["assist"])
-    async def gibxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if not utils.is_staff(ctx.author):
-            return
-        # Convert target input to discord.Member
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 Please provide a valid user!")
-            return
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Handle amount
-        try:
-            amount = int(utils.strip_argument(amount))
-        except (TypeError, ValueError,):
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid amount!")
-            return
-        # Actual command
+    @utils.hybcommand(globals.bot,
+                      group=gibxp,
+                      name="assistance",
+                      aliases=["assist"],
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
+    async def gibxp_assistance(self, ctx, target: discord.Member, amount: int):
         _, _, assistance_xp = await db.add_user_xp(target.id, assistance=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!\n") +
                                              f"New assistance XP value: `{assistance_xp}`")
 
-    @commands.group(name="setxp",
+    @utils.hybgroup(globals.bot,
+                    name="setxp",
                     description="Change a user's xp value",
                     usage="{prfx}setxp [ type ] [ user ] [ amount ]",
                     help="type: either level, cred or assistance (required)\n"
@@ -206,121 +121,34 @@ class Staff(commands.Cog,
         if ctx.invoked_subcommand is None:
             pass
 
-    @setxp.command(name="level",
-                   aliases=[])
-    async def setxp_level(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if not utils.is_staff(ctx.author):
-            return
-        # Convert target input to discord.Member
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 Please provide a valid user!")
-            return
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Handle amount
-        try:
-            amount = int(utils.strip_argument(amount))
-        except (TypeError, ValueError,):
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid amount!")
-            return
-        # Actual command
+    @utils.hybcommand(globals.bot,
+                      group=setxp,
+                      name="level",
+                      aliases=[],
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
+    async def setxp_level(self, ctx, target: discord.Member, amount: int):
         level_xp, _, _ = await db.set_user_xp(target.id, level=amount)
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s level XP successfully!\n"
                                             f"New level XP value: `{level_xp}`")
 
-    @setxp.command(name="cred",
-                   aliases=[])
-    async def setxp_cred(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if not utils.is_staff(ctx.author):
-            return
-        # Convert target input to discord.Member
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 Please provide a valid user!")
-            return
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Handle amount
-        try:
-            amount = int(utils.strip_argument(amount))
-        except (TypeError, ValueError,):
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid amount!")
-            return
-        # Actual command
+    @utils.hybcommand(globals.bot,
+                      group=setxp,
+                      name="cred",
+                      aliases=[],
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
+    async def setxp_cred(self, ctx, target: discord.Member, amount: int):
         _, cred_xp, _ = await db.set_user_xp(target.id, cred=amount)
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s cred XP successfully!\n"
                                             f"New cred XP value: `{cred_xp}`")
 
-    @setxp.command(name="assistance",
-                   aliases=["assist"])
-    async def setxp_assistance(self, ctx, target: Union[discord.Member, discord.User, int, str] = None, amount: int = 0):
-        if not utils.is_staff(ctx.author):
-            return
-        # Convert target input to discord.Member
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 Please provide a valid user!")
-            return
-        if isinstance(target, int):
-            target = ctx.guild.get_member(target)
-        elif isinstance(target, str):
-            target = utils.strip_argument(target)
-            target = await utils.get_best_member_match(ctx, target)
-        elif isinstance(target, discord.User):
-            target = ctx.guild.get_member(target.id)
-        elif isinstance(target, discord.Member):
-            pass
-        else:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        if not target:
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid user!")
-            return
-        # Handle amount
-        try:
-            amount = int(utils.strip_argument(amount))
-        except (TypeError, ValueError,):
-            await utils.embed_reply(ctx,
-                                    title="💢 That is not a valid amount!")
-            return
-        # Actual command
+    @utils.hybcommand(globals.bot,
+                      group=setxp,
+                      name="assistance",
+                      aliases=["assist"],
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
+    async def setxp_assistance(self, ctx, target: discord.Member, amount: int):
         _, _, assistance_xp = await db.set_user_xp(target.id, assistance=amount)
         await utils.embed_reply(ctx,
                                 description=f"👌 Set <@!{target.id}>'s assistance XP successfully!\n"

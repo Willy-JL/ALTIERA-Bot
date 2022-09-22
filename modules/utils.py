@@ -270,15 +270,47 @@ def pretty_size(size, precision=0):
     return "%.*f%s" % (precision, size, suffixes[suffix_index])
 
 
-# Hybrid command decorator that syncs aliases, checks and cooldowns with slashcommands
-def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, cooldown_title=None, cooldown_desc=None, **kwargs):
+# Hybrid group decorator that syncs aliases with slashcommands
+def hybgroup(bot, **kwargs):
     def decorator(func):
+        _app_groups = []
         extras = kwargs.pop("extras", {})
         extras.update({
+            "_app_groups": _app_groups
+        })
+        group = commands.group(extras=extras, **kwargs)(func)
+        short_desc = kwargs.get("description", "").split("\n")[0][:99] or discord.utils.MISSING
+        for alias in [kwargs.get("name", discord.utils.MISSING)] + kwargs.get("aliases", []):
+            # Rename
+            if alias is discord.utils.MISSING:
+                alias = group.name
+            # Create group
+            if alias == group.name:
+                desc = short_desc
+            else:
+                desc = f"Alias for /{group.name}. "
+                desc += short_desc[:99 - len(desc)]
+            app_group = app_commands.Group(name=alias, description=desc, extras=extras)
+            bot.tree.add_command(app_group)
+            _app_groups.append(app_group)
+        return group
+    return decorator
+
+
+# Hybrid command decorator that syncs aliases, checks and cooldowns with slashcommands
+def hybcommand(bot, group=None, check_func=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, cooldown_title=None, cooldown_desc=None, **kwargs):
+    def decorator(func):
+        _app_commands = []
+        extras = kwargs.pop("extras", {})
+        extras.update({
+            "_app_commands": _app_commands,
             "cooldown_title": cooldown_title,
             "cooldown_desc": cooldown_desc
         })
-        command = commands.command(extras=extras, **kwargs)(func)
+        if group:
+            command = group.command(extras=extras, **kwargs)(func)
+        else:
+            command = commands.command(extras=extras, **kwargs)(func)
         if cooldown_rate:
             async def app_cooldown_key(interaction):
                 ctx = await commands.Context.from_interaction(interaction)
@@ -309,8 +341,7 @@ def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, coo
         convert = ast.parse("ctx = await commands.Context.from_interaction(ctx)").body[0]
         lines = inspect.getsourcelines(func)[0]
         for i, line in enumerate(lines):
-            stripped = line.lstrip()
-            if stripped.startswith("def ") or stripped.startswith("async def "):
+            if line.lstrip().startswith("async def "):
                 lines = lines[i:]
                 break
         # Remove indentation
@@ -326,7 +357,7 @@ def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, coo
             fn.body.insert(0, convert)  # Interaction to Context
             # Rename
             if alias is discord.utils.MISSING:
-                alias = fn.name
+                alias = command.name
             fn.name = f"_{command.name}_{alias}"
             # Reassemble
             code = compile(ast_tree,"<string>", mode='exec')
@@ -339,11 +370,20 @@ def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, coo
             else:
                 desc = f"Alias for /{command.name}. "
                 desc += short_desc[:99 - len(desc)]
-            app_command = bot.tree.command(name=alias, description=desc, extras=extras)(new_func)
-            if cooldown_rate:
-                app_cooldown(app_command)
-            if check_func:
-                app_check(app_command)
+            if group:
+                for app_group in group.extras.get("_app_groups", []):
+                    app_command = app_group.command(name=alias, description=desc, extras=extras)(new_func)
+                    if cooldown_rate:
+                        app_cooldown(app_command)
+                    if check_func:
+                        app_check(app_command)
+            else:
+                app_command = bot.tree.command(name=alias, description=desc, extras=extras)(new_func)
+                if cooldown_rate:
+                    app_cooldown(app_command)
+                if check_func:
+                    app_check(app_command)
+            _app_commands.append(app_command)
         return command
     return decorator
 

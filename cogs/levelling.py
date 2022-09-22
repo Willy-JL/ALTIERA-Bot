@@ -148,7 +148,8 @@ class Levelling(commands.Cog,
                                 ],
                                 thumbnail=user.display_avatar.url)
 
-    @commands.group(name="top",
+    @utils.hybgroup(globals.bot,
+                    name="top",
                     description="List top ten users per XP type",
                     usage="{prfx}top [ type ]",
                     help="type: either level, cred or assistance (required)",
@@ -162,8 +163,10 @@ class Levelling(commands.Cog,
                                                 f"{globals.BOT_PREFIX.lower()}top **cred**: Top 10 members for Server Cred\n"
                                                 f"{globals.BOT_PREFIX.lower()}top **assistance**: Top 10 member for Assistance")
 
-    @top.command(name="level",
-                 aliases=[])
+    @utils.hybcommand(globals.bot,
+                      group=top,
+                      name="level",
+                      aliases=[])
     async def top_level(self, ctx):
         top_users = await db.get_top_users(10, "level")
         max_line_length = 34
@@ -185,8 +188,10 @@ class Levelling(commands.Cog,
                                 title="🏆 Server Level Leaderboard:",
                                 description="```asciidoc\n" + "\n".join(lines) + "\n```")
 
-    @top.command(name="cred",
-                 aliases=[])
+    @utils.hybcommand(globals.bot,
+                      group=top,
+                      name="cred",
+                      aliases=[])
     async def top_cred(self, ctx):
         top_users = await db.get_top_users(10, "cred")
         max_line_length = 34
@@ -208,8 +213,10 @@ class Levelling(commands.Cog,
                                 title="🏆 Server Cred Leaderboard:",
                                 description="```asciidoc\n" + "\n".join(lines) + "\n```")
 
-    @top.command(name="assistance",
-                 aliases=["assist"])
+    @utils.hybcommand(globals.bot,
+                      group=top,
+                      name="assistance",
+                      aliases=["assist"])
     async def top_assistance(self, ctx):
         top_users = await db.get_top_users(10, "assistance")
         max_line_length = 34
