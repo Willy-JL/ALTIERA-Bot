@@ -18,7 +18,7 @@ class Staff(commands.Cog,
                       usage="{prfx}save",
                       help="",
                       aliases=["backup"],
-                      check=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
     async def save(self, ctx: commands.Context):
         await ctx.defer()
         if not await utils.save_db():
@@ -36,7 +36,7 @@ class Staff(commands.Cog,
                       usage="{prfx}restore",
                       help="",
                       aliases=["restorebackup"],
-                      check=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
     async def restore(self, ctx, database: discord.Attachment = None):
         await ctx.defer()
         if not database:
@@ -332,7 +332,7 @@ class Staff(commands.Cog,
                       usage="{prfx}restart",
                       help="",
                       aliases=["reboot"],
-                      check=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=lambda ctx: utils.is_staff(ctx.author))
     async def restart(self, ctx):
         await utils.embed_reply(ctx,
                                 title="👌 Restarting...")

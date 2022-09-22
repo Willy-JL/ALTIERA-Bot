@@ -295,32 +295,44 @@ def pretty_size(size, precision=0):
 
 
 # Hybrid command decorator that syncs aliases, checks and cooldowns with slashcommands
-def hybcommand(bot, check=None, cooldown_rate=None, cooldown_time=None, cooldown_type=None, cooldown_key=None, **kwargs):
+def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, cooldown_key=None, **kwargs):
     def decorator(func):
         result = commands.command(**kwargs)(func)
         if cooldown_rate:
-            commands.cooldown(rate=cooldown_rate, per=cooldown_time, type=cooldown_type)(result)
-        if check:
-            commands.check(check)(result)
+            cooldown_timer = app_commands.Cooldown(rate=cooldown_rate, per=cooldown_time)
+            cooldown_factory = lambda _: cooldown_timer
+            cooldown = commands.dynamic_cooldown(cooldown=cooldown_factory, type=cooldown_key)
+            async def app_cooldown_key(interaction):
+                ctx = await commands.Context.from_interaction(interaction)
+                return cooldown_key(ctx)
+            app_cooldown = app_commands.checks.dynamic_cooldown(factory=cooldown_factory, key=app_cooldown_key)
+            cooldown(result)
+        if check_func:
+            check = commands.check(check_func)
+            async def app_check_func(interaction):
+                    ctx = await commands.Context.from_interaction(interaction)
+                    return check_func(ctx)
+            app_check = app_commands.check(app_check_func)
+            check(result)
         short_desc = kwargs.get("description", "").split("\n")[0][:99] or discord.utils.MISSING
+        # Get source and remove decorator(s)
+        convert = ast.parse("ctx = await commands.Context.from_interaction(ctx)").body[0]
+        lines = inspect.getsourcelines(func)[0]
+        for i, line in enumerate(lines):
+            stripped = line.lstrip()
+            if stripped.startswith("def ") or stripped.startswith("async def "):
+                lines = lines[i:]
+                break
+        # Remove indentation
+        while all(line.startswith(" ") for line in lines):
+            for i in range(len(lines)):
+                lines[i] = lines[i][1:]
+        source = "".join(lines)
         for alias in [kwargs.get("name", discord.utils.MISSING)] + kwargs.get("aliases", []):
-            # Get source and remove decorator(s)
-            lines = inspect.getsourcelines(func)[0]
-            for i, line in enumerate(lines):
-                stripped = line.lstrip()
-                if stripped.startswith("def ") or stripped.startswith("async def "):
-                    lines = lines[i:]
-                    break
-            # Remove indentation
-            while all(line.startswith(" ") for line in lines):
-                for i in range(len(lines)):
-                    lines[i] = lines[i][1:]
-            source = "".join(lines)
             # Parse and manipulate
             ast_tree = ast.parse(source)
             fn = ast_tree.body[0]
             fn.args.args.pop(0)  # Remove "self"
-            convert = ast.parse("ctx = await commands.Context.from_interaction(ctx)").body[0]
             fn.body.insert(0, convert)  # Interaction to Context
             # Rename
             if alias is discord.utils.MISSING:
@@ -339,12 +351,9 @@ def hybcommand(bot, check=None, cooldown_rate=None, cooldown_time=None, cooldown
                 desc += short_desc[:99 - len(desc)]
             cmd = bot.tree.command(name=alias, description=desc)(new_func)
             if cooldown_rate:
-                app_commands.checks.cooldown(rate=cooldown_rate, per=cooldown_time, key=cooldown_key)(cmd)
-            if check:
-                async def new_check(interaction):
-                    ctx = await commands.Context.from_interaction(interaction)
-                    return check(ctx)
-                app_commands.check(new_check)(cmd)
+                app_cooldown(cmd)
+            if check_func:
+                app_check(cmd)
         return result
     return decorator
 

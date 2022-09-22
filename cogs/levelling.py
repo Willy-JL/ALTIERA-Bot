@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw
 from discord.ext import commands
-from typing import Union
+import datetime
 import asyncio
 import discord
 import math
@@ -8,9 +8,6 @@ import io
 
 # Local imports
 from modules import globals, db, utils, xp
-
-rep_cooldown_users   = set()
-daily_cooldown_users = set()
 
 
 class Levelling(commands.Cog,
@@ -240,21 +237,17 @@ class Levelling(commands.Cog,
                                   "Only once every 24 hours (or sooner if the bot restarts)",
                       usage="{prfx}rep [ user ]",
                       help="user: the user to give rep to (ping, name, id) (required)",
-                      aliases=["reputation", "giverep", "givereputation"])
+                      aliases=["reputation", "giverep", "givereputation"],
+                      cooldown_rate=1,
+                      cooldown_time=datetime.timedelta(days=1).total_seconds(),
+                      cooldown_key=lambda ctx: ctx.author.id)
     async def rep(self, ctx, user: discord.Member):
-        if not str(ctx.author.id) in rep_cooldown_users:
-            await db.add_user_xp(user.id, cred=globals.REP_CRED_AMOUNT)
-            rep_cooldown_users.add(str(ctx.author.id))
-            await utils.embed_reply(ctx,
-                                    content=f"<@!{user.id}>",
-                                    title="💌 You got some reputation!",
-                                    description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
-                                    thumbnail=globals.REP_ICON)
-        else:
-            await utils.embed_reply(ctx,
-                                    title="💢 You're on cooldown!",
-                                    description="You can only use that command once every **24 hours**!\n"
-                                                f"You'll be able to use it again in roughly **{utils.time_to_restart()}**")
+        await db.add_user_xp(user.id, cred=globals.REP_CRED_AMOUNT)
+        await utils.embed_reply(ctx,
+                                content=f"<@!{user.id}>",
+                                title="💌 You got some reputation!",
+                                description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
+                                thumbnail=globals.REP_ICON)
 
     @utils.hybcommand(globals.bot,
                       name="daily",
@@ -262,20 +255,17 @@ class Levelling(commands.Cog,
                                   "Only once every 24 hours (or sooner if the bot restarts)",
                       usage="{prfx}daily",
                       help="",
-                      aliases=["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"])
+                      aliases=["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"],
+                      cooldown_rate=1,
+                      cooldown_time=datetime.timedelta(days=1).total_seconds(),
+                      cooldown_key=lambda ctx: ctx.author.id)
     async def daily(self, ctx):
-        if not str(ctx.author.id) in daily_cooldown_users:
-            await db.add_user_xp(ctx.author.id, level=globals.DAILY_LEVEL_AMOUNT)
-            daily_cooldown_users.add(str(ctx.author.id))
-            await utils.embed_reply(ctx,
-                                    title="📅 Daily reward claimed!",
-                                    description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!\n"
-                                                f"Come back in roughly **{utils.time_to_restart()}** for more!",
-                                    thumbnail=ctx.author.display_avatar.url)
-        else:
-            await utils.embed_reply(ctx,
-                                    title="💢 It's called \"daily\" for a reason!",
-                                    description=f"Come back in roughly **{utils.time_to_restart()}** for your next daily reward")
+        await db.add_user_xp(ctx.author.id, level=globals.DAILY_LEVEL_AMOUNT)
+        await utils.embed_reply(ctx,
+                                title="📅 Daily reward claimed!",
+                                description=f"You just grabbed yourself a cool **{globals.DAILY_LEVEL_AMOUNT} server level XP**!\n"
+                                            f"Come back in roughly **{utils.time_to_restart()}** for more!",
+                                thumbnail=ctx.author.display_avatar.url)
 
 
 async def setup(bot):
