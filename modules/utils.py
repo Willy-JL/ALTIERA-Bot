@@ -278,7 +278,7 @@ def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, coo
             "cooldown_title": cooldown_title,
             "cooldown_desc": cooldown_desc
         })
-        result = commands.command(extras=extras, **kwargs)(func)
+        command = commands.command(extras=extras, **kwargs)(func)
         if cooldown_rate:
             async def app_cooldown_key(interaction):
                 ctx = await commands.Context.from_interaction(interaction)
@@ -296,14 +296,14 @@ def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, coo
                 return cooldown_mapping[key]
             cooldown = commands.dynamic_cooldown(cooldown=cooldown_factory, type=cooldown_key)
             app_cooldown = app_commands.checks.dynamic_cooldown(factory=app_cooldown_factory, key=app_cooldown_key)
-            cooldown(result)
+            cooldown(command)
         if check_func:
             check = commands.check(check_func)
             async def app_check_func(interaction):
                     ctx = await commands.Context.from_interaction(interaction)
                     return check_func(ctx)
             app_check = app_commands.check(app_check_func)
-            check(result)
+            check(command)
         short_desc = kwargs.get("description", "").split("\n")[0][:99] or discord.utils.MISSING
         # Get source and remove decorator(s)
         convert = ast.parse("ctx = await commands.Context.from_interaction(ctx)").body[0]
@@ -327,24 +327,24 @@ def hybcommand(bot, check_func=None, cooldown_rate=None, cooldown_time=None, coo
             # Rename
             if alias is discord.utils.MISSING:
                 alias = fn.name
-            fn.name = f"_{result.name}_{alias}"
+            fn.name = f"_{command.name}_{alias}"
             # Reassemble
             code = compile(ast_tree,"<string>", mode='exec')
             env = func.__globals__  # Imports and other shenanigans
             exec(code, env)
             new_func = env[fn.name]
             # Create command
-            if alias == result.name:
+            if alias == command.name:
                 desc = short_desc
             else:
-                desc = f"Alias for /{result.name}. "
+                desc = f"Alias for /{command.name}. "
                 desc += short_desc[:99 - len(desc)]
-            cmd = bot.tree.command(name=alias, description=desc, extras=extras)(new_func)
+            app_command = bot.tree.command(name=alias, description=desc, extras=extras)(new_func)
             if cooldown_rate:
-                app_cooldown(cmd)
+                app_cooldown(app_command)
             if check_func:
-                app_check(cmd)
-        return result
+                app_check(app_command)
+        return command
     return decorator
 
 
