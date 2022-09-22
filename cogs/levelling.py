@@ -239,8 +239,8 @@ class Levelling(commands.Cog,
                       help="user: the user to give rep to (ping, name, id) (required)",
                       aliases=["reputation", "giverep", "givereputation"],
                       cooldown_rate=1,
-                      cooldown_time=datetime.timedelta(days=1).total_seconds(),
-                      cooldown_key=lambda ctx: ctx.author.id)
+                      cooldown_key=lambda ctx: ctx.author.id,
+                      cooldown_time=datetime.timedelta(days=1).total_seconds())
     async def rep(self, ctx, user: discord.Member):
         await db.add_user_xp(user.id, cred=globals.REP_CRED_AMOUNT)
         await utils.embed_reply(ctx,
@@ -257,8 +257,8 @@ class Levelling(commands.Cog,
                       help="",
                       aliases=["riseandshine", "ijustwokeup", "gibreward", "claimdaily", "gibdaily"],
                       cooldown_rate=1,
-                      cooldown_time=datetime.timedelta(days=1).total_seconds(),
-                      cooldown_key=lambda ctx: ctx.author.id)
+                      cooldown_key=lambda ctx: ctx.author.id,
+                      cooldown_time=datetime.timedelta(days=1).total_seconds())
     async def daily(self, ctx):
         await db.add_user_xp(ctx.author.id, level=globals.DAILY_LEVEL_AMOUNT)
         await utils.embed_reply(ctx,
