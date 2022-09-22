@@ -6,6 +6,10 @@ import discord
 from modules import globals, db, utils
 
 
+def only_staff(ctx):
+    return utils.is_staff(ctx.author)
+
+
 class Staff(commands.Cog,
             description="Mod abooz pls demot"):
     def __init__(self, bot):
@@ -17,7 +21,7 @@ class Staff(commands.Cog,
                       usage="{prfx}save",
                       help="",
                       aliases=["backup"],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def save(self, ctx: commands.Context):
         await ctx.defer()
         if not await utils.save_db():
@@ -35,7 +39,7 @@ class Staff(commands.Cog,
                       usage="{prfx}restore",
                       help="",
                       aliases=["restorebackup"],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def restore(self, ctx, database: discord.Attachment = None):
         await ctx.defer()
         if not database:
@@ -44,7 +48,7 @@ class Staff(commands.Cog,
                     database = attachment
                     break
         if database:
-            db_bytes = await database.read()
+            db_bytes = await database.read(use_cached=True)
         else:
             await utils.embed_reply(ctx,
                                     title='💢 Please attach a "db.sqlite3"!')
@@ -78,7 +82,7 @@ class Staff(commands.Cog,
                       group=gibxp,
                       name="level",
                       aliases=[],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def gibxp_level(self, ctx, target: discord.Member, amount: int):
         level_xp, _, _ = await db.add_user_xp(target.id, level=amount)
         await utils.embed_reply(ctx,
@@ -89,7 +93,7 @@ class Staff(commands.Cog,
                       group=gibxp,
                       name="cred",
                       aliases=[],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def gibxp_cred(self, ctx, target: discord.Member, amount: int):
         _, cred_xp, _ = await db.add_user_xp(target.id, cred=amount)
         await utils.embed_reply(ctx,
@@ -100,7 +104,7 @@ class Staff(commands.Cog,
                       group=gibxp,
                       name="assistance",
                       aliases=["assist"],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def gibxp_assistance(self, ctx, target: discord.Member, amount: int):
         _, _, assistance_xp = await db.add_user_xp(target.id, assistance=amount)
         await utils.embed_reply(ctx,
@@ -124,7 +128,7 @@ class Staff(commands.Cog,
                       group=setxp,
                       name="level",
                       aliases=[],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def setxp_level(self, ctx, target: discord.Member, amount: int):
         level_xp, _, _ = await db.set_user_xp(target.id, level=amount)
         await utils.embed_reply(ctx,
@@ -135,7 +139,7 @@ class Staff(commands.Cog,
                       group=setxp,
                       name="cred",
                       aliases=[],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def setxp_cred(self, ctx, target: discord.Member, amount: int):
         _, cred_xp, _ = await db.set_user_xp(target.id, cred=amount)
         await utils.embed_reply(ctx,
@@ -146,7 +150,7 @@ class Staff(commands.Cog,
                       group=setxp,
                       name="assistance",
                       aliases=["assist"],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def setxp_assistance(self, ctx, target: discord.Member, amount: int):
         _, _, assistance_xp = await db.set_user_xp(target.id, assistance=amount)
         await utils.embed_reply(ctx,
@@ -159,7 +163,7 @@ class Staff(commands.Cog,
                       usage="{prfx}restart",
                       help="",
                       aliases=["reboot", "reload"],
-                      check_func=lambda ctx: utils.is_staff(ctx.author))
+                      check_func=only_staff)
     async def restart(self, ctx):
         await utils.embed_reply(ctx,
                                 title="👌 Restarting...")

@@ -222,7 +222,7 @@ async def main():
     async def on_message(message):
         if not message.guild:
             return
-        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)) or ()
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)) or []
         lowered_content = message.content and message.content.lower()
         if message.channel.id in req_channels:
             if message.content and utils.is_requests_command(lowered_content):
@@ -242,7 +242,7 @@ async def main():
     # Handle deleting requests by staff
     @globals.bot.event
     async def on_raw_message_delete(payload):
-        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(payload.guild_id)) or ()
+        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(payload.guild_id)) or []
         if payload.channel_id in req_channels:
             await db.delete_request(msg=payload)
 
