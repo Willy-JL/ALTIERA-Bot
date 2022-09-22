@@ -20,7 +20,7 @@ class Bot(commands.Cog,
                                   "Ugh, I guess I'll explain this one too...",
                       usage="{prfx}help [ subcommand ]",
                       help="subcommand: the submenu/command to look up (optional)",
-                      aliases=[])
+                      aliases=["halp"])
     async def help(self, ctx, subcommand: str = None):
         prfx = globals.BOT_PREFIX.lower()
         if subcommand:
@@ -86,7 +86,7 @@ class Bot(commands.Cog,
                       description="Show info and details about the bot",
                       usage="{prfx}info",
                       help="",
-                      aliases=["botinfo"])
+                      aliases=["botinfo", "status"])
     async def info(self, ctx):
         await utils.embed_reply(ctx,
                                 title="📊 Bot Info",

@@ -26,7 +26,7 @@ class Levelling(commands.Cog,
                       description="See your server stats (level, cred, assistance)",
                       usage="{prfx}stats [ user ]",
                       help="user: the user to check stats for (ping, name, id) (optional)",
-                      aliases=["levels", "level", "cred", "assistance", "assist"])
+                      aliases=["levels", "level", "rank"])
     async def stats(self, ctx, user: discord.Member = None):
         user = user or ctx.author
         level_xp, cred_xp, assistance_xp = await db.get_user_xp(user.id)
@@ -135,7 +135,7 @@ class Levelling(commands.Cog,
                                   "LVL1 = 1000XP, LVL2 = 2000XP, LVL3 = 3000XP, LVL4 = 4000XP and so on...",
                       usage="{prfx}xp [ user ]",
                       help="user: the user to check xp amounts for (ping, name, id) (optional)",
-                      aliases=["xpamount", "levelxp", "credxp", "assistancexp", "assistxp"])
+                      aliases=["xpamount", "levelxp", "levelsxp"])
     async def xp(self, ctx, user: discord.Member = None):
         user = user or ctx.author
         level_xp, cred_xp, assistance_xp = await db.get_user_xp(user.id)

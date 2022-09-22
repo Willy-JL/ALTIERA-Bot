@@ -159,7 +159,7 @@ class Staff(commands.Cog,
                       description="Save DB and restart the bot",
                       usage="{prfx}restart",
                       help="",
-                      aliases=["reboot"],
+                      aliases=["reboot", "reload"],
                       check_func=lambda ctx: utils.is_staff(ctx.author))
     async def restart(self, ctx):
         await utils.embed_reply(ctx,

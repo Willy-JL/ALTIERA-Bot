@@ -16,7 +16,7 @@ class Fun(commands.Cog,
                       description="Treat someone to a CyberCookie (cosmetic, no rewards)",
                       usage="{prfx}cookie [ user ]",
                       help="user: the user to give a cookie to (ping, name, id) (optional)",
-                      aliases=["cybcookie", "cybercookie"])
+                      aliases=["cybercookie"])
     async def cookie(self, ctx, user: discord.Member = None):
         if user and user.id != ctx.author.id:
             await utils.embed_reply(ctx,
@@ -37,7 +37,7 @@ class Fun(commands.Cog,
                       description="Deliver someone a SpaceBurrito (cosmetic, no rewards)",
                       usage="{prfx}burrito [ user ]",
                       help="user: the user to give a burrito to (ping, name, id) (optional)",
-                      aliases=["spaceburrito", "galacticburrito"])
+                      aliases=["spaceburrito"])
     async def burrito(self, ctx, user: discord.Member = None):
         if user and user.id != ctx.author.id:
             await utils.embed_reply(ctx,
@@ -58,7 +58,7 @@ class Fun(commands.Cog,
                       description="Pat someone (cosmetic, no rewards)",
                       usage="{prfx}pat [ user ]",
                       help="user: the user to pat (ping, name, id) (optional)",
-                      aliases=["pet", "patpat", "patpatpat"])
+                      aliases=["pet", "patpat"])
     async def pat(self, ctx, user: discord.Member = None):
         if user and user.id != ctx.author.id:
             await utils.embed_reply(ctx,
