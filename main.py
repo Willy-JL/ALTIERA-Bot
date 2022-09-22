@@ -175,8 +175,7 @@ async def main():
             await utils.embed_reply(ctx,
                                     title=f"💢 You're on cooldown!",
                                     description=f"**Retry in**: {datetime.timedelta(seconds=int(error.retry_after))}\n"
-                                                f"You can only do that {'once' if c.rate == 1 else f'{c.rate} times'} every {f'{c.per/3600:.0f} hours' if c.per > 3600 else f'{c.per/60:.0f} minutes' if c.per > 60 else f'{c.per/3600:.0f} seconds'}.",
-                                    delete_after=5)
+                                                f"You can only do that {'once' if c.rate == 1 else f'{c.rate} times'} every {f'{c.per/3600:.0f} hours' if c.per > 3600 else f'{c.per/60:.0f} minutes' if c.per > 60 else f'{c.per/3600:.0f} seconds'}.")
         elif is_(e.MissingRequiredArgument) or is_(e.MissingRequiredAttachment):
             await utils.embed_reply(ctx,
                                     title=f"💢 Missing argument for '{ctx.current_parameter.name}'!",

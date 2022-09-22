@@ -422,9 +422,24 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
                                  thumbnail=thumbnail,
                                  image=image,
                                  add_timestamp=add_timestamp)
+    if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
+        ephemeral = True
+    else:
+        ephemeral = ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS
+    if ephemeral:
+        if ctx.interaction:
+            kwargs["ephemeral"] = True
+        else:
+            kwargs["delete_after"] = 10
     await ctx.reply(content,
                     embed=embed_to_send,
                     **kwargs)
+    if ephemeral and not ctx.interaction:
+        await asyncio.sleep(10)
+        try:
+            await ctx.message.delete()
+        except Exception:
+            pass
 
 
 # Get all possible case variations for a string
