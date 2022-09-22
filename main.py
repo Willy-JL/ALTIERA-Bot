@@ -213,6 +213,9 @@ async def main():
         if message.channel.id in req_channels:
             if message.content and utils.is_requests_command(lowered_content):
                 await globals.bot.process_commands(message)
+            elif message.author.bot:
+                if message.author.id != globals.bot.user.id:
+                    await message.delete()
             elif not utils.is_staff(message.author):
                 await utils.embed_reply(message,
                                         title="💢 Only mod request commands here!",
