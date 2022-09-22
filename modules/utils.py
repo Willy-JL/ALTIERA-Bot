@@ -390,7 +390,7 @@ async def imgur_image_upload(img: bytes):
 
 
 # Cleaner reply function
-async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True, **kwargs):
+async def embed_reply(ctx, *, content="", title="", description="", fields=[], thumbnail=None, image=None, add_timestamp=True, ephemeral=None, **kwargs):
     embed_to_send = custom_embed(ctx.guild,
                                  title=title,
                                  description=description,
@@ -398,20 +398,23 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
                                  thumbnail=thumbnail,
                                  image=image,
                                  add_timestamp=add_timestamp)
-    if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
-        ephemeral = True
-    else:
-        ephemeral = ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS
-    if ephemeral:
-        if ctx.interaction:
+    if ephemeral is None:
+        if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
+            ephemeral = True
+        else:
+            ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
+    if ephemeral or ephemeral is not bool(ephemeral):
+        if ephemeral is bool(ephemeral):
+            ephemeral = 5
+        if getattr(ctx, "interaction", None):
             kwargs["ephemeral"] = True
         else:
-            kwargs["delete_after"] = 10
+            kwargs["delete_after"] = ephemeral
     await ctx.reply(content,
                     embed=embed_to_send,
                     **kwargs)
-    if ephemeral and not ctx.interaction:
-        await asyncio.sleep(10)
+    if ephemeral is not bool(ephemeral) and not getattr(ctx, "interaction", None):
+        await asyncio.sleep(ephemeral)
         try:
             await ctx.message.delete()
         except Exception:

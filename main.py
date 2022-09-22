@@ -209,18 +209,15 @@ async def main():
         if not message.guild:
             return
         req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)) or ()
+        lowered_content = message.content and message.content.lower()
         if message.channel.id in req_channels:
-            if message.content and utils.is_requests_command(message.content):
+            if message.content and utils.is_requests_command(lowered_content):
                 await globals.bot.process_commands(message)
             elif not utils.is_staff(message.author):
-                await message.delete()
-                try:
-                    await message.author.send(embed=utils.custom_embed(message.guild,
-                                                                       title="💢 Only relevant commands are allowed in mod requests channels!",
-                                                                       description="Check the pinned messages for more information!"))
-                except Exception:
-                    pass
-        elif message.content and message.content.lower().startswith(globals.BOT_PREFIX.lower()):
+                await utils.embed_reply(message,
+                                        title="💢 Only mod request commands here!",
+                                        description="Check the pinned messages for more information!")
+        elif message.content and lowered_content.startswith(globals.BOT_PREFIX.lower()):
             await globals.bot.process_commands(message)
         else:
             await xp.process_xp(message)
@@ -251,7 +248,10 @@ async def main():
     # Exit after saving DB
     async def graceful_exit():
         globals.log.info("Saving DB...")
-        await db.save_to_disk()
+        try:
+            await db.save_to_disk()
+        except Exception:
+            globals.log.error("Failed to save DB to disk")
         try:
             await utils.save_db()
         except Exception:
@@ -262,7 +262,10 @@ async def main():
                 await admin.send(file=discord.File('db.sqlite3'))
         except Exception:
             globals.log.error("Failed to DM database backup")
-        await globals.db.close()
+        try:
+            await globals.db.close()
+        except Exception:
+            globals.log.error("Failed to close DB gracefully")
         globals.log.info("Exiting...")
         update_presence_loop.stop()
         asyncio.get_event_loop().stop()
