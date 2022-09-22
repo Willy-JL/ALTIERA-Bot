@@ -236,7 +236,7 @@ class Levelling(commands.Cog,
 
     @utils.hybcommand(globals.bot,
                       name="rep",
-                      description="Gift a cool person some reputation (500 cred XP)\n"
+                      description=f"Gift a cool person some reputation ({globals.REP_CRED_AMOUNT} cred XP)\n"
                                   "Only once every 24 hours (or sooner if the bot restarts)",
                       usage="{prfx}rep [ user ]",
                       help="user: the user to give rep to (ping, name, id) (required)",
@@ -258,7 +258,7 @@ class Levelling(commands.Cog,
 
     @utils.hybcommand(globals.bot,
                       name="daily",
-                      description="Claim your daily reward (500 level XP)\n"
+                      description=f"Claim your daily reward ({globals.DAILY_LEVEL_AMOUNT} level XP)\n"
                                   "Only once every 24 hours (or sooner if the bot restarts)",
                       usage="{prfx}daily",
                       help="",
