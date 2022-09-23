@@ -25,6 +25,8 @@ globals.cur_presence = 0
 if os.path.exists("config.json"):
     with open("config.json", "rb") as f:
         config = json.load(f)
+        for key, value in config.items():
+            config[key] = json.dumps(value)
         os.environ.update(config)
         globals.log.info("Loaded custom config")
 
