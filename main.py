@@ -26,7 +26,10 @@ if os.path.exists("config.json"):
     with open("config.json", "rb") as f:
         config = json.load(f)
         for key, value in config.items():
-            config[key] = json.dumps(value)
+            if isinstance(value, (dict, list)):
+                config[key] = json.dumps(value)
+            else:
+                config[key] = str(value)
         os.environ.update(config)
         globals.log.info("Loaded custom config")
 
