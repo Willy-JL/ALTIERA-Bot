@@ -36,39 +36,42 @@ if os.path.exists("config.json"):
 # Local imports
 from modules import db, utils, xp
 
-globals.ADMIN_ID                 = int       (os.environ.get("ADMIN_ID")                 or 0)
-globals.ASSISTANCE_CATEGORY_IDS  = json.loads(os.environ.get("ASSISTANCE_CATEGORY_IDS")  or "[]")
-globals.BLACKLISTED_CHANNELS_IDS = json.loads(os.environ.get("BLACKLISTED_CHANNELS_IDS") or "[]")
-globals.BOT_PREFIX               = str       (os.environ.get("BOT_PREFIX")               or "a/")
-globals.CONTRIB_AMOUNT           = int       (os.environ.get("CONTRIB_AMOUNT")           or 1000)
-globals.CONTRIB_CHANNELS_IDS     = json.loads(os.environ.get("CONTRIB_CHANNELS_IDS")     or "[]")
-globals.CONTRIB_COOLDOWN         = int       (os.environ.get("CONTRIB_COOLDOWN")         or 3600)
-globals.DAILY_LEVEL_AMOUNT       = int       (os.environ.get("DAILY_LEVEL_AMOUNT")       or 500)
-globals.DB_HOST_TYPE             = str       (os.environ.get("DB_HOST_TYPE")             or "github")
-globals.DISCORD_TOKEN            = str       (os.environ.get("DISCORD_TOKEN")            or "")
-globals.GITHUB_GIST_FILENAME     = str       (os.environ.get("GITHUB_GIST_FILENAME")     or "db")
-globals.GITHUB_GIST_ID           = str       (os.environ.get("GITHUB_GIST_ID")           or "")
-globals.GITHUB_GIST_TOKEN        = str       (os.environ.get("GITHUB_GIST_TOKEN")        or "")
-globals.GITHUB_GIST_USER         = str       (os.environ.get("GITHUB_GIST_USER")         or "")
-globals.ICON_ROLE_IDS            = json.loads(os.environ.get("ICON_ROLE_IDS")            or "{}")
-globals.IMGUR_CLIENT_ID          = str       (os.environ.get("IMGUR_CLIENT_ID")          or "")
-globals.JOIN_LOG_CHANNEL_IDS     = json.loads(os.environ.get("JOIN_LOG_CHANNEL_IDS")     or "{}")
-globals.LEVEL_NOTIF_CHANNEL_IDS  = json.loads(os.environ.get("LEVEL_NOTIF_CHANNEL_IDS")  or "{}")
-globals.MODDER_CATEGORY_IDS      = json.loads(os.environ.get("MODDER_CATEGORY_IDS")      or "[]")
-globals.MODDER_ROLE_IDS          = json.loads(os.environ.get("MODDER_ROLE_IDS")          or "[]")
-globals.NO_PERM_ICON             = str       (os.environ.get("NO_PERM_ICON")             or "https://cdn.discordapp.com/emojis/778028443417313290.png")
-globals.REP_CRED_AMOUNT          = int       (os.environ.get("REP_CRED_AMOUNT")          or 500)
-globals.REP_ICON                 = str       (os.environ.get("REP_ICON")                 or "https://cdn.discordapp.com/emojis/766042961929699358.png")
-globals.REQUESTS_CHANNEL_IDS     = json.loads(os.environ.get("REQUESTS_CHANNEL_IDS")     or "{}")
-globals.REQUESTS_COOLDOWN        = int       (os.environ.get("REQUESTS_COOLDOWN")        or 600)
-globals.REQUESTS_ICONS           = json.loads(os.environ.get("REQUESTS_ICONS")           or '{"Waiting": "https://cdn.discordapp.com/emojis/889210410899746897.png", "WIP": "https://cdn.discordapp.com/emojis/889210383523536896.png", "Released": "https://cdn.discordapp.com/emojis/889210365362184272.png", "Already Exists": "https://cdn.discordapp.com/emojis/889210365362184272.png"}')
-globals.STAFF_ROLE_IDS           = json.loads(os.environ.get("STAFF_ROLE_IDS")           or "[]")
-globals.TROPHY_ROLES             = json.loads(os.environ.get("TROPHY_ROLES")             or "[]")
-globals.WRITE_AS_PASS            = str       (os.environ.get("WRITE_AS_PASS")            or "")
-globals.WRITE_AS_POST_ID         = str       (os.environ.get("WRITE_AS_POST_ID")         or "")
-globals.WRITE_AS_USER            = str       (os.environ.get("WRITE_AS_USER")            or "")
-globals.XP_AMOUNT                = int       (os.environ.get("XP_AMOUNT")                or 50)
-globals.XP_COOLDOWN              = int       (os.environ.get("XP_COOLDOWN")              or 30)
+globals.ADMIN_ID                   = int       (os.environ.get("ADMIN_ID")                   or 0)
+globals.ASSISTANCE_CATEGORY_IDS    = json.loads(os.environ.get("ASSISTANCE_CATEGORY_IDS")    or "[]")
+globals.BLACKLISTED_CHANNELS_IDS   = json.loads(os.environ.get("BLACKLISTED_CHANNELS_IDS")   or "[]")
+globals.BOT_PREFIX                 = str       (os.environ.get("BOT_PREFIX")                 or "a/")
+globals.CONTRIB_AMOUNT             = int       (os.environ.get("CONTRIB_AMOUNT")             or 1000)
+globals.CONTRIB_CHANNELS_IDS       = json.loads(os.environ.get("CONTRIB_CHANNELS_IDS")       or "[]")
+globals.CONTRIB_COOLDOWN           = int       (os.environ.get("CONTRIB_COOLDOWN")           or 3600)
+globals.DAILY_LEVEL_AMOUNT         = int       (os.environ.get("DAILY_LEVEL_AMOUNT")         or 500)
+globals.DB_HOST_TYPE               = str       (os.environ.get("DB_HOST_TYPE")               or "github")
+globals.DISCORD_TOKEN              = str       (os.environ.get("DISCORD_TOKEN")              or "")
+globals.GITHUB_GIST_FILENAME       = str       (os.environ.get("GITHUB_GIST_FILENAME")       or "db")
+globals.GITHUB_GIST_ID             = str       (os.environ.get("GITHUB_GIST_ID")             or "")
+globals.GITHUB_GIST_TOKEN          = str       (os.environ.get("GITHUB_GIST_TOKEN")          or "")
+globals.GITHUB_GIST_USER           = str       (os.environ.get("GITHUB_GIST_USER")           or "")
+globals.ICON_ROLE_IDS              = json.loads(os.environ.get("ICON_ROLE_IDS")              or "{}")
+globals.IMGUR_CLIENT_ID            = str       (os.environ.get("IMGUR_CLIENT_ID")            or "")
+globals.JOIN_LOG_CHANNEL_IDS       = json.loads(os.environ.get("JOIN_LOG_CHANNEL_IDS")       or "{}")
+globals.LEVEL_NOTIF_CHANNEL_IDS    = json.loads(os.environ.get("LEVEL_NOTIF_CHANNEL_IDS")    or "{}")
+globals.MODDER_CATEGORY_IDS        = json.loads(os.environ.get("MODDER_CATEGORY_IDS")        or "[]")
+globals.MODDER_ROLE_IDS            = json.loads(os.environ.get("MODDER_ROLE_IDS")            or "[]")
+globals.NO_PERM_ICON               = str       (os.environ.get("NO_PERM_ICON")               or "https://cdn.discordapp.com/emojis/778028443417313290.png")
+globals.RELEASES_FILTER_CHANNELS   = json.loads(os.environ.get("RELEASES_FILTER_CHANNELS")   or "{}")
+globals.RELEASES_FILTER_NOTIF_CHAN = json.loads(os.environ.get("RELEASES_FILTER_NOTIF_CHAN") or "{}")
+globals.RELEASES_FILTER_WORDS      = json.loads(os.environ.get("RELEASES_FILTER_WORDS")      or "[]")
+globals.REP_CRED_AMOUNT            = int       (os.environ.get("REP_CRED_AMOUNT")            or 500)
+globals.REP_ICON                   = str       (os.environ.get("REP_ICON")                   or "https://cdn.discordapp.com/emojis/766042961929699358.png")
+globals.REQUESTS_CHANNEL_IDS       = json.loads(os.environ.get("REQUESTS_CHANNEL_IDS")       or "{}")
+globals.REQUESTS_COOLDOWN          = int       (os.environ.get("REQUESTS_COOLDOWN")          or 600)
+globals.REQUESTS_ICONS             = json.loads(os.environ.get("REQUESTS_ICONS")             or '{"Waiting": "https://cdn.discordapp.com/emojis/889210410899746897.png", "WIP": "https://cdn.discordapp.com/emojis/889210383523536896.png", "Released": "https://cdn.discordapp.com/emojis/889210365362184272.png", "Already Exists": "https://cdn.discordapp.com/emojis/889210365362184272.png"}')
+globals.STAFF_ROLE_IDS             = json.loads(os.environ.get("STAFF_ROLE_IDS")             or "[]")
+globals.TROPHY_ROLES               = json.loads(os.environ.get("TROPHY_ROLES")               or "[]")
+globals.WRITE_AS_PASS              = str       (os.environ.get("WRITE_AS_PASS")              or "")
+globals.WRITE_AS_POST_ID           = str       (os.environ.get("WRITE_AS_POST_ID")           or "")
+globals.WRITE_AS_USER              = str       (os.environ.get("WRITE_AS_USER")              or "")
+globals.XP_AMOUNT                  = int       (os.environ.get("XP_AMOUNT")                  or 50)
+globals.XP_COOLDOWN                = int       (os.environ.get("XP_COOLDOWN")                or 30)
 
 
 async def main():
@@ -221,9 +224,32 @@ async def main():
     async def on_message(message):
         if not message.guild:
             return
-        req_channels = globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)) or []
         lowered_content = message.content and message.content.lower()
-        if message.channel.id in req_channels:
+        if message.channel.id in (globals.RELEASES_FILTER_CHANNELS.get(str(message.guild.id)) or []) and (message.author.bot or message.webhook_id):
+            for word in globals.RELEASES_FILTER_WORDS:
+                match = False
+                search = lambda text: match or (word in (text or "") and (text or ""))
+                match = search(message.content)
+                for embed in message.embeds:
+                    match = search(embed.author.name)
+                    match = search(embed.title)
+                    match = search(embed.description)
+                    for field in embed.fields:
+                        match = search(field.name)
+                        match = search(field.value)
+                    match = search(embed.footer.text)
+                if match:
+                    await message.delete()
+                    notif_chan = globals.RELEASES_FILTER_NOTIF_CHAN.get(str(message.guild.id)) or 0
+                    if notif_chan:
+                        notif_chan = await message.guild.get_channel(notif_chan)
+                        await notif_chan.send(embed=utils.custom_embed(message.guild,
+                                                                       title="💢 Begone, mod!",
+                                                                       description=f"A mod release post was just **removed** from <#{message.channel.id}>\n"
+                                                                                   f"**Matching filter**: `{word}`\n"
+                                                                                   f"**Incriminating text**: ||{(match[:999] + '...') if len(match) > 999 else match}||"))
+                    break
+        if message.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)) or []):
             if message.content and utils.is_requests_command(lowered_content):
                 await globals.bot.process_commands(message)
             elif message.author.bot:
