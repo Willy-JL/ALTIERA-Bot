@@ -227,8 +227,9 @@ async def main():
         lowered_content = message.content and message.content.lower()
         if message.channel.id in (globals.RELEASES_FILTER_CHANNELS.get(str(message.guild.id)) or []) and (message.author.bot or message.webhook_id):
             for word in globals.RELEASES_FILTER_WORDS:
+                word = word.lower()
                 match = False
-                search = lambda text: match or (word in (text or "") and (text or ""))
+                search = lambda text: match or (word in (text.lower() or "") and (text or ""))
                 match = search(message.content)
                 for embed in message.embeds:
                     match = search(embed.author.name)
