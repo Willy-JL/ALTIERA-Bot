@@ -494,7 +494,7 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
     if ephemeral is not bool(ephemeral) and not getattr(ctx, "interaction", None):
         await asyncio.sleep(ephemeral)
         try:
-            await ctx.message.delete()
+            await getattr(ctx, "message", ctx).delete()
         except Exception:
             pass
     return ret
