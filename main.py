@@ -242,7 +242,7 @@ async def main():
                     await message.delete()
                     notif_chan = globals.RELEASES_FILTER_NOTIF_CHAN.get(str(message.guild.id)) or 0
                     if notif_chan:
-                        notif_chan = await message.guild.get_channel(notif_chan)
+                        notif_chan = message.guild.get_channel(notif_chan)
                         await notif_chan.send(embed=utils.custom_embed(message.guild,
                                                                        title="💢 Begone, mod!",
                                                                        description=f"A mod release post was just **removed** from <#{message.channel.id}>\n"
