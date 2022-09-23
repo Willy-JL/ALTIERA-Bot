@@ -96,19 +96,13 @@ async def main():
             await utils.save_db()
     asyncio.get_event_loop().create_task(database_loop())
 
-    # Enable intents
-    intents = discord.Intents.default()
-    intents.members = True
-    intents.presences = True
-    # Avoid unwanted chaos
-    allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
     # Create bot
     globals.bot = commands.Bot(
         command_prefix=utils.case_insensitive(globals.BOT_PREFIX),
         case_insensitive=True,
         description="Custom Discord bot for the Cyberpunk 2077 Modding Servers",
         intents=discord.Intents.default() | discord.Intents(discord.Intents.message_content.flag) | discord.Intents(discord.Intents.members.flag) | discord.Intents(discord.Intents.presences.flag),
-        allowed_mentions=discord.AllowedMentions(everyone=False, roles=False),
+        allowed_mentions=discord.AllowedMentions(everyone=False, roles=False) # Avoid unwanted chaos
     )
     globals.bot.remove_command('help')
     await globals.bot.load_extension('cogs.bot')
