@@ -342,15 +342,14 @@ def hybcommand(bot, group=None, slash_aliases=True, check_func=None, check_title
             app_cooldown = app_commands.checks.dynamic_cooldown(factory=app_cooldown_factory, key=app_cooldown_key)
             cooldown(command)
         if check_func:
-            check = commands.check(check_func)
             async def app_check_func(interaction):
-                    ctx = await commands.Context.from_interaction(interaction)
-                    return check_func(ctx)
+                ctx = await commands.Context.from_interaction(interaction)
+                return check_func(ctx)
+            check = commands.check(check_func)
             app_check = app_commands.check(app_check_func)
             check(command)
         short_desc = kwargs.get("description", "").split("\n")[0][:99] or discord.utils.MISSING
         # Get source and remove decorator(s)
-        convert = ast.parse("ctx = await commands.Context.from_interaction(ctx)").body[0]
         lines = inspect.getsourcelines(func)[0]
         for i, line in enumerate(lines):
             if line.lstrip().startswith("async def "):
@@ -361,12 +360,13 @@ def hybcommand(bot, group=None, slash_aliases=True, check_func=None, check_title
             for i in range(len(lines)):
                 lines[i] = lines[i][1:]
         source = "".join(lines)
+        # Parse and manipulate
+        ast_tree = ast.parse(source)
+        fn = ast_tree.body[0]
+        fn.args.args.pop(0)  # Remove "self"
+        convert = ast.parse("ctx = await commands.Context.from_interaction(ctx)").body[0]
+        fn.body.insert(0, convert)  # Interaction to Context
         for alias in [kwargs.get("name", discord.utils.MISSING)] + (kwargs.get("aliases", []) if slash_aliases else []):
-            # Parse and manipulate
-            ast_tree = ast.parse(source)
-            fn = ast_tree.body[0]
-            fn.args.args.pop(0)  # Remove "self"
-            fn.body.insert(0, convert)  # Interaction to Context
             # Rename
             if alias is discord.utils.MISSING:
                 alias = command.name
