@@ -37,8 +37,9 @@ class Requests(commands.Cog,
                       **requests_channel_check)
     async def new(self, ctx, *, description: str, image: discord.Attachment = None):
         await utils.defer(ctx)
-        # Image stuff
         attached_image = image
+        description = utils.strip_argument(description)
+        # Image stuff
         image = ""
         if not attached_image:
             for attachment in ctx.message.attachments:
@@ -92,6 +93,7 @@ class Requests(commands.Cog,
         await utils.defer(ctx)
         req_id = id
         attached_image = image
+        description = utils.strip_argument(description)
         # Database stuff
         try:
             requester_id, modder_id, status, link, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "link", "image", "channel_id", "message_id")
@@ -113,7 +115,6 @@ class Requests(commands.Cog,
         remove_image = "REMOVE IMAGE" in description
         if remove_image:
             description = description.replace("REMOVE IMAGE", "")
-        description = utils.strip_argument(description)
         new_image = ""
         if not attached_image:
             for attachment in ctx.message.attachments:
@@ -296,6 +297,7 @@ class Requests(commands.Cog,
     async def release(self, ctx, id: int, link: str):
         await utils.defer(ctx)
         req_id = id
+        link = utils.strip_argument(link)
         # Database stuff
         try:
             requester_id, modder_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "modder_id", "status", "description", "image", "channel_id", "message_id")
@@ -389,6 +391,7 @@ class Requests(commands.Cog,
     async def link(self, ctx, id: int, link: str):
         await utils.defer(ctx)
         req_id = id
+        link = utils.strip_argument(link)
         # Database stuff
         try:
             requester_id, status, description, image, channel_id, message_id = await db.get_request_info(req_id, "requester_id", "status", "description", "image", "channel_id", "message_id")
