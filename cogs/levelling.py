@@ -252,14 +252,16 @@ class Levelling(commands.Cog,
         if user.id == ctx.author.id:
             await utils.embed_reply(ctx,
                                     title="💢 Thats low even by your standards...",
-                                    description="No more rep for you today lmao")
+                                    description="No more rep for you today lmao",
+                                    ephemeral=False)
             return
         await db.add_user_xp(user.id, cred=globals.REP_CRED_AMOUNT)
         await utils.embed_reply(ctx,
                                 content=f"<@!{user.id}>",
                                 title="💌 You got some reputation!",
                                 description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
-                                thumbnail=globals.REP_ICON)
+                                thumbnail=globals.REP_ICON,
+                                ephemeral=False)
 
     @utils.hybcommand(globals.bot,
                       name="daily",

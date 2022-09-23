@@ -461,11 +461,10 @@ async def imgur_image_upload(img: bytes):
 
 # Defer slash response with ephemeral calculation
 async def defer(ctx, ephemeral=None):
-    if ephemeral is None:
-        if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
-            ephemeral = True
-        else:
-            ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
+    if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
+        ephemeral = True
+    elif ephemeral is None:
+        ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
     await ctx.defer(ephemeral=ephemeral)
 
 
@@ -478,11 +477,10 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
                                  thumbnail=thumbnail,
                                  image=image,
                                  add_timestamp=add_timestamp)
-    if ephemeral is None:
-        if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
-            ephemeral = True
-        else:
-            ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
+    if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
+        ephemeral = True
+    elif ephemeral is None:
+        ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
     if ephemeral or ephemeral is not bool(ephemeral):
         if ephemeral is bool(ephemeral):
             ephemeral = 5

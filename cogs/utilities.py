@@ -49,7 +49,8 @@ class Utilities(commands.Cog,
                                             f'Modifier: {modifier:+}{" (adjusted)" if modifier_adjusted else ""}\n'
                                             '\n'
                                             f'Result:  __**{str(result)}**__ ( `{", ".join(rolls)}{f", {modifier:+}" if modifier != 0 else ""}` )',
-                                add_timestamp=False)
+                                add_timestamp=False,
+                                ephemeral=False)
 
 
 async def setup(bot):
