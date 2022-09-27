@@ -228,18 +228,22 @@ async def main():
         if message.channel.id in (globals.RELEASES_FILTER_CHANNELS.get(str(message.guild.id)) or []) and (message.author.bot or message.webhook_id):
             for word in globals.RELEASES_FILTER_WORDS:
                 word = word.lower()
-                match = False
-                search = lambda text: match or (word in (text.lower() or "") and (text or ""))
-                match = search(message.content)
+                match_final = False
+                search = lambda text: (word in (text.lower() or "") and (text or ""))
+                match_final = match_final or search(message.content)
+                match_embeds = bool(message.embeds)
                 for embed in message.embeds:
-                    match = search(embed.author.name)
-                    match = search(embed.title)
-                    match = search(embed.description)
+                    match = False
+                    match = match or search(embed.author.name)
+                    match = match or search(embed.title)
+                    match = match or search(embed.description)
                     for field in embed.fields:
-                        match = search(field.name)
-                        match = search(field.value)
-                    match = search(embed.footer.text)
-                if match:
+                        match = match or search(field.name)
+                        match = match or search(field.value)
+                    match = match or search(embed.footer.text)
+                    match_embeds = match_embeds and match  # All embeds must match
+                match_final = match_final or match_embeds
+                if match_final:
                     await message.delete()
                     notif_chan = globals.RELEASES_FILTER_NOTIF_CHAN.get(str(message.guild.id)) or 0
                     if notif_chan:
@@ -248,7 +252,7 @@ async def main():
                                                                        title="💢 Begone, mod!",
                                                                        description=f"A mod release post was just **removed** from <#{message.channel.id}>\n"
                                                                                    f"**Matching filter**: `{word}`\n"
-                                                                                   f"**Incriminating text**: ||{(match[:999] + '...') if len(match) > 999 else match}||"))
+                                                                                   f"**Incriminating text**: ||{(match_final[:999] + '...') if len(match_final) > 999 else match_final}||"))
                     break
         if message.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)) or []):
             if message.content and utils.is_requests_command(lowered_content):
