@@ -21,6 +21,7 @@ ADMIN_ID                   : int           = None
 ASSISTANCE_CATEGORY_IDS    : list          = None
 BLACKLISTED_CHANNELS_IDS   : list          = None
 BOT_PREFIX                 : str           = None
+CLOWN_ROLE_NAME            : str           = None
 CONTRIB_AMOUNT             : int           = None
 CONTRIB_CHANNELS_IDS       : list          = None
 CONTRIB_COOLDOWN           : int           = None

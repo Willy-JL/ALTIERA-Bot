@@ -40,6 +40,7 @@ globals.ADMIN_ID                   = int       (os.environ.get("ADMIN_ID")      
 globals.ASSISTANCE_CATEGORY_IDS    = json.loads(os.environ.get("ASSISTANCE_CATEGORY_IDS")    or "[]")
 globals.BLACKLISTED_CHANNELS_IDS   = json.loads(os.environ.get("BLACKLISTED_CHANNELS_IDS")   or "[]")
 globals.BOT_PREFIX                 = str       (os.environ.get("BOT_PREFIX")                 or "a/")
+globals.CLOWN_ROLE_NAME            = str       (os.environ.get("CLOWN_ROLE_NAME")            or "Clown")
 globals.CONTRIB_AMOUNT             = int       (os.environ.get("CONTRIB_AMOUNT")             or 1000)
 globals.CONTRIB_CHANNELS_IDS       = json.loads(os.environ.get("CONTRIB_CHANNELS_IDS")       or "[]")
 globals.CONTRIB_COOLDOWN           = int       (os.environ.get("CONTRIB_COOLDOWN")           or 3600)
@@ -267,7 +268,7 @@ async def main():
         elif message.content and lowered_content.startswith(globals.BOT_PREFIX.lower()):
             await globals.bot.process_commands(message)
         else:
-            if discord.utils.get(message.author.roles, name="Clown"):
+            if discord.utils.get(message.author.roles, name=globals.CLOWN_ROLE_NAME):
                 await message.add_reaction("🤡")
             await xp.process_xp(message)
 

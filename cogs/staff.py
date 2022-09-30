@@ -350,10 +350,10 @@ class Staff(commands.Cog,
                       aliases=[],
                       check_func=only_staff)
     async def clown(self, ctx, user: discord.Member, *, reason: str = ""):
-        clown_role = discord.utils.get(ctx.guild.roles, name="Clown")
+        clown_role = discord.utils.get(ctx.guild.roles, name=globals.CLOWN_ROLE_NAME)
         if not clown_role:
             await utils.embed_reply(ctx,
-                                    title="💢 There is no 'Clown' role configured!")
+                                    title=f"💢 There is no '{globals.CLOWN_ROLE_NAME}' role configured!")
             return
         if clown_role in user.roles:
             await utils.embed_reply(ctx,
@@ -375,10 +375,10 @@ class Staff(commands.Cog,
                       aliases=[],
                       check_func=only_staff)
     async def unclown(self, ctx, user: discord.Member, *, reason: str = ""):
-        clown_role = discord.utils.get(ctx.guild.roles, name="Clown")
+        clown_role = discord.utils.get(ctx.guild.roles, name=globals.CLOWN_ROLE_NAME)
         if not clown_role:
             await utils.embed_reply(ctx,
-                                    title="💢 There is no 'Clown' role configured!")
+                                    title=f"💢 There is no '{globals.CLOWN_ROLE_NAME}' role configured!")
             return
         if clown_role not in user.roles:
             await utils.embed_reply(ctx,
