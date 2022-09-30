@@ -277,6 +277,70 @@ class Staff(commands.Cog,
                                             (f"**Reason**: {reason}" if reason else ""),
                                 ephemeral=False)
 
+    @utils.hybcommand(globals.bot,
+                      name="lock",
+                      description="Lock this / a channel",
+                      usage="{prfx}lock [ channel ] [ reason ]",
+                      help="channel: the channel to lock (optional)\n"
+                           "reason: reason for the lock (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def lock(self, ctx, channel: discord.TextChannel = None, *, reason: str = ""):
+        channel = channel or ctx.channel
+        everyone = channel.guild.default_role
+        perms = channel.overwrites.get(everyone) or discord.PermissionOverwrite()
+        if perms.send_messages is False:
+            await utils.embed_reply(ctx,
+                                    title="💢 This channel is already locked!")
+            return
+        perms.send_messages = False
+        await channel.edit(overwrites={everyone: perms}, reason=f"Lock command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="👌 Finally, inner peace!",
+                                description=f"{channel.mention} was just **locked** by {ctx.author.mention}!\n" +
+                                            (f"**Reason**: {reason}" if reason else ""),
+                                ephemeral=False)
+
+    @utils.hybcommand(globals.bot,
+                      name="unlock",
+                      description="Unlock this / a channel",
+                      usage="{prfx}unlock [ channel ] [ reason ]",
+                      help="channel: the channel to unlock (optional)\n"
+                           "reason: reason for the unlock (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def unlock(self, ctx, channel: discord.TextChannel = None, *, reason: str = ""):
+        channel = channel or ctx.channel
+        everyone = channel.guild.default_role
+        perms = channel.overwrites.get(everyone) or discord.PermissionOverwrite()
+        if perms.send_messages is None:
+            await utils.embed_reply(ctx,
+                                    title="💢 This channel is not locked!")
+            return
+        perms.send_messages = None
+        await channel.edit(overwrites={everyone: perms}, reason=f"Unlock command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="👌 Alright, go off I guess...",
+                                description=f"{channel.mention} was just **unlocked** by {ctx.author.mention}!\n" +
+                                            (f"**Reason**: {reason}" if reason else ""),
+                                ephemeral=False)
+
+    @utils.hybcommand(globals.bot,
+                      name="purge",
+                      description="Purge x messages in this / a channel",
+                      usage="{prfx}purge [ amount ] [ channel ] [ reason ]",
+                      help="amount: number of messages to purge\n"
+                           "channel: the channel to purge (optional)\n"
+                           "reason: reason for the purge (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def purge(self, ctx, amount: int, channel: discord.TextChannel = None, *, reason: str = ""):
+        channel = channel or ctx.channel
+        await channel.purge(limit=amount, reason=f"Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="👌 Done!",
+                                ephemeral=2)
+
 
 async def setup(bot):
     await bot.add_cog(Staff(bot))
