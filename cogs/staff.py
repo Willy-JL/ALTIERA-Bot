@@ -341,6 +341,56 @@ class Staff(commands.Cog,
                                 title="👌 Done!",
                                 ephemeral=2)
 
+    @utils.hybcommand(globals.bot,
+                      name="clown",
+                      description="Clown on a user in all channels",
+                      usage="{prfx}clown [ user ] [ reason ]",
+                      help="user: the user to clown on\n"
+                           "reason: reason for the clownage (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def clown(self, ctx, user: discord.Member, *, reason: str = ""):
+        clown_role = discord.utils.get(ctx.guild.roles, name="Clown")
+        if not clown_role:
+            await utils.embed_reply(ctx,
+                                    title="💢 There is no 'Clown' role configured!")
+            return
+        if clown_role in user.roles:
+            await utils.embed_reply(ctx,
+                                    title="💢 This user is already a clown!")
+            return
+        await user.add_roles(clown_role, reason=f"Clown command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="🤡 Let the clownage begin!",
+                                description=f"{user.mention} is being **clowned on** by {ctx.author.mention}!\n" +
+                                            (f"**Reason**: {reason}" if reason else ""),
+                                ephemeral=False)
+
+    @utils.hybcommand(globals.bot,
+                      name="unclown",
+                      description="Stop clowning on a user in all channels",
+                      usage="{prfx}unclown [ user ] [ reason ]",
+                      help="user: the user to stop clowning on\n"
+                           "reason: reason for the clownage stoppage (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def unclown(self, ctx, user: discord.Member, *, reason: str = ""):
+        clown_role = discord.utils.get(ctx.guild.roles, name="Clown")
+        if not clown_role:
+            await utils.embed_reply(ctx,
+                                    title="💢 There is no 'Clown' role configured!")
+            return
+        if clown_role not in user.roles:
+            await utils.embed_reply(ctx,
+                                    title="💢 This user is not a clown!")
+            return
+        await user.remove_roles(clown_role, reason=f"Unclown command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="🤡 Rest in clownage...",
+                                description=f"{user.mention} was **clowned on** for too long, {ctx.author.mention} got bored...\n" +
+                                            (f"**Reason**: {reason}" if reason else ""),
+                                ephemeral=False)
+
 
 async def setup(bot):
     await bot.add_cog(Staff(bot))
