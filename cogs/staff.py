@@ -20,9 +20,9 @@ class Staff(commands.Cog,
                       description="Save the bot's database and send a copy of it",
                       usage="{prfx}save",
                       help="",
-                      aliases=["backup"],
+                      aliases=[],
                       check_func=only_staff)
-    async def save(self, ctx: commands.Context):
+    async def save(self, ctx):
         await utils.defer(ctx)
         if not await utils.save_db():
             title = "💢 Failed to save remote database!"
@@ -38,7 +38,7 @@ class Staff(commands.Cog,
                       description="Restore the bot's database from a backup",
                       usage="{prfx}restore",
                       help="",
-                      aliases=["restorebackup"],
+                      aliases=[],
                       check_func=only_staff)
     async def restore(self, ctx, database: discord.Attachment = None):
         await utils.defer(ctx)
@@ -66,46 +66,46 @@ class Staff(commands.Cog,
                                     title="👌 Done!")
 
     @utils.hybgroup(globals.bot,
-                    name="gibxp",
+                    name="givexp",
                     description="Give a user some xp",
-                    usage="{prfx}gibxp [ type ] [ user ] [ amount ]",
+                    usage="{prfx}givexp [ type ] [ user ] [ amount ]",
                     help="type: either level, cred or assistance (required)\n"
                          "user: the user to give xp to (ping, name, id) (required)\n"
                          "amount: how much xp to give (can be negative) (required)",
-                    aliases=["givexp"],
+                    aliases=[],
                     case_insensitive=True)
-    async def gibxp(self, ctx):
+    async def givexp(self, ctx):
         if ctx.invoked_subcommand is None:
             pass
 
     @utils.hybcommand(globals.bot,
-                      group=gibxp,
+                      group=givexp,
                       name="level",
                       aliases=[],
                       check_func=only_staff)
-    async def gibxp_level(self, ctx, target: discord.Member, amount: int):
+    async def givexp_level(self, ctx, target: discord.Member, amount: int):
         level_xp, _, _ = await db.add_user_xp(target.id, level=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} level XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!\n") +
                                              f"New level XP value: `{level_xp}`")
 
     @utils.hybcommand(globals.bot,
-                      group=gibxp,
+                      group=givexp,
                       name="cred",
                       aliases=[],
                       check_func=only_staff)
-    async def gibxp_cred(self, ctx, target: discord.Member, amount: int):
+    async def givexp_cred(self, ctx, target: discord.Member, amount: int):
         _, cred_xp, _ = await db.add_user_xp(target.id, cred=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!\n") +
                                              f"New cred XP value: `{cred_xp}`")
 
     @utils.hybcommand(globals.bot,
-                      group=gibxp,
+                      group=givexp,
                       name="assistance",
                       aliases=["assist"],
                       check_func=only_staff)
-    async def gibxp_assistance(self, ctx, target: discord.Member, amount: int):
+    async def givexp_assistance(self, ctx, target: discord.Member, amount: int):
         _, _, assistance_xp = await db.add_user_xp(target.id, assistance=amount)
         await utils.embed_reply(ctx,
                                 description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!\n") +
@@ -118,7 +118,7 @@ class Staff(commands.Cog,
                     help="type: either level, cred or assistance (required)\n"
                          "user: the user to change the xp of (ping, name, id) (required)\n"
                          "amount: new xp value (negative will set 0) (required)",
-                    aliases=["changexp"],
+                    aliases=[],
                     case_insensitive=True)
     async def setxp(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -162,12 +162,107 @@ class Staff(commands.Cog,
                       description="Save DB and restart the bot",
                       usage="{prfx}restart",
                       help="",
-                      aliases=["reboot", "reload"],
+                      aliases=[],
                       check_func=only_staff)
     async def restart(self, ctx):
         await utils.embed_reply(ctx,
                                 title="👌 Restarting...")
         await utils.restart()
+
+    @utils.hybcommand(globals.bot,
+                      name="ban",
+                      description="Ban a user from the server",
+                      usage="{prfx}ban [ user ] [ purge days ] [ reason ]",
+                      help="user: the user to ban\n"
+                           "purge days: number of days to purge messages for (optional)\n"
+                           "reason: reason for the ban (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def ban(self, ctx, user: discord.Member, purge_days: int = 0, reason: str = ""):
+        await user.ban(delete_message_days=purge_days, reason=f"Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="👌 Begone, choom!",
+                                description=f"{user.mention} was just **banned** by {ctx.author.mention}\n" +
+                                            (f"Reason: {reason}\n" if reason else "") +
+                                            f"Purged last **{purge_days} day{'' if purge_days == 1 else 's'}** worth of messages")
+
+    @utils.hybcommand(globals.bot,
+                      name="unban",
+                      description="Unban a user from the server",
+                      usage="{prfx}unban [ user ] [ reason ]",
+                      help="user: the user to unban\n"
+                           "reason: reason for the unban (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def unban(self, ctx, user: discord.Member, reason: str = ""):
+        await user.unban(reason=f"Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="👌 Behave, or else!",
+                                description=f"{user.mention} was just **unbanned** by {ctx.author.mention}\n" +
+                                            (f"Reason: {reason}" if reason else ""))
+
+    @utils.hybcommand(globals.bot,
+                      name="kick",
+                      description="Kick a user from the server",
+                      usage="{prfx}kick [ user ] [ reason ]",
+                      help="user: the user to kick\n"
+                           "reason: reason for the kick (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def kick(self, ctx, user: discord.Member, reason: str = ""):
+        await user.kick(reason=f"Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="👌 Out of here, punk!",
+                                description=f"{user.mention} was just **kicked** by {ctx.author.mention}\n" +
+                                            (f"Reason: {reason}" if reason else ""))
+
+    @utils.hybcommand(globals.bot,
+                      name="mute",
+                      description="Mute a user from all channels",
+                      usage="{prfx}mute [ user ] [ reason ]",
+                      help="user: the user to mute\n"
+                           "reason: reason for the mute (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def mute(self, ctx, user: discord.Member, reason: str = ""):
+        muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
+        if not muted_role:
+            await utils.embed_reply(ctx,
+                                    title="💢 There is no 'Muted' role configured!")
+            return
+        if muted_role in user.roles:
+            await utils.embed_reply(ctx,
+                                    title="💢 That user is already muted!")
+            return
+        await user.add_roles(muted_role, reason=f"Mute command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="👌 Silence, scum!",
+                                description=f"{user.mention} was just **muted** by {ctx.author.mention}\n" +
+                                            (f"Reason: {reason}" if reason else ""))
+
+    @utils.hybcommand(globals.bot,
+                      name="unmute",
+                      description="Unmute a user from all channels",
+                      usage="{prfx}unmute [ user ] [ reason ]",
+                      help="user: the user to unmute\n"
+                           "reason: reason for the unmute (optional)",
+                      aliases=[],
+                      check_func=only_staff)
+    async def unmute(self, ctx, user: discord.Member, reason: str = ""):
+        muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
+        if not muted_role:
+            await utils.embed_reply(ctx,
+                                    title="💢 There is no 'Muted' role configured!")
+            return
+        if muted_role not in user.roles:
+            await utils.embed_reply(ctx,
+                                    title="💢 That user is not muted!")
+            return
+        await user.remove_roles(muted_role, reason=f"Unmute command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        await utils.embed_reply(ctx,
+                                title="👌 Think before speaking!",
+                                description=f"{user.mention} was just **unmuted** by {ctx.author.mention}\n" +
+                                            (f"Reason: {reason}" if reason else ""))
 
 
 async def setup(bot):
