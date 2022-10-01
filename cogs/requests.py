@@ -67,9 +67,9 @@ class Requests(commands.Cog,
                                                                   title=f"Request #`{req_id}`",
                                                                   description=description,
                                                                   fields=[
-                                                                      ["Requester:", f"<@!{ctx.author.id}>\n(`{ctx.author}`)", True],
-                                                                      ["Status:",    "Waiting",                                True],
-                                                                      ["Modder:",    "TBD",                                    True]
+                                                                      ["Requester:", f"{ctx.author.mention}\n(`{ctx.author}`)", True],
+                                                                      ["Status:",    "Waiting",                                 True],
+                                                                      ["Modder:",    "TBD",                                     True]
                                                                   ],
                                                                   thumbnail=globals.REQUESTS_ICONS["Waiting"],
                                                                   image=image))
@@ -145,9 +145,9 @@ class Requests(commands.Cog,
                                                     title=f"Request #`{req_id}`",
                                                     description=description,
                                                     fields=[
-                                                        ["Requester:", f"<@!{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)",                                                                      True],
-                                                        ["Status:",    f"[Released]({link})" if status == "Released" else f"[Already Exists]({link})" if status == "Already Exists" else status,                      True],
-                                                        ["Modder:",    "TBD" if status == "Waiting" else "N/A" if status == "Already Exists" else f"<@!{modder_id}>\n(`{globals.bot.get_user(modder_id) or 'N/A'}`)", True]
+                                                        ["Requester:", f"<@{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)",                                                                      True],
+                                                        ["Status:",    f"[Released]({link})" if status == "Released" else f"[Already Exists]({link})" if status == "Already Exists" else status,                     True],
+                                                        ["Modder:",    "TBD" if status == "Waiting" else "N/A" if status == "Already Exists" else f"<@{modder_id}>\n(`{globals.bot.get_user(modder_id) or 'N/A'}`)", True]
                                                     ],
                                                     thumbnail=globals.REQUESTS_ICONS[status],
                                                     image=new_image))
@@ -228,9 +228,9 @@ class Requests(commands.Cog,
                                                     title=f"Request #`{req_id}`",
                                                     description=description,
                                                     fields=[
-                                                        ["Requester:", f"<@!{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
-                                                        ["Status:",    "WIP",                                                                    True],
-                                                        ["Modder:",    f"<@!{ctx.author.id}>\n(`{ctx.author}`)",                                 True]
+                                                        ["Requester:", f"<@{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
+                                                        ["Status:",    "WIP",                                                                   True],
+                                                        ["Modder:",    f"{ctx.author.mention}\n(`{ctx.author}`)",                               True]
                                                     ],
                                                     thumbnail=globals.REQUESTS_ICONS["WIP"],
                                                     image=image))
@@ -274,9 +274,9 @@ class Requests(commands.Cog,
                                                     title=f"Request #`{req_id}`",
                                                     description=description,
                                                     fields=[
-                                                        ["Requester:", f"<@!{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
-                                                        ["Status:",    "Waiting",                                                                True],
-                                                        ["Modder:",    "TBD",                                                                    True]
+                                                        ["Requester:", f"<@{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
+                                                        ["Status:",    "Waiting",                                                               True],
+                                                        ["Modder:",    "TBD",                                                                   True]
                                                     ],
                                                     thumbnail=globals.REQUESTS_ICONS["Waiting"],
                                                     image=image))
@@ -322,9 +322,9 @@ class Requests(commands.Cog,
                                                     title=f"Request #`{req_id}`",
                                                     description=description,
                                                     fields=[
-                                                        ["Requester:", f"<@!{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
-                                                        ["Status:",    f"[Released]({link})",                                                    True],
-                                                        ["Modder:",    f"<@!{ctx.author.id}>\n(`{ctx.author}`)",                                 True]
+                                                        ["Requester:", f"<@{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
+                                                        ["Status:",    f"[Released]({link})",                                                   True],
+                                                        ["Modder:",    f"{ctx.author.mention}\n(`{ctx.author}`)",                               True]
                                                     ],
                                                     thumbnail=globals.REQUESTS_ICONS["Released"],
                                                     image=image))
@@ -368,9 +368,9 @@ class Requests(commands.Cog,
                                                     title=f"Request #`{req_id}`",
                                                     description=description,
                                                     fields=[
-                                                        ["Requester:", f"<@!{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
-                                                        ["Status:",    "WIP",                                                                    True],
-                                                        ["Modder:",    f"<@!{ctx.author.id}>\n(`{ctx.author}`)",                                 True]
+                                                        ["Requester:", f"<@{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
+                                                        ["Status:",    "WIP",                                                                   True],
+                                                        ["Modder:",    f"{ctx.author.mention}\n(`{ctx.author}`)",                               True]
                                                     ],
                                                     thumbnail=globals.REQUESTS_ICONS["WIP"],
                                                     image=image))
@@ -416,9 +416,9 @@ class Requests(commands.Cog,
                                                     title=f"Request #`{req_id}`",
                                                     description=description,
                                                     fields=[
-                                                        ["Requester:", f"<@!{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
-                                                        ["Status:",    f"[Already Exists]({link})",                                              True],
-                                                        ["Modder:",    "N/A",                                                                    True]
+                                                        ["Requester:", f"<@{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
+                                                        ["Status:",    f"[Already Exists]({link})",                                             True],
+                                                        ["Modder:",    "N/A",                                                                   True]
                                                     ],
                                                     thumbnail=globals.REQUESTS_ICONS["Already Exists"],
                                                     image=image))
@@ -462,7 +462,7 @@ class Requests(commands.Cog,
                                                     title=f"Request #`{req_id}`",
                                                     description=description,
                                                     fields=[
-                                                        ["Requester:", f"<@!{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
+                                                        ["Requester:", f"<@{requester_id}>\n(`{globals.bot.get_user(requester_id) or 'N/A'}`)", True],
                                                         ["Status:",    "Waiting",                                                               True],
                                                         ["Modder:",    "TBD",                                                                   True]
                                                     ],

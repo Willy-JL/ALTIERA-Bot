@@ -159,9 +159,9 @@ class Levelling(commands.Cog,
         if ctx.invoked_subcommand is None:
             await utils.embed_reply(ctx,
                                     title="🏆 Leaderboard Categories:",
-                                    description=f"{globals.BOT_PREFIX.lower()}top **level**: Top 10 members for Server Level\n"
-                                                f"{globals.BOT_PREFIX.lower()}top **cred**: Top 10 members for Server Cred\n"
-                                                f"{globals.BOT_PREFIX.lower()}top **assistance**: Top 10 member for Assistance")
+                                    description=f"{globals.BOT_PREFIX.lower()}top **level**: Top 10 users for Server Level\n"
+                                                f"{globals.BOT_PREFIX.lower()}top **cred**: Top 10 users for Server Cred\n"
+                                                f"{globals.BOT_PREFIX.lower()}top **assistance**: Top 10 users for Assistance")
 
     @utils.hybcommand(globals.bot,
                       group=top,
@@ -257,9 +257,9 @@ class Levelling(commands.Cog,
             return
         await db.add_user_xp(user.id, cred=globals.REP_CRED_AMOUNT)
         await utils.embed_reply(ctx,
-                                content=f"<@!{user.id}>",
+                                content=user.mention,
                                 title="💌 You got some reputation!",
-                                description=f"<@!{ctx.author.id}> likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
+                                description=f"{ctx.author.mention} likes what you do and showed their gratitude by gifting you **{globals.REP_CRED_AMOUNT} server cred XP**!",
                                 thumbnail=globals.REP_ICON,
                                 ephemeral=False)
 

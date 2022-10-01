@@ -194,11 +194,6 @@ def get_bar_index_from_lvl_percent(percent):
     return int(str(percent // 10**2 % 10) + str(percent // 10**1 % 10))
 
 
-# Check if user has role id
-def user_has_role(user, role_id):
-    return role_id in [role.id for role in user.roles]
-
-
 # Check if user has a role id
 def user_has_a_role(user: discord.Member, roles):
     # Current guild
@@ -221,25 +216,6 @@ def user_has_a_role(user: discord.Member, roles):
 # Check if user is staff
 def is_staff(user):
     return user.id == globals.ADMIN_ID or user_has_a_role(user, globals.STAFF_ROLE_IDS) or user.id == globals.bot.user.id
-
-
-# Find member, ensure xp and return value
-async def xp_from_name(ctx, name, type):
-    member_id = ctx.guild.get_member_named(name).id
-    return (await db.get_user_xp(member_id))[type]
-
-
-# Fuzzy string match for usernames
-async def get_best_member_match(ctx, target):
-    name_list = []
-    for user in ctx.guild.members:
-        name_list.append(user.name)
-        if user.nick:
-            name_list.append(user.nick)
-    results = [result[0] for result in process.extract(target, name_list, scorer=fuzz.ratio, limit=20)]
-    sort_helper = [(await xp_from_name(ctx, name, 0), name) for name in results]
-    sort_helper.sort(key=lambda item: item[0], reverse=True)
-    return ctx.guild.get_member_named(sort_helper[0][1])
 
 
 # Fuzzy string match for commands

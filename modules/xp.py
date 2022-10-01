@@ -127,7 +127,7 @@ async def notify_level_up(message, xp_type, old_lvl, new_lvl):
         img.save(binary, format="PNG")
         binary.seek(0)
         channel = message.guild.get_channel(globals.LEVEL_NOTIF_CHANNEL_IDS[str(message.guild.id)])
-        await channel.send(f"<@!{message.author.id}>", file=discord.File(binary, filename=f"levelup_{xp_type}.png"), allowed_mentions=discord.AllowedMentions(users=[]))
+        await channel.send(f"{message.author.mention}", file=discord.File(binary, filename=f"levelup_{xp_type}.png"), allowed_mentions=discord.AllowedMentions(users=[]))
 
 
 async def tick_cooldowns():

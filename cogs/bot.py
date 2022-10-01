@@ -37,7 +37,7 @@ class Bot(commands.Cog,
                     if "staff" in cog_name.lower() and not utils.is_staff(ctx.author):
                         desc += "These are **staff only** commands, you can't use them!\n\n"
                     desc += cog.description + "\n\n"
-                    for command in sorted(cog.get_commands(), key=lambda x: x.name):
+                    for command in sorted(cog.get_commands(), key=lambda cmd: cmd.name):
                         desc += f'{prfx}**{command.name}**: ' + (command.description[:command.description.find("\n")] if "\n" in command.description else command.description) + '\n'
                     desc += f"\nYou can use `{prfx}help [ command ]` to see more info about it!\n"
                     desc += f"**\nA.L.T.I.E.R.A. Bot**, made with ❤️ by [WillyJL](https://linktr.ee/WillyJL)"

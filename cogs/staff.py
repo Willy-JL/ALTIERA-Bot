@@ -85,10 +85,10 @@ class Staff(commands.Cog,
                       name="level",
                       aliases=[],
                       check_func=only_staff)
-    async def givexp_level(self, ctx, target: discord.Member, amount: int):
-        level_xp, _, _ = await db.add_user_xp(target.id, level=amount)
+    async def givexp_level(self, ctx, user: discord.Member, amount: int):
+        level_xp, _, _ = await db.add_user_xp(user.id, level=amount)
         await utils.embed_reply(ctx,
-                                description=(f"👌 Gave {amount} level XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} level XP from <@!{target.id}>!\n") +
+                                description=(f"👌 Gave {amount} level XP to {user.mention}!\n" if amount >= 0 else f"👌 Took {-amount} level XP from {user.mention}!\n") +
                                              f"New level XP value: `{level_xp}`",
                                 ephemeral=False)
 
@@ -97,10 +97,10 @@ class Staff(commands.Cog,
                       name="cred",
                       aliases=[],
                       check_func=only_staff)
-    async def givexp_cred(self, ctx, target: discord.Member, amount: int):
-        _, cred_xp, _ = await db.add_user_xp(target.id, cred=amount)
+    async def givexp_cred(self, ctx, user: discord.Member, amount: int):
+        _, cred_xp, _ = await db.add_user_xp(user.id, cred=amount)
         await utils.embed_reply(ctx,
-                                description=(f"👌 Gave {amount} cred XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} cred XP from <@!{target.id}>!\n") +
+                                description=(f"👌 Gave {amount} cred XP to {user.mention}!\n" if amount >= 0 else f"👌 Took {-amount} cred XP from {user.mention}!\n") +
                                              f"New cred XP value: `{cred_xp}`",
                                 ephemeral=False)
 
@@ -109,10 +109,10 @@ class Staff(commands.Cog,
                       name="assistance",
                       aliases=["assist"],
                       check_func=only_staff)
-    async def givexp_assistance(self, ctx, target: discord.Member, amount: int):
-        _, _, assistance_xp = await db.add_user_xp(target.id, assistance=amount)
+    async def givexp_assistance(self, ctx, user: discord.Member, amount: int):
+        _, _, assistance_xp = await db.add_user_xp(user.id, assistance=amount)
         await utils.embed_reply(ctx,
-                                description=(f"👌 Gave {amount} assistance XP to <@!{target.id}>!\n" if amount >= 0 else f"👌 Took {-amount} assistance XP from <@!{target.id}>!\n") +
+                                description=(f"👌 Gave {amount} assistance XP to {user.mention}!\n" if amount >= 0 else f"👌 Took {-amount} assistance XP from {user.mention}!\n") +
                                              f"New assistance XP value: `{assistance_xp}`",
                                 ephemeral=False)
 
@@ -134,10 +134,10 @@ class Staff(commands.Cog,
                       name="level",
                       aliases=[],
                       check_func=only_staff)
-    async def setxp_level(self, ctx, target: discord.Member, amount: int):
-        level_xp, _, _ = await db.set_user_xp(target.id, level=amount)
+    async def setxp_level(self, ctx, user: discord.Member, amount: int):
+        level_xp, _, _ = await db.set_user_xp(user.id, level=amount)
         await utils.embed_reply(ctx,
-                                description=f"👌 Set <@!{target.id}>'s level XP successfully!\n"
+                                description=f"👌 Set {user.mention}'s level XP successfully!\n"
                                             f"New level XP value: `{level_xp}`",
                                 ephemeral=False)
 
@@ -146,10 +146,10 @@ class Staff(commands.Cog,
                       name="cred",
                       aliases=[],
                       check_func=only_staff)
-    async def setxp_cred(self, ctx, target: discord.Member, amount: int):
-        _, cred_xp, _ = await db.set_user_xp(target.id, cred=amount)
+    async def setxp_cred(self, ctx, user: discord.Member, amount: int):
+        _, cred_xp, _ = await db.set_user_xp(user.id, cred=amount)
         await utils.embed_reply(ctx,
-                                description=f"👌 Set <@!{target.id}>'s cred XP successfully!\n"
+                                description=f"👌 Set {user.mention}'s cred XP successfully!\n"
                                             f"New cred XP value: `{cred_xp}`",
                                 ephemeral=False)
 
@@ -158,10 +158,10 @@ class Staff(commands.Cog,
                       name="assistance",
                       aliases=["assist"],
                       check_func=only_staff)
-    async def setxp_assistance(self, ctx, target: discord.Member, amount: int):
-        _, _, assistance_xp = await db.set_user_xp(target.id, assistance=amount)
+    async def setxp_assistance(self, ctx, user: discord.Member, amount: int):
+        _, _, assistance_xp = await db.set_user_xp(user.id, assistance=amount)
         await utils.embed_reply(ctx,
-                                description=f"👌 Set <@!{target.id}>'s assistance XP successfully!\n"
+                                description=f"👌 Set {user.mention}'s assistance XP successfully!\n"
                                             f"New assistance XP value: `{assistance_xp}`",
                                 ephemeral=False)
 

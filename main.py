@@ -207,18 +207,18 @@ async def main():
 
     # Greet user when they join
     @globals.bot.event
-    async def on_member_join(member):
-        if str(member.guild.id) in globals.JOIN_LOG_CHANNEL_IDS:
-            channel = member.guild.get_channel(globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]["join_channel_id"])
-            await channel.send(content=f"<@!{member.id}>",
-                               embed=utils.custom_embed(member.guild,
+    async def on_member_join(user):
+        if str(user.guild.id) in globals.JOIN_LOG_CHANNEL_IDS:
+            channel = user.guild.get_channel(globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]["join_channel_id"])
+            await channel.send(content={user.mention},
+                               embed=utils.custom_embed(user.guild,
                                                         title="👋 Welcome!",
-                                                        description=f"Welcome <@!{member.id}> to Night City!\n"
+                                                        description=f"Welcome {user.mention} to Night City!\n"
                                                                     "\n" +
-                                                                    (f"Make sure you have read through <#{globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]['rules_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]["rules_channel_id"] else "") +
-                                                                    (f"You can pick your poisons in <#{globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]['selfrole_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(member.guild.id)]["selfrole_channel_id"] else "") +
+                                                                    (f"Make sure you have read through <#{globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]['rules_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]["rules_channel_id"] else "") +
+                                                                    (f"You can pick your poisons in <#{globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]['selfrole_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]["selfrole_channel_id"] else "") +
                                                                     "Enjoy your stay!",
-                                                        thumbnail=member.display_avatar.url))
+                                                        thumbnail=user.display_avatar.url))
 
     # Message handler and callback dispatcher
     @globals.bot.event
@@ -251,7 +251,7 @@ async def main():
                         notif_chan = message.guild.get_channel(notif_chan)
                         await notif_chan.send(embed=utils.custom_embed(message.guild,
                                                                        title="💢 Begone, mod!",
-                                                                       description=f"A mod release post was just **removed** from <#{message.channel.id}>\n"
+                                                                       description=f"A mod release post was just **removed** from {message.channel.mention}\n"
                                                                                    f"**Matching filter**: `{word}`\n"
                                                                                    f"**Incriminating text**: ||{(match_final[:999] + '...') if len(match_final) > 999 else match_final}||"))
                     break
