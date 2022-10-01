@@ -268,7 +268,7 @@ async def main():
         elif message.content and lowered_content.startswith(globals.BOT_PREFIX.lower()):
             await globals.bot.process_commands(message)
         else:
-            if discord.utils.get(message.author.roles, name=globals.CLOWN_ROLE_NAME):
+            if discord.utils.get(getattr(message.author, "roles", []), name=globals.CLOWN_ROLE_NAME):
                 await message.add_reaction("🤡")
             await xp.process_xp(message)
 
