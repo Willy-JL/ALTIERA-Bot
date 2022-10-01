@@ -12,6 +12,7 @@ cur_presence               : int           = None
 db                         : Connection    = None
 http                       : ClientSession = None
 log                        : Logger        = None
+seen_releases              : set           = None
 start_dt                   : datetime      = None
 ticking_cooldowns          : bool          = None
 write_as_token             : str           = None

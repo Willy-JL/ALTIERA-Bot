@@ -32,6 +32,7 @@ if os.path.exists("config.json"):
                 config[key] = str(value)
         os.environ.update(config)
         globals.log.info("Loaded custom config")
+globals.seen_releases = set()
 
 # Local imports
 from modules import db, utils, xp
@@ -256,6 +257,26 @@ async def main():
                                                                                    f"**Matching filter**: `{word}`\n"
                                                                                    f"**Incriminating text**: ||{(match_final[:999] + '...') if len(match_final) > 999 else match_final}||"))
                     break
+            else:  # Didn't break, so message is not deleted, try checking duplicate posts
+                if message.embeds:
+                    only_dupes = True
+                    for embed in message.embeds:
+                        if not embed.url or not embed.url.startswith("https://www.nexusmods.com"):
+                            only_dupes = False
+                            continue
+                        if embed.url not in globals.seen_releases:
+                            globals.seen_releases.add(embed.url)
+                            only_dupes = False
+                            continue
+                    if only_dupes:
+                        await message.delete()
+                        notif_chan = globals.RELEASES_FILTER_NOTIF_CHAN.get(str(message.guild.id)) or 0
+                        if notif_chan:
+                            notif_chan = message.guild.get_channel(notif_chan)
+                            await notif_chan.send(embed=utils.custom_embed(message.guild,
+                                                                           title="💢 Begone, dupe!",
+                                                                           description=f"A duplicate mod release post was just **removed** from {message.channel.mention}\n"
+                                                                                       f"**Mod name{'' if len(message.embeds) == 1 else 's'}**: `{'`, `'.join(embed.title for embed in message.embeds)}`"))
         if message.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(message.guild.id)) or []):
             if message.content and utils.is_requests_command(lowered_content):
                 await globals.bot.process_commands(message)
