@@ -217,6 +217,7 @@ async def main():
                                                                     "\n" +
                                                                     (f"Make sure you have read through <#{globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]['rules_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]["rules_channel_id"] else "") +
                                                                     (f"You can pick your poisons in <#{globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]['selfrole_channel_id']}>!\n" if globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]["selfrole_channel_id"] else "") +
+                                                                    "\n" +
                                                                     "Enjoy your stay!",
                                                         thumbnail=user.display_avatar.url))
 
