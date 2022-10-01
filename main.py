@@ -210,7 +210,7 @@ async def main():
     async def on_member_join(user):
         if str(user.guild.id) in globals.JOIN_LOG_CHANNEL_IDS:
             channel = user.guild.get_channel(globals.JOIN_LOG_CHANNEL_IDS[str(user.guild.id)]["join_channel_id"])
-            await channel.send(content={user.mention},
+            await channel.send(content=user.mention,
                                embed=utils.custom_embed(user.guild,
                                                         title="👋 Welcome!",
                                                         description=f"Welcome {user.mention} to Night City!\n"
