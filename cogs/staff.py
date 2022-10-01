@@ -288,13 +288,15 @@ class Staff(commands.Cog,
     async def lock(self, ctx, channel: discord.TextChannel = None, *, reason: str = ""):
         channel = channel or ctx.channel
         everyone = channel.guild.default_role
-        perms = channel.overwrites.get(everyone) or discord.PermissionOverwrite()
+        perms = channel.overwrites_for(everyone) or discord.PermissionOverwrite()
         if perms.send_messages is False:
             await utils.embed_reply(ctx,
                                     title="💢 This channel is already locked!")
             return
         perms.send_messages = False
-        await channel.edit(overwrites=channel.overwrites.copy().update({everyone: perms}), reason=f"Lock command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        overwrites = channel.overwrites.copy()
+        overwrites.update({everyone: perms})
+        await channel.edit(overwrites=overwrites, reason=f"Lock command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
         await utils.embed_reply(ctx,
                                 title="👌 Finally, inner peace!",
                                 description=f"{channel.mention} was just **locked** by {ctx.author.mention}!\n" +
@@ -312,13 +314,15 @@ class Staff(commands.Cog,
     async def unlock(self, ctx, channel: discord.TextChannel = None, *, reason: str = ""):
         channel = channel or ctx.channel
         everyone = channel.guild.default_role
-        perms = channel.overwrites.get(everyone) or discord.PermissionOverwrite()
+        perms = channel.overwrites_for(everyone) or discord.PermissionOverwrite()
         if perms.send_messages is None:
             await utils.embed_reply(ctx,
                                     title="💢 This channel is not locked!")
             return
         perms.send_messages = None
-        await channel.edit(overwrites=channel.overwrites.copy().update({everyone: perms}), reason=f"Unlock command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
+        overwrites = channel.overwrites.copy()
+        overwrites.update({everyone: perms})
+        await channel.edit(overwrites=overwrites, reason=f"Unlock command, Issuer: {ctx.author}" + (f": {reason}" if reason else ""))
         await utils.embed_reply(ctx,
                                 title="👌 Alright, go off I guess...",
                                 description=f"{channel.mention} was just **unlocked** by {ctx.author.mention}!\n" +
