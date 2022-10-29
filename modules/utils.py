@@ -437,12 +437,20 @@ async def imgur_image_upload(img: bytes):
         raise errors.ImgurError(exc_info=sys.exc_info(), resp=resp) from exc
 
 
+def get_cog(command):
+    for cog in globals.bot.cogs.values():
+        for cog_command in cog.get_commands():
+            if command.name == cog_command.name:
+                return cog
+    return None
+
+
 # Defer slash response with ephemeral calculation
 async def defer(ctx, ephemeral=None):
     if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
         ephemeral = True
     elif ephemeral is None:
-        if hasattr(ctx, "command") and ctx.command.cog.qualified_name in DISABLE_EPHEMERAL_COGS:
+        if hasattr(ctx, "command") and get_cog(ctx.command).qualified_name in DISABLE_EPHEMERAL_COGS:
             ephemeral = False
         else:
             ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
@@ -461,7 +469,7 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
     if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
         ephemeral = True
     elif ephemeral is None:
-        if hasattr(ctx, "command") and ctx.command.cog.qualified_name in DISABLE_EPHEMERAL_COGS:
+        if hasattr(ctx, "command") and get_cog(ctx.command).qualified_name in DISABLE_EPHEMERAL_COGS:
             ephemeral = False
         else:
             ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
