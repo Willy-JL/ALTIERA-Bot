@@ -20,6 +20,8 @@ import os
 # Local imports
 from modules import globals, db, errors, xp
 
+DISABLE_EPHEMERAL_COGS = []
+
 
 # Get database
 async def get_db():
@@ -440,7 +442,10 @@ async def defer(ctx, ephemeral=None):
     if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
         ephemeral = True
     elif ephemeral is None:
-        ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
+        if hasattr(ctx, "command") and ctx.command.cog.qualified_name in DISABLE_EPHEMERAL_COGS:
+            ephemeral = False
+        else:
+            ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
     await ctx.defer(ephemeral=ephemeral)
 
 
@@ -456,7 +461,10 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
     if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
         ephemeral = True
     elif ephemeral is None:
-        ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
+        if hasattr(ctx, "command") and ctx.command.cog.qualified_name in DISABLE_EPHEMERAL_COGS:
+            ephemeral = False
+        else:
+            ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
     if ephemeral or ephemeral is not bool(ephemeral):
         if ephemeral is bool(ephemeral):
             ephemeral = 5
