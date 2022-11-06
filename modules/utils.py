@@ -198,20 +198,9 @@ def get_bar_index_from_lvl_percent(percent):
 
 # Check if user has a role id
 def user_has_a_role(user: discord.Member, roles):
-    # Current guild
     for role in user.roles:
         if role.id in roles:
             return True
-    # Try all guilds
-    for guild in globals.bot.guilds:
-        if guild.id == user.guild.id:
-            # Ignore guild we already checked
-            continue
-        member = guild.get_member(user.id)
-        if member:
-            for role in member.roles:
-                if role.id in roles:
-                    return True
     return False
 
 
