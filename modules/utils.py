@@ -439,7 +439,7 @@ async def defer(ctx, ephemeral=None):
     if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
         ephemeral = True
     elif ephemeral is None:
-        if hasattr(ctx, "command") and get_cog(ctx.command).qualified_name in DISABLE_EPHEMERAL_COGS:
+        if getattr(ctx, "command", None) and getattr(get_cog(ctx.command), "qualified_name", None) in DISABLE_EPHEMERAL_COGS:
             ephemeral = False
         else:
             ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)
@@ -458,7 +458,7 @@ async def embed_reply(ctx, *, content="", title="", description="", fields=[], t
     if ctx.channel.id in (globals.REQUESTS_CHANNEL_IDS.get(str(ctx.guild.id)) or []):
         ephemeral = True
     elif ephemeral is None:
-        if hasattr(ctx, "command") and get_cog(ctx.command).qualified_name in DISABLE_EPHEMERAL_COGS:
+        if getattr(ctx, "command", None) and getattr(get_cog(ctx.command), "qualified_name", None) in DISABLE_EPHEMERAL_COGS:
             ephemeral = False
         else:
             ephemeral = bool(ctx.channel.id not in globals.BLACKLISTED_CHANNELS_IDS)

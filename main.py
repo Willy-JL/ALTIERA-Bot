@@ -232,7 +232,7 @@ async def main():
             for word in globals.RELEASES_FILTER_WORDS:
                 word = word.lower()
                 match_final = False
-                search = lambda text: (word in (text.lower() or "") and (text or ""))
+                search = lambda text: (word in (text or "").lower() and (text or ""))
                 match_final = match_final or search(message.content)
                 match_embeds = bool(message.embeds)
                 for embed in message.embeds:
@@ -310,7 +310,7 @@ async def main():
         elif globals.cur_presence == 1:
             count = 0
             for guild in globals.bot.guilds:
-                count += guild.member_count
+                count += guild.member_count or len(guild.members)
             await globals.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{count} users'), status=discord.Status.dnd)
             globals.cur_presence = 2
         elif globals.cur_presence == 2:
