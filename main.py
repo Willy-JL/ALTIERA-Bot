@@ -46,7 +46,7 @@ globals.CONTRIB_AMOUNT             = int       (os.environ.get("CONTRIB_AMOUNT")
 globals.CONTRIB_CHANNELS_IDS       = json.loads(os.environ.get("CONTRIB_CHANNELS_IDS")       or "[]")
 globals.CONTRIB_COOLDOWN           = int       (os.environ.get("CONTRIB_COOLDOWN")           or 3600)
 globals.DAILY_LEVEL_AMOUNT         = int       (os.environ.get("DAILY_LEVEL_AMOUNT")         or 500)
-globals.DB_HOST_TYPE               = str       (os.environ.get("DB_HOST_TYPE")               or "github")
+globals.DB_HOST_TYPE               = str       (os.environ.get("DB_HOST_TYPE")               or "local")
 globals.DISCORD_TOKEN              = str       (os.environ.get("DISCORD_TOKEN")              or "")
 globals.GITHUB_GIST_FILENAME       = str       (os.environ.get("GITHUB_GIST_FILENAME")       or "db")
 globals.GITHUB_GIST_ID             = str       (os.environ.get("GITHUB_GIST_ID")             or "")
@@ -90,7 +90,7 @@ async def main():
     # Periodically save database
     async def database_loop():
         while True:
-            await asyncio.sleep(900)
+            await asyncio.sleep(datetime.timedelta(hours=12).total_seconds())
             await db.save_to_disk()
             if globals.bot.user:  # Check if logged in
                 admin = globals.bot.get_user(globals.ADMIN_ID)

@@ -25,7 +25,7 @@ DISABLE_EPHEMERAL_COGS = []
 
 # Get database
 async def get_db():
-    if not os.path.exists("db.sqlite3"):
+    if not os.path.exists("db.sqlite3") and globals.DB_HOST_TYPE != "local":
         if globals.DB_HOST_TYPE == "github":
             async with globals.http.get(f'https://gist.githubusercontent.com/{globals.GITHUB_GIST_USER}/{globals.GITHUB_GIST_ID}/raw',
                                         headers={
@@ -95,7 +95,7 @@ async def save_db():
                     globals.log.error(f"Failed to save config, code: {req.status}, message: {await req.text()}")
                     return False
                 return True
-        else:
+        elif globals.DB_HOST_TYPE != "local":
             raise Exception("No valid DB type specified!")
 
 
